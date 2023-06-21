@@ -12,11 +12,14 @@ const configuration = new Configuration({
 });
 const openai = new OpenAIApi(configuration);
 
+const binance_host = "https://api.binance.com"
+// /api/v3/ticker/price
+
 const getTokenPrice = async (token: string) => {
-  const price = await fetch(`https://api.nestfi.net/api/oracle/price/${token.toLowerCase()}usdt`);
+  const price = await fetch(`${binance_host}/api/v3/ticker/price?symbol=${token}USDT`);
   const json = await price.json();
   // @ts-ignore
-  return `${json?.value}`;
+  return `${json?.price}`;
 }
 
 const functions = [
@@ -58,6 +61,7 @@ bot.on("text", async (ctx) => {
       const function_name = response_message.function_call.name;
       // @ts-ignore
       const function_args = JSON.parse(response_message.function_call.arguments);
+
       if (function_name === "get_token_price") {
         const function_response = await getTokenPrice(function_args?.token);
         // append the function response to the messages
@@ -73,6 +77,9 @@ bot.on("text", async (ctx) => {
         });
         // @ts-ignore
         ctx.reply(second_response.data.choices[0].message.content);
+        return
+      } else {
+        ctx.reply("Function not found");
         return
       }
     }
