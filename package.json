@@ -11,6 +11,7 @@
     "set-webhook": "telegraf -m setWebhook"
   },
   "dependencies": {
+    "node-fetch": "^3.3.1",
     "openai": "^3.3.0",
     "serverless-http": "^3.1.1",
     "telegraf": "^4.11.2"
