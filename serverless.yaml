@@ -1,35 +1,38 @@
 {
-	service: "aws",
-	frameworkVersion: "3",
+  service: "aws",
+  frameworkVersion: "3",
 
-	useDotenv: true,
+  useDotenv: true,
 
-	package: {
-		excludeDevDependencies: true,
-	},
+  package: {
+    individually: true,
+    excludeDevDependencies: true,
+  },
 
-	provider: {
-		name: "aws",
-		runtime: "nodejs16.x",
-	},
+  provider: {
+    name: "aws",
+    runtime: "nodejs16.x",
+  },
 
-	plugins: [
-		"serverless-plugin-typescript",
-		"serverless-dotenv-plugin"
-	],
+  plugins: [
+    "serverless-plugin-typescript",
+    "serverless-dotenv-plugin"
+  ],
 
-	functions: {
-		app: {
-			name: "nestfi-cm-bot",
-			handler: "app.nest_bot",
-			events: [
-				{
-					httpApi: {
-						path: "/bot",
-						method: "post",
-					},
-				},
-			],
-		},
-	},
+  functions: {
+    app: {
+      name: "nestfi-ai-cm-bot",
+      handler: "app.handler",
+      timeout: 14,
+      memorySize: 256,
+      events: [
+        {
+          httpApi: {
+            path: "/bot",
+            method: "post",
+          },
+        },
+      ],
+    },
+  },
 }
