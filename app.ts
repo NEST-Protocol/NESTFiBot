@@ -19,6 +19,7 @@ bot.on("text",  async (ctx) => {
         {role: "system", content: "You are NEST Protocol Community Manager. You are talking to a user who is asking for help with a problem."},
         {role: "user", content: ctx.message.text}
       ],
+      max_tokens: 150,
     });
     // @ts-ignore
     ctx.reply(chatCompletion.data.choices[0].message.content);
