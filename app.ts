@@ -13,22 +13,15 @@ const configuration = new Configuration({
 const openai = new OpenAIApi(configuration);
 
 bot.on("text",  async (ctx) => {
+  const chatCompletion = await openai.createChatCompletion({
+    model: "gpt-3.5-turbo",
+    messages: [
+      {role: "system", content: "You are NEST Protocol Community Manager. You are talking to a user who is asking for help with a problem."},
+      {role: "user", content: ctx.message.text}
+    ],
+  });
   // @ts-ignore
-  const completion = await openai.createCompletion(
-    {
-      model: "curie:ft-abandon-inc-2-2023-06-21-09-00-21",
-      // @ts-ignore
-      prompt: `You are a NEST community manager who loves the community very much. You are helpful, creative, clever, and very friendly.\n\nHuman: ${ctx.message.text}\nAI:`,
-      temperature: 0.9,
-      max_tokens: 150,
-      top_p: 1,
-      frequency_penalty: 0,
-      presence_penalty: 0.6,
-      stop: [" Human:", " AI:"],
-    }
-  );
-  // @ts-ignore
-  ctx.reply(completion.data.choices[0].text || "No response");
+  ctx.reply(chatCompletion.data.choices[0].message || "No response");
 })
 
 export const handler = http(bot.webhookCallback("/bot"));
