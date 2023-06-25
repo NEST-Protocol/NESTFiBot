@@ -16,10 +16,12 @@ const binance_host = "https://api.binance.com"
 // /api/v3/ticker/price
 
 const getTokenPrice = async (token: string) => {
-  const price = await fetch(`${binance_host}/api/v3/ticker/price?symbol=${token}USDT`);
+  // const price = await fetch(`${binance_host}/api/v3/ticker/price?symbol=${token}USDT`);
+  // 更换为火币的价格
+  const price = await fetch(`https://api.huobi.pro/market/detail/merged?symbol=${token.toLowerCase()}usdt`);
   const json = await price.json();
   // @ts-ignore
-  return `${json?.price}`;
+  return `${json?.tick?.close}`;
 }
 
 const functions = [
