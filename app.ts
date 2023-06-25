@@ -1,6 +1,6 @@
 // @ts-ignore
 import http from "serverless-http";
-import {Telegraf} from "telegraf";
+import {Markup, Telegraf} from "telegraf";
 import {Configuration, OpenAIApi, ChatCompletionRequestMessage} from "openai";
 import fetch from "node-fetch";
 
@@ -12,12 +12,7 @@ const configuration = new Configuration({
 });
 const openai = new OpenAIApi(configuration);
 
-const binance_host = "https://api.binance.com"
-// /api/v3/ticker/price
-
-const getTokenPrice = async (token: string) => {
-  // const price = await fetch(`${binance_host}/api/v3/ticker/price?symbol=${token}USDT`);
-  // 更换为火币的价格
+const getTokenPrice = async ({token}: { token: string }) => {
   const price = await fetch(`https://api.huobi.pro/market/detail/merged?symbol=${token.toLowerCase()}usdt`);
   const json = await price.json();
   // @ts-ignore
@@ -41,6 +36,10 @@ const functions = [
   }
 ]
 
+const functionMap = {
+  "get_token_price": getTokenPrice
+}
+
 bot.on("text", async (ctx) => {
   try {
     let messages: ChatCompletionRequestMessage[] = [
@@ -62,10 +61,11 @@ bot.on("text", async (ctx) => {
     if (response_message?.function_call) {
       const function_name = response_message.function_call.name;
       // @ts-ignore
-      const function_args = JSON.parse(response_message.function_call.arguments);
-
-      if (function_name === "get_token_price") {
-        const function_response = await getTokenPrice(function_args?.token);
+      const func = functionMap[function_name];
+      if (func) {
+        // @ts-ignore
+        const function_args = JSON.parse(response_message.function_call.arguments);
+        const function_response = await func(function_args);
         // append the function response to the messages
         messages.push({
           role: "function",
