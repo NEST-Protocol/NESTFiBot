@@ -22,7 +22,7 @@
 
   functions: {
     app: {
-      name: "nestfi-ai-cm-bot",
+      name: "NESTFiBot",
       handler: "app.handler",
       timeout: 14,
       memorySize: 256,
