@@ -17,13 +17,14 @@ const redis = new Redis({
 bot.start(async (ctx) => {
   const user = ctx.from;
   try {
-    const authorization = await fetch(`${process.env.UPSTASH_REDIS_REST_URL}/get/auth:${user.id}`, {
-      headers: {
-        "Authorization": `Bearer ${process.env.UPSTASH_REDIS_REST_TOKEN}`
-      }
-    })
-      .then(response => response.json())
-      .then((data: any) => data.result)
+    // const authorization = await fetch(`${process.env.UPSTASH_REDIS_REST_URL}/get/auth:${user.id}`, {
+    //   headers: {
+    //     "Authorization": `Bearer ${process.env.UPSTASH_REDIS_REST_TOKEN}`
+    //   }
+    // })
+    //   .then(response => response.json())
+    //   .then((data: any) => data.result)
+    const authorization = await redis.get(`auth:${user.id}`)
     if (authorization) {
       ctx.reply(`Welcome back, ${user.username}`)
     } else {
