@@ -8,6 +8,7 @@ const bot = new Telegraf(token);
 // What can this bot do?
 bot.start(async (ctx) => {
   const user = ctx.from;
+  const message_id = ctx.message.message_id;
   try {
     const authorization = await fetch(`${process.env.UPSTASH_REDIS_REST_URL}/get/auth:${user.id}`, {
       headers: {
@@ -25,7 +26,10 @@ bot.start(async (ctx) => {
         headers: {
           "Authorization": `Bearer ${process.env.UPSTASH_REDIS_REST_TOKEN}`
         },
-        body: JSON.stringify(user)
+        body: JSON.stringify({
+          message_id,
+          user,
+        })
       })
       ctx.reply(`Hi here! Please authorize me tp set up a NESTFi integration. 
 
