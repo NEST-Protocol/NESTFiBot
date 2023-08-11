@@ -59,7 +59,7 @@ You can control me by sending these commands:
 // Stop command use to  delete authorization request
 bot.command('stop', async (ctx) => {
   ctx.reply('You are about to cancel your NESTFi authorization in this bot. Is that correct?', Markup.inlineKeyboard([
-    [Markup.button.callback('Yes, delete it', 'logout')],
+    [Markup.button.callback('Yes, cancel it', 'logout')],
     [Markup.button.callback('No', 'menu')],
   ]))
 })
