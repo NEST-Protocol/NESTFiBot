@@ -29,7 +29,7 @@ bot.start(async (ctx) => {
           body: JSON.stringify(user)
         })
         ctx.reply('Hi here! Please authorize me tp set up a NESTFi integration.', Markup.inlineKeyboard([
-          Markup.button.url('Authorize me', `https://nest-fi-bot-web.vercel.app/?code=${code}`)
+          Markup.button.url('Authorize me', `https://nest-fi-bot-web.vercel.app/${code}`)
         ]))
     }
   } catch (e) {
