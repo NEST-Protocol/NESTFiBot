@@ -55,6 +55,7 @@ You can control me by sending these commands:
 /start - Welcome to NESTFi
 /stop - Cancel my authorization
 /help - How to use?
+/webapp - Open the NESTFi webapp
 `, {
     parse_mode: 'Markdown'
   })
@@ -77,6 +78,12 @@ bot.action('logout', async (ctx) => {
     }
   })
   ctx.editMessageText('You have successfully cancel your NESTFi authorization.', Markup.inlineKeyboard([]))
+})
+
+bot.command('webapp', async (ctx) => {
+  ctx.reply('Open the NESTFi webapp', Markup.inlineKeyboard([
+    [Markup.button.webApp('Open NESTFi', 'https://nestfi.org')],
+  ]))
 })
 
 export const handler = http(bot.webhookCallback("/bot"));
