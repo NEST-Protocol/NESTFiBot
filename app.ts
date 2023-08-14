@@ -5,20 +5,34 @@ import fetch from "node-fetch";
 const token = process.env.BOT_TOKEN!;
 const bot = new Telegraf(token);
 
-// What can this bot do?
 bot.start(async (ctx) => {
   const user = ctx.from;
   const message_id = ctx.message.message_id;
+  // 是否携带参数
+
   try {
-    const authorization = await fetch(`${process.env.UPSTASH_REDIS_REST_URL}/get/auth:${user.id}`, {
+    const jwt = await fetch(`${process.env.UPSTASH_REDIS_REST_URL}/get/auth:${user.id}`, {
       headers: {
         "Authorization": `Bearer ${process.env.UPSTASH_REDIS_REST_TOKEN}`
       }
     })
       .then(response => response.json())
       .then((data: any) => data.result)
-    if (authorization) {
-      ctx.reply(`Welcome back, ${user.username}`)
+    if (jwt) {
+      const decode = jwt.split('.')[1]
+      const decodeJson = JSON.parse(Buffer.from(decode, 'base64').toString())
+      const exp = decodeJson.exp
+      const address = decodeJson.walletAddress
+      ctx.reply(`Welcome back, ${user.username}
+
+*Address*: ${address}
+*Expire at*: ${new Date(exp * 1000).toLocaleString()}`, {
+        parse_mode: 'Markdown',
+        ...Markup.inlineKeyboard([
+          [Markup.button.callback('我的跟单', 'my_documentary'), Markup.button.callback('我的钱包', 'my_wallet')],
+          [Markup.button.callback('设置', 'my_setting')],
+        ])
+      })
     } else {
       const code = Math.random().toString(36).substring(2, 18);
       await fetch(`${process.env.UPSTASH_REDIS_REST_URL}/set/code:${code}?EX=600`, {
@@ -52,21 +66,39 @@ bot.help((ctx) => {
 
 You can control me by sending these commands:
 
-/start - Welcome to NESTFi
-/stop - Cancel my authorization
+/account - Welcome to NESTFi
+/unauthorize - Cancel my authorization
 /help - How to use?
-/webapp - Open the NESTFi webapp
 `, {
     parse_mode: 'Markdown'
   })
 });
 
 // Stop command use to  delete authorization request
-bot.command('stop', async (ctx) => {
-  ctx.reply('You are about to cancel your NESTFi authorization in this bot. Is that correct?', Markup.inlineKeyboard([
-    [Markup.button.callback('Yes, cancel it', 'logout')],
-    [Markup.button.callback('No', 'menu')],
-  ]))
+bot.command('unauthorize', async (ctx) => {
+  const user = ctx.from;
+  const jwt = await fetch(`${process.env.UPSTASH_REDIS_REST_URL}/get/auth:${user.id}`, {
+    headers: {
+      "Authorization": `Bearer ${process.env.UPSTASH_REDIS_REST_TOKEN}`
+    }
+  }).then(response => response.json())
+    .then((data: any) => data.result)
+  if (jwt) {
+    const decode = jwt.split('.')[1]
+    const decodeJson = JSON.parse(Buffer.from(decode, 'base64').toString())
+    const address = decodeJson.walletAddress
+    ctx.reply(`You are about to cancel your NESTFi authorization in this bot. Is that correct?
+    
+*Address*: ${address}`, {
+      parse_mode: 'Markdown',
+      ...Markup.inlineKeyboard([
+        [Markup.button.callback('Yes, cancel it', 'logout')],
+        [Markup.button.callback('No', 'menu')],
+      ])
+    })
+  } else {
+    ctx.reply('You have not authorized any wallet yet.')
+  }
 })
 
 // Handle logout button click
