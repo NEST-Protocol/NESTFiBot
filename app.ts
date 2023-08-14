@@ -10,9 +10,7 @@ bot.start(async (ctx) => {
   const user = ctx.from;
   const message_id = ctx.message.message_id;
   try {
-    const code = ctx.message.text
-      .replace(/\s+/g, ' ').trim()
-      .split(' ')[1]
+    const code = ctx.startPayload;
 
     const jwt = await fetch(`${process.env.UPSTASH_REDIS_REST_URL}/get/auth:${user.id}`, {
       headers: {
@@ -28,8 +26,10 @@ bot.start(async (ctx) => {
 
       if (code && isAddress(code)) {
         // 可以跟单,需要判断code是否在白名单
-
-
+        ctx.reply(`Do you want to copy this KOL's trades on NESTFi automatically?`, Markup.inlineKeyboard([
+          [Markup.button.callback('Nope', 'cb_menu')],
+          [Markup.button.callback('Yes, i am 100% sure!', 'cb_copy_setting_KL1')],
+        ]))
       } else {
         ctx.reply(`Welcome back, ${user.username}
         
@@ -156,6 +156,44 @@ bot.command('unauthorize', async (ctx) => {
     })
   } else {
     ctx.reply('You have not authorized any wallet yet.')
+  }
+})
+
+// 设置跟单参数
+bot.action(/cb_copy_setting_.*/, async (ctx) => {
+  const user = ctx.update.callback_query.from;
+  const kl = ctx.match[1]
+  // TODO, get user balance of NEST
+
+  // TODO，balance 为可支配余额 + 已划转余额
+  const balance = 2000
+  // 如果余额不足，则提示充值
+  if (balance < 200) {
+    ctx.reply(`You don't have enough balance to set up a copy. Please recharge your account.`, Markup.inlineKeyboard([
+      [Markup.button.url('Deposit', 'https://nestfi.org/')],
+      [Markup.button.callback('I have deposit enough, continue!', 'cb_copy_setting_KL1')],
+    ]))
+    return
+  } else {
+    // 暂存用户的输入意图，为输入total balance, 有效期10分钟
+    await fetch(`${process.env.UPSTASH_REDIS_REST_URL}/set/intent:${user.id}?EX=600`, {
+      method: 'POST',
+      headers: {
+        "Authorization": `Bearer ${process.env.UPSTASH_REDIS_REST_TOKEN}`
+      },
+      body: JSON.stringify({
+        category: 'cb_copy_setting',
+        value: {
+          kl: kl, // 跟单KL地址
+          total: 0, // 总金额
+          single: 0, // 单笔金额
+          balance: 2000, // 缓存的可用账户余额
+        }
+      })
+    })
+    ctx.reply(`Enter the total copy amount, minimum 200. Your current account balance: xxx NEST.`, Markup.keyboard([
+      ['200', '400', '600'],
+    ]).oneTime().resize())
   }
 })
 
@@ -341,10 +379,114 @@ bot.action('cb_unauthorize', async (ctx) => {
   ctx.editMessageText('You have successfully cancel your NESTFi authorization.', Markup.inlineKeyboard([]))
 })
 
-bot.command('webapp', async (ctx) => {
-  ctx.reply('Open the NESTFi webapp', Markup.inlineKeyboard([
-    [Markup.button.webApp('Open NESTFi', 'https://nestfi.org')],
-  ]))
+bot.action('confirm_copy_setting', async (ctx) => {
+  const user = ctx.update.callback_query.from;
+  // 查询用户意图
+  const intent = await fetch(`${process.env.UPSTASH_REDIS_REST_URL}/get/intent:${user.id}`, {
+    headers: {
+      "Authorization": `Bearer ${process.env.UPSTASH_REDIS_REST_TOKEN}`
+    }
+  })
+    .then(response => response.json())
+    .then((data: any) => data.result)
+
+  if (intent) {
+    const data = JSON.parse(intent)
+    if (data.category === 'cb_copy_setting') {
+      let {kl, total, single, balance} = data.value
+      // TODO: 调用接口
+      ctx.editMessageText(`Copy trading successful!`, Markup.inlineKeyboard([]))
+    } else {
+      ctx.editMessageText('Sorry, we have not found your copy trading request', Markup.inlineKeyboard([]))
+    }
+  }
+})
+
+bot.action('cancel_copy_setting', async (ctx) => {
+  await fetch(`${process.env.UPSTASH_REDIS_REST_URL}/del/intent:${user.id}`, {
+    headers: {
+      "Authorization": `Bearer ${process.env.UPSTASH_REDIS_REST_TOKEN}`
+    },
+  })
+  ctx.answerCbQuery()
+  ctx.reply('Alright, we have cancel your copy trading request!')
+})
+
+bot.on("message", async (ctx) => {
+  const input = ctx.message.text
+  // 查询用户意图
+  const intent = await fetch(`${process.env.UPSTASH_REDIS_REST_URL}/get/intent:${user.id}`, {
+    headers: {
+      "Authorization": `Bearer ${process.env.UPSTASH_REDIS_REST_TOKEN}`
+    }
+  })
+    .then(response => response.json())
+    .then((data: any) => data.result)
+  // 如果有意图，匹配是否符合规则
+  if (intent) {
+    const data = JSON.parse(intent)
+    if (data.category === 'cb_copy_setting') {
+      let {kl, total, single, balance} = data.value
+      if (total === 0) {
+        if (Number(input) < 200 || Number(input) > balance) {
+          ctx.reply('Please enter a valid amount between 200 and your balance.')
+          return
+        }
+        // 更新intent
+        await fetch(`${process.env.UPSTASH_REDIS_REST_URL}/set/intent:${user.id}?EX=600`, {
+          method: 'POST',
+          headers: {
+            "Authorization": `Bearer ${process.env.UPSTASH_REDIS_REST_TOKEN}`
+          },
+          body: JSON.stringify({
+            category: 'cb_copy_setting',
+            value: {
+              ...data.value,
+              total: Number(input),
+            }
+          })
+        })
+        ctx.reply('Enter the amount for a single copy, minimum 50 NEST.', Markup.keyboard([
+          ['500', '1000', '2000']
+        ]).oneTime().resize())
+      } else if (single === 0) {
+        if (Number(input) < 50 || Number(input) > total) {
+          ctx.reply('Please enter a valid amount between 50 and the total amount.')
+          return
+        }
+        // 删除 intent
+        await fetch(`${process.env.UPSTASH_REDIS_REST_URL}/set/intent:${user.id}?EX=600`, {
+          method: 'POST',
+          headers: {
+            "Authorization": `Bearer ${process.env.UPSTASH_REDIS_REST_TOKEN}`
+          },
+          body: JSON.stringify({
+            category: 'cb_copy_setting',
+            value: {
+              ...data.value,
+              single: Number(input),
+            }
+          })
+        })
+        ctx.reply(`Please confirm your copy trading details: 
+        
+Single copy amount: ${single} NEST 
+Total copy amount: ${total} NEST 
+You can copy up to ${Math.ceil(total / single)} trades at the same time.
+
+Are you sure?`, Markup.inlineKeyboard([
+          [Markup.button.callback('Yes, i am 100% sure!', 'confirm_copy_setting')],
+          [Markup.button.callback('Nope', 'cancel_copy_setting')]
+        ]))
+      }
+      return
+    } else {
+      // nothing
+    }
+  }
+
+  // 发送指定的回复
+
 })
 
 export const handler = http(bot.webhookCallback("/bot"));
