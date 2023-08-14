@@ -469,7 +469,6 @@ bot.on("message", async (ctx) => {
           ctx.reply('Please enter a valid amount between 50 and the total amount.')
           return
         }
-        // 删除 intent
         await fetch(`${process.env.UPSTASH_REDIS_REST_URL}/set/intent:${user.id}?EX=600`, {
           method: 'POST',
           headers: {
@@ -485,7 +484,7 @@ bot.on("message", async (ctx) => {
         })
         ctx.reply(`Please confirm your copy trading details: 
         
-Single copy amount: ${single} NEST 
+Single copy amount: ${Number(input)} NEST 
 Total copy amount: ${total} NEST 
 You can copy up to ${Math.ceil(total / single)} trades at the same time.
 
