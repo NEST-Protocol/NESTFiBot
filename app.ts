@@ -65,9 +65,7 @@ bot.start(async (ctx) => {
       })
       ctx.reply(`Hi here! Please authorize me tp set up a NESTFi integration. 
 
-*Note*: this link will be valid for 10 minutes.
-----dev
-${JSON.stringify(ctx.message)}`, {
+*Note*: this link will be valid for 10 minutes.`, {
         parse_mode: 'Markdown',
         ...Markup.inlineKeyboard([
           [Markup.button.url('Authorize me', `https://nest-fi-bot-web.vercel.app/${nonce}`)],
