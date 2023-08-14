@@ -30,7 +30,6 @@ bot.start(async (ctx) => {
         // 可以跟单,需要判断code是否在白名单
 
 
-
       } else {
         ctx.reply(`Welcome back, ${user.username}
         
@@ -251,12 +250,17 @@ You can use command: /start`)
 bot.action(/cb_kl_.*/, async (ctx) => {
   const kl = ctx.match[1]
   ctx.answerCbQuery()
-  ctx.editMessageText(`我跟随的交易员`, Markup.inlineKeyboard([
-    [Markup.button.callback('查看订单', 'cb_ps_KL1_0')],
-    [Markup.button.callback('停止跟单并结算', 'cb_r_stop_kl_KL1')],
-    [Markup.button.callback('跟单设置', 'cb_copy_setting_KL1')],
-    [Markup.button.callback('Back', 'cb_kls_p_1')],
-  ]))
+  ctx.editMessageText(`${kl} (Profit sharing: 10%)
+Flowers: xx/500          AUM: xxNEST        
+7D ROI: xx%              7D Earnings: xxNEST`, {
+    parse_mode: 'Markdown',
+    ...Markup.inlineKeyboard([
+      [Markup.button.callback('查看订单', 'cb_ps_KL1_0')],
+      [Markup.button.callback('停止跟单并结算', 'cb_r_stop_kl_KL1')],
+      [Markup.button.callback('跟单设置', 'cb_copy_setting_KL1')],
+      [Markup.button.callback('Back', 'cb_kls_p_1')],
+    ])
+  })
 })
 
 // 查看某个KL下面的所有当前的仓位
@@ -301,7 +305,7 @@ bot.action(/cb_stop_kl_.*/, async (ctx) => {
 // 我的仓位
 // cb_po_[ORDER_INDEX]
 bot.action(/cb_oi_.*/, async (ctx) => {
-  const order_index =  ctx.match[1]
+  const order_index = ctx.match[1]
   ctx.answerCbQuery()
   ctx.editMessageText(`BTC/USDT Long 20x Actual Margin：6418.25 NEST +14.99%
 Open Price: 1418.25 USDT Exit Price: 1320.99 USDT Liq Price: 1400.00 USDT Open Time：04-15 10:18:15 `, {
