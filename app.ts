@@ -311,8 +311,22 @@ bot.action(/cb_ps_.*/, async (ctx) => {
     [Markup.button.callback('BTC/USDT 20x (+200NEST)', 'cb_oi_1')],
     [Markup.button.callback('DOGE/USDT 20x (+200NEST)', 'cb_oi_2')],
     [Markup.button.callback('XRP/USDT 20x (+200NEST)', 'cb_oi_3')],
-    [Markup.button.url('History', 'https://nestfi.org/'), Markup.button.callback('Back', 'cb_kl_KL1')],
+    [Markup.button.callback('History', 'cb_kl_history_KL1_1'), Markup.button.callback('Back', 'cb_kl_KL1')],
   ]))
+})
+
+bot.action(/cb_kl_history_.*/, async (ctx) => {
+  const kl = ctx.match[1].split('_')[0]
+  const page = ctx.match[1].split('_')[1]
+  ctx.answerCbQuery()
+  ctx.editMessageText(`BTC/USDT Long 20x Actual Margin：6418.25 NEST +14.99%
+Open Price: 1418.25 USDT close Price: 1320.99 USDT Liq Price: 1400.00 USDT Open Time：04-15 10:18:15 Close Time : 04-15 10:18:15 `, {
+    parse_mode: 'Markdown',
+    ...Markup.inlineKeyboard([
+      [Markup.button.callback('Next Page', `cb_kl_history_KL1_2`)],
+      [Markup.button.callback('Back', 'cb_ps_KL1_1')],
+    ])
+  })
 })
 
 bot.action(/cb_r_stop_kl_.*/, async (ctx) => {
