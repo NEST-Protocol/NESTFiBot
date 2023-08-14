@@ -427,7 +427,8 @@ bot.action('cancel_copy_setting', async (ctx) => {
 })
 
 bot.on("message", async (ctx) => {
-  const input = ctx.message.text
+  const user = ctx.update.message.from;
+  const input = ctx.message.text;
   // 查询用户意图
   const intent = await fetch(`${process.env.UPSTASH_REDIS_REST_URL}/get/intent:${user.id}`, {
     headers: {
