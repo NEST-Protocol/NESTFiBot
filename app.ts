@@ -411,7 +411,10 @@ bot.action('confirm_copy_setting', async (ctx) => {
       // TODO: 调用接口
       ctx.editMessageText(`Copy trading successful!`, Markup.inlineKeyboard([]))
     } else {
-      ctx.editMessageText('Sorry, we have not found your copy trading request', Markup.inlineKeyboard([]))
+      ctx.editMessageText('Sorry, we have not found your copy trading request', {
+        ...Markup.inlineKeyboard([]),
+        ...Markup.removeKeyboard()
+      })
     }
   }
 })
@@ -424,7 +427,10 @@ bot.action('cancel_copy_setting', async (ctx) => {
     },
   })
   ctx.answerCbQuery()
-  ctx.editMessageText('Alright, we have cancel your copy trading request!', Markup.inlineKeyboard([]))
+  ctx.editMessageText('Alright, we have cancel your copy trading request!', {
+    ...Markup.inlineKeyboard([]),
+    ...Markup.removeKeyboard(),
+  })
 })
 
 bot.on("message", async (ctx) => {
@@ -467,7 +473,9 @@ bot.on("message", async (ctx) => {
         ]).oneTime().resize())
       } else if (single === 0) {
         if (Number(input) < 50 || Number(input) > total) {
-          ctx.reply('Please enter a valid amount between 50 and the total amount.')
+          ctx.reply('Please enter a valid amount between 50 and the total amount.', Markup.keyboard([
+            ['50', '100', '200']
+          ]))
           return
         }
         await fetch(`${process.env.UPSTASH_REDIS_REST_URL}/set/intent:${user.id}?EX=600`, {
