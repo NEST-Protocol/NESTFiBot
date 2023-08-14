@@ -417,13 +417,14 @@ bot.action('confirm_copy_setting', async (ctx) => {
 })
 
 bot.action('cancel_copy_setting', async (ctx) => {
+  const user = ctx.update.callback_query.from;
   await fetch(`${process.env.UPSTASH_REDIS_REST_URL}/del/intent:${user.id}`, {
     headers: {
       "Authorization": `Bearer ${process.env.UPSTASH_REDIS_REST_TOKEN}`
     },
   })
   ctx.answerCbQuery()
-  ctx.reply('Alright, we have cancel your copy trading request!')
+  ctx.editMessageText('Alright, we have cancel your copy trading request!', Markup.inlineKeyboard([]))
 })
 
 bot.on("message", async (ctx) => {
