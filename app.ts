@@ -67,8 +67,8 @@ bot.start(async (ctx) => {
 *Note*: this link will be valid for 10 minutes.`, {
         parse_mode: 'Markdown',
         ...Markup.inlineKeyboard([
-          [Markup.button.url('Authorize me', `https://nest-fi-bot-web.vercel.app/${nonce}`)],
-          [Markup.button.url('Authorize in Metamask', `https://metamask.app.link/dapp/nest-fi-bot-web.vercel.app/${nonce}`)],
+          [Markup.button.url('Authorize me', `https://connect.nestfi.org/${nonce}`)],
+          [Markup.button.url('Authorize in Metamask', `https://metamask.app.link/dapp/connect.nestfi.org/${nonce}`)],
         ])
       })
     }
