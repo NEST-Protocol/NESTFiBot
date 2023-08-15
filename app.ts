@@ -475,7 +475,6 @@ bot.action('cancel_copy_setting', async (ctx) => {
         "Authorization": `Bearer ${process.env.UPSTASH_REDIS_REST_TOKEN}`
       },
     });
-    ctx.answerCbQuery('Cancel Successfully!')
     ctx.editMessageText('Alright, we have cancel your copy trading request!', {
       ...Markup.inlineKeyboard([]),
       ...Markup.removeKeyboard(),
@@ -521,7 +520,7 @@ bot.on("message", async (ctx) => {
           })
         })
         ctx.reply('Enter the amount for a single copy, minimum 50 NEST.', Markup.keyboard([
-          ['500', '1000', '2000']
+          ['50', '100', '200']
         ]).oneTime().resize())
       } else if (single === 0) {
         if (Number(input) < 50 || Number(input) > total) {
