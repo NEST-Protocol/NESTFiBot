@@ -458,7 +458,6 @@ bot.action('confirm_copy_setting', async (ctx) => {
       } else {
         ctx.editMessageText('Sorry, we have not found your copy trading request', {
           ...Markup.inlineKeyboard([]),
-          ...Markup.removeKeyboard()
         })
       }
     }
@@ -477,7 +476,6 @@ bot.action('cancel_copy_setting', async (ctx) => {
     });
     ctx.editMessageText('Alright, we have cancel your copy trading request!', {
       ...Markup.inlineKeyboard([]),
-      ...Markup.removeKeyboard(),
     })
   } catch (e) {
     ctx.answerCbQuery('Something went wrong.')
