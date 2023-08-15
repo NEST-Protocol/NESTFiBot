@@ -192,8 +192,12 @@ bot.action(/cb_copy_setting_.*/, async (ctx) => {
           }
         })
       })
+      let choice = [0, 0, 0];
+      choice[0] = Math.floor(balance * 0.5 / 50) * 50;
+      choice[1] = Math.floor(balance * 0.75 / 50) * 50;
+      choice[2] = Math.floor(balance / 50) * 50;
       ctx.reply(`Enter the total copy amount, minimum 200. Your current account balance: xxx NEST.`, Markup.keyboard([
-        ['200', '400', '600'],
+        choice.filter((i) => i >= 200).map((i: number) => String(i)),
       ]).oneTime().resize())
     }
   } catch (e) {
@@ -517,13 +521,21 @@ bot.on("message", async (ctx) => {
             }
           })
         })
+        let choice = [0, 0, 0]
+        choice[0] = Math.floor(Number(input) * 0.1 / 50) * 50
+        choice[1] = Math.floor(Number(input) * 0.2 / 50) * 50
+        choice[2] = Math.floor(Number(input) * 0.4 / 50) * 50
         ctx.reply('Enter the amount for a single copy, minimum 50 NEST.', Markup.keyboard([
-          ['50', '100', '200']
+          choice.filter((i) => i >= 50).map(i => String(i))
         ]).oneTime().resize())
       } else if (single === 0) {
         if (Number(input) < 50 || Number(input) > total) {
+          let choice = [0, 0, 0]
+          choice[0] = Math.floor(total * 0.1 / 50) * 50
+          choice[1] = Math.floor(total * 0.2 / 50) * 50
+          choice[2] = Math.floor(total * 0.4 / 50) * 50
           ctx.reply('Please enter a valid amount between 50 and the total amount.', Markup.keyboard([
-            ['50', '100', '200']
+            choice.filter((i) => i >= 50).map(i => String(i))
           ]))
           return
         }
