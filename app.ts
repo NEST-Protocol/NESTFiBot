@@ -62,7 +62,7 @@ bot.start(async (ctx) => {
           user,
         })
       })
-      ctx.reply(`Hi here! Please authorize me tp set up a NESTFi integration. 
+      ctx.reply(`Hi here! Please authorize me to set up a NESTFi integration. 
 
 *Note*: this link will be valid for 10 minutes.`, {
         parse_mode: 'Markdown',
@@ -120,9 +120,9 @@ bot.command('account', async (ctx) => {
         ])
       })
     } else {
-      ctx.reply(`Hi here! Please authorize me tp set up a NESTFi integration. 
+      ctx.reply(`Hi here! Please authorize me to set up a NESTFi integration. 
       
-You can use command: /start`, {
+*You can use command*: /start`, {
         parse_mode: 'Markdown',
       })
     }
@@ -210,7 +210,6 @@ bot.action('cb_menu', async (ctx) => {
     const decode = jwt.split('.')[1]
     const decodeJson = JSON.parse(Buffer.from(decode, 'base64').toString())
     const address = decodeJson.walletAddress
-    ctx.answerCbQuery()
     ctx.editMessageText(`Welcome back, ${user.username}!
   
 *Copy trading assets*: xxx NEST
@@ -225,9 +224,11 @@ bot.action('cb_menu', async (ctx) => {
       ])
     })
   } else {
-    ctx.reply(`Hi ${user.username}! Please authorize me tp set up a NESTFi integration.
+    ctx.reply(`Hi ${user.username}! Please authorize me to set up a NESTFi integration.
 
-You can use command: /start`)
+*You can use command*: /start`, {
+      parse_mode: 'Markdown',
+    })
   }
 })
 
@@ -242,17 +243,17 @@ bot.action('cb_account', async (ctx) => {
     .then((data: any) => data.result)
 
   if (jwt) {
-    ctx.answerCbQuery()
     ctx.editMessageText(`可提现金额: xxx NEST`, Markup.inlineKeyboard([
       [Markup.button.url('Deposit', 'https://nestfi.org/')],
       [Markup.button.url('Withdraw', 'https://nestfi.org/')],
       [Markup.button.callback('Back', 'cb_menu')],
     ]))
   } else {
-    ctx.answerCbQuery()
-    ctx.editMessageText(`Hi ${user.username}! Please authorize me tp set up a NESTFi integration.
+    ctx.editMessageText(`Hi ${user.username}! Please authorize me to set up a NESTFi integration.
 
-You can use command: /start`)
+*You can use command*: /start`, {
+      parse_mode: 'Markdown',
+    })
   }
 })
 
@@ -269,17 +270,17 @@ bot.action(/cb_kls_p_.*/, async (ctx) => {
     .then(response => response.json())
     .then((data: any) => data.result)
   if (jwt) {
-    ctx.answerCbQuery()
     ctx.editMessageText(`我跟随的交易员:`, Markup.inlineKeyboard([
       [Markup.button.callback('交易员1: 1000 NEST', 'cb_kl_KL1')],
       [Markup.button.callback('交易员2: 2000 NEST', 'cb_kl_KL2')],
       [Markup.button.callback('Back', 'cb_menu')],
     ]))
   } else {
-    ctx.answerCbQuery()
-    ctx.editMessageText(`Hi ${user.username}! Please authorize me tp set up a NESTFi integration.
+    ctx.editMessageText(`Hi ${user.username}! Please authorize me to set up a NESTFi integration.
 
-You can use command: /start`)
+*You can use command*: /start`, {
+      parse_mode: 'Markdown',
+    })
   }
 })
 
@@ -287,7 +288,6 @@ You can use command: /start`)
 // cb_kl_[KL]
 bot.action(/cb_kl_.*/, async (ctx) => {
   const kl = ctx.match[1]
-  ctx.answerCbQuery()
   ctx.editMessageText(`${kl} (Profit sharing: 10%)
 Flowers: xx/500          AUM: xxNEST        
 7D ROI: xx%              7D Earnings: xxNEST`, {
@@ -306,7 +306,6 @@ Flowers: xx/500          AUM: xxNEST
 bot.action(/cb_ps_.*/, async (ctx) => {
   const kl = ctx.match[1].split('_')[0]
   const page = ctx.match[1].split('_')[1]
-  ctx.answerCbQuery()
   ctx.editMessageText(`您可在这里操作您的仓位`, Markup.inlineKeyboard([
     [Markup.button.callback('BTC/USDT 20x (+200NEST)', 'cb_oi_1')],
     [Markup.button.callback('DOGE/USDT 20x (+200NEST)', 'cb_oi_2')],
@@ -318,7 +317,6 @@ bot.action(/cb_ps_.*/, async (ctx) => {
 bot.action(/cb_kl_history_.*/, async (ctx) => {
   const kl = ctx.match[1].split('_')[0]
   const page = ctx.match[1].split('_')[1]
-  ctx.answerCbQuery()
   ctx.editMessageText(`BTC/USDT Long 20x Actual Margin：6418.25 NEST +14.99%
 Open Price: 1418.25 USDT close Price: 1320.99 USDT Liq Price: 1400.00 USDT Open Time：04-15 10:18:15 Close Time : 04-15 10:18:15 `, {
     parse_mode: 'Markdown',
@@ -330,7 +328,6 @@ Open Price: 1418.25 USDT close Price: 1320.99 USDT Liq Price: 1400.00 USDT�
 })
 
 bot.action(/cb_r_stop_kl_.*/, async (ctx) => {
-  ctx.answerCbQuery()
   ctx.editMessageText(`你想要停止跟单，这会强制以市价平仓目前的单。
 总跟单金额：200NEST  总保证金余额：260NEST
 净盈利： 60NEST
@@ -345,7 +342,6 @@ bot.action(/cb_r_stop_kl_.*/, async (ctx) => {
 })
 
 bot.action(/cb_stop_kl_.*/, async (ctx) => {
-  ctx.answerCbQuery()
   ctx.editMessageText(`我们已经关闭了你所有的订单！`, {
     parse_mode: 'Markdown',
     ...Markup.inlineKeyboard([
@@ -358,7 +354,6 @@ bot.action(/cb_stop_kl_.*/, async (ctx) => {
 // cb_po_[ORDER_INDEX]
 bot.action(/cb_oi_.*/, async (ctx) => {
   const order_index = ctx.match[1]
-  ctx.answerCbQuery()
   ctx.editMessageText(`BTC/USDT Long 20x Actual Margin：6418.25 NEST +14.99%
 Open Price: 1418.25 USDT Exit Price: 1320.99 USDT Liq Price: 1400.00 USDT Open Time：04-15 10:18:15 `, {
     parse_mode: 'Markdown',
@@ -425,8 +420,8 @@ bot.action('cancel_copy_setting', async (ctx) => {
     headers: {
       "Authorization": `Bearer ${process.env.UPSTASH_REDIS_REST_TOKEN}`
     },
-  })
-  ctx.answerCbQuery()
+  });
+  ctx.answerCbQuery('Cancel Successfully!')
   ctx.editMessageText('Alright, we have cancel your copy trading request!', {
     ...Markup.inlineKeyboard([]),
     ...Markup.removeKeyboard(),
