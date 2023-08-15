@@ -163,97 +163,110 @@ bot.command('unauthorize', async (ctx) => {
 bot.action(/cb_copy_setting_.*/, async (ctx) => {
   const user = ctx.update.callback_query.from;
   const kl = ctx.match[1]
-  // TODO, get user balance of NEST
+  try {
+    // TODO, get user balance of NEST
 
-  // TODO，balance 为可支配余额 + 已划转余额
-  const balance = 2000
-  // 如果余额不足，则提示充值
-  if (balance < 200) {
-    ctx.reply(`You don't have enough balance to set up a copy. Please recharge your account.`, Markup.inlineKeyboard([
-      [Markup.button.url('Deposit', 'https://nestfi.org/')],
-      [Markup.button.callback('I have deposit enough, continue!', 'cb_copy_setting_KL1')],
-    ]))
-    return
-  } else {
-    // 暂存用户的输入意图，为输入total balance, 有效期10分钟
-    await fetch(`${process.env.UPSTASH_REDIS_REST_URL}/set/intent:${user.id}?EX=600`, {
-      method: 'POST',
-      headers: {
-        "Authorization": `Bearer ${process.env.UPSTASH_REDIS_REST_TOKEN}`
-      },
-      body: JSON.stringify({
-        category: 'cb_copy_setting',
-        value: {
-          kl: kl, // 跟单KL地址
-          total: 0, // 总金额
-          single: 0, // 单笔金额
-          balance: 2000, // 缓存的可用账户余额
-        }
+    // TODO，balance 为可支配余额 + 已划转余额
+    const balance = 2000
+    // 如果余额不足，则提示充值
+    if (balance < 200) {
+      ctx.reply(`You don't have enough balance to set up a copy. Please recharge your account.`, Markup.inlineKeyboard([
+        [Markup.button.url('Deposit', 'https://nestfi.org/')],
+        [Markup.button.callback('I have deposit enough, continue!', 'cb_copy_setting_KL1')],
+      ]))
+      return
+    } else {
+      // 暂存用户的输入意图，为输入total balance, 有效期10分钟
+      await fetch(`${process.env.UPSTASH_REDIS_REST_URL}/set/intent:${user.id}?EX=600`, {
+        method: 'POST',
+        headers: {
+          "Authorization": `Bearer ${process.env.UPSTASH_REDIS_REST_TOKEN}`
+        },
+        body: JSON.stringify({
+          category: 'cb_copy_setting',
+          value: {
+            kl: kl, // 跟单KL地址
+            total: 0, // 总金额
+            single: 0, // 单笔金额
+            balance: 2000, // 缓存的可用账户余额
+          }
+        })
       })
-    })
-    ctx.reply(`Enter the total copy amount, minimum 200. Your current account balance: xxx NEST.`, Markup.keyboard([
-      ['200', '400', '600'],
-    ]).oneTime().resize())
+      ctx.reply(`Enter the total copy amount, minimum 200. Your current account balance: xxx NEST.`, Markup.keyboard([
+        ['200', '400', '600'],
+      ]).oneTime().resize())
+    }
+  } catch (e) {
+    ctx.answerCbQuery('Something went wrong.')
   }
 })
 
 bot.action('cb_menu', async (ctx) => {
   const user = ctx.update.callback_query.from;
-  const jwt = await fetch(`${process.env.UPSTASH_REDIS_REST_URL}/get/auth:${user.id}`, {
-    headers: {
-      "Authorization": `Bearer ${process.env.UPSTASH_REDIS_REST_TOKEN}`
-    }
-  })
-    .then(response => response.json())
-    .then((data: any) => data.result)
-  if (jwt) {
-    const decode = jwt.split('.')[1]
-    const decodeJson = JSON.parse(Buffer.from(decode, 'base64').toString())
-    const address = decodeJson.walletAddress
-    ctx.editMessageText(`Welcome back, ${user.username}!
+
+  try {
+    const jwt = await fetch(`${process.env.UPSTASH_REDIS_REST_URL}/get/auth:${user.id}`, {
+      headers: {
+        "Authorization": `Bearer ${process.env.UPSTASH_REDIS_REST_TOKEN}`
+      }
+    })
+      .then(response => response.json())
+      .then((data: any) => data.result)
+    if (jwt) {
+      const decode = jwt.split('.')[1]
+      const decodeJson = JSON.parse(Buffer.from(decode, 'base64').toString())
+      const address = decodeJson.walletAddress
+      ctx.editMessageText(`Welcome back, ${user.username}!
   
 *Copy trading assets*: xxx NEST
 *Profit*:  xxx NEST
 *Unrealized PNL*:  xxx NEST
 *Address*: ${address}
 `, {
-      parse_mode: 'Markdown',
-      ...Markup.inlineKeyboard([
-        [Markup.button.callback('My Account', 'cb_account')],
-        [Markup.button.callback('My Copy Trading', 'cb_kls_p_1')],
-      ])
-    })
-  } else {
-    ctx.reply(`Hi ${user.username}! Please authorize me to set up a NESTFi integration.
+        parse_mode: 'Markdown',
+        ...Markup.inlineKeyboard([
+          [Markup.button.callback('My Account', 'cb_account')],
+          [Markup.button.callback('My Copy Trading', 'cb_kls_p_1')],
+        ])
+      })
+    } else {
+      ctx.reply(`Hi ${user.username}! Please authorize me to set up a NESTFi integration.
 
 *You can use command*: /start`, {
-      parse_mode: 'Markdown',
-    })
+        parse_mode: 'Markdown',
+      })
+    }
+  } catch (e) {
+    ctx.answerCbQuery('Something went wrong.')
   }
 })
 
 bot.action('cb_account', async (ctx) => {
   const user = ctx.update.callback_query.from;
-  const jwt = await fetch(`${process.env.UPSTASH_REDIS_REST_URL}/get/auth:${user.id}`, {
-    headers: {
-      "Authorization": `Bearer ${process.env.UPSTASH_REDIS_REST_TOKEN}`
-    }
-  })
-    .then(response => response.json())
-    .then((data: any) => data.result)
+  try {
+    const jwt = await fetch(`${process.env.UPSTASH_REDIS_REST_URL}/get/auth:${user.id}`, {
+      headers: {
+        "Authorization": `Bearer ${process.env.UPSTASH_REDIS_REST_TOKEN}`
+      }
+    })
+      .then(response => response.json())
+      .then((data: any) => data.result)
 
-  if (jwt) {
-    ctx.editMessageText(`可提现金额: xxx NEST`, Markup.inlineKeyboard([
-      [Markup.button.url('Deposit', 'https://nestfi.org/')],
-      [Markup.button.url('Withdraw', 'https://nestfi.org/')],
-      [Markup.button.callback('Back', 'cb_menu')],
-    ]))
-  } else {
-    ctx.editMessageText(`Hi ${user.username}! Please authorize me to set up a NESTFi integration.
+    if (jwt) {
+      ctx.editMessageText(`可提现金额: xxx NEST`, Markup.inlineKeyboard([
+        [Markup.button.url('Deposit', 'https://nestfi.org/')],
+        [Markup.button.url('Withdraw', 'https://nestfi.org/')],
+        [Markup.button.callback('Back', 'cb_menu')],
+      ]))
+    } else {
+      ctx.editMessageText(`Hi ${user.username}! Please authorize me to set up a NESTFi integration.
 
 *You can use command*: /start`, {
-      parse_mode: 'Markdown',
-    })
+        parse_mode: 'Markdown',
+      })
+    }
+  } catch (e) {
+    ctx.answerCbQuery('Something went wrong.')
   }
 })
 
@@ -262,25 +275,29 @@ bot.action('cb_account', async (ctx) => {
 bot.action(/cb_kls_p_.*/, async (ctx) => {
   const page = ctx.match[1]
   const user = ctx.update.callback_query.from;
-  const jwt = await fetch(`${process.env.UPSTASH_REDIS_REST_URL}/get/auth:${user.id}`, {
-    headers: {
-      "Authorization": `Bearer ${process.env.UPSTASH_REDIS_REST_TOKEN}`
-    }
-  })
-    .then(response => response.json())
-    .then((data: any) => data.result)
-  if (jwt) {
-    ctx.editMessageText(`我跟随的交易员:`, Markup.inlineKeyboard([
-      [Markup.button.callback('交易员1: 1000 NEST', 'cb_kl_KL1')],
-      [Markup.button.callback('交易员2: 2000 NEST', 'cb_kl_KL2')],
-      [Markup.button.callback('Back', 'cb_menu')],
-    ]))
-  } else {
-    ctx.editMessageText(`Hi ${user.username}! Please authorize me to set up a NESTFi integration.
+  try {
+    const jwt = await fetch(`${process.env.UPSTASH_REDIS_REST_URL}/get/auth:${user.id}`, {
+      headers: {
+        "Authorization": `Bearer ${process.env.UPSTASH_REDIS_REST_TOKEN}`
+      }
+    })
+      .then(response => response.json())
+      .then((data: any) => data.result)
+    if (jwt) {
+      ctx.editMessageText(`我跟随的交易员:`, Markup.inlineKeyboard([
+        [Markup.button.callback('交易员1: 1000 NEST', 'cb_kl_KL1')],
+        [Markup.button.callback('交易员2: 2000 NEST', 'cb_kl_KL2')],
+        [Markup.button.callback('Back', 'cb_menu')],
+      ]))
+    } else {
+      ctx.editMessageText(`Hi ${user.username}! Please authorize me to set up a NESTFi integration.
 
 *You can use command*: /start`, {
-      parse_mode: 'Markdown',
-    })
+        parse_mode: 'Markdown',
+      })
+    }
+  } catch (e) {
+    ctx.answerCbQuery('Something went wrong.')
   }
 })
 
@@ -288,144 +305,184 @@ bot.action(/cb_kls_p_.*/, async (ctx) => {
 // cb_kl_[KL]
 bot.action(/cb_kl_.*/, async (ctx) => {
   const kl = ctx.match[1]
-  ctx.editMessageText(`${kl} (Profit sharing: 10%)
+  try {
+    ctx.editMessageText(`${kl} (Profit sharing: 10%)
 Flowers: xx/500          AUM: xxNEST        
 7D ROI: xx%              7D Earnings: xxNEST`, {
-    parse_mode: 'Markdown',
-    ...Markup.inlineKeyboard([
-      [Markup.button.callback('查看订单', 'cb_ps_KL1_0')],
-      [Markup.button.callback('停止跟单并结算', 'cb_r_stop_kl_KL1')],
-      [Markup.button.callback('跟单设置', 'cb_copy_setting_KL1')],
-      [Markup.button.callback('Back', 'cb_kls_p_1')],
-    ])
-  })
+      parse_mode: 'Markdown',
+      ...Markup.inlineKeyboard([
+        [Markup.button.callback('查看订单', 'cb_ps_KL1_0')],
+        [Markup.button.callback('停止跟单并结算', 'cb_r_stop_kl_KL1')],
+        [Markup.button.callback('跟单设置', 'cb_copy_setting_KL1')],
+        [Markup.button.callback('Back', 'cb_kls_p_1')],
+      ])
+    })
+  } catch (e) {
+    ctx.answerCbQuery('Something went wrong.')
+  }
 })
 
 // 查看某个KL下面的所有当前的仓位
 // cb_ps_[KL]_[PAGE]
 bot.action(/cb_ps_.*/, async (ctx) => {
   const kl = ctx.match[1].split('_')[0]
-  const page = ctx.match[1].split('_')[1]
-  ctx.editMessageText(`您可在这里操作您的仓位`, Markup.inlineKeyboard([
-    [Markup.button.callback('BTC/USDT 20x (+200NEST)', 'cb_oi_1')],
-    [Markup.button.callback('DOGE/USDT 20x (+200NEST)', 'cb_oi_2')],
-    [Markup.button.callback('XRP/USDT 20x (+200NEST)', 'cb_oi_3')],
-    [Markup.button.callback('History', 'cb_kl_history_KL1_1'), Markup.button.callback('Back', 'cb_kl_KL1')],
-  ]))
+  try {
+    const page = ctx.match[1].split('_')[1]
+    ctx.editMessageText(`您可在这里操作您的仓位`, Markup.inlineKeyboard([
+      [Markup.button.callback('BTC/USDT 20x (+200NEST)', 'cb_oi_1')],
+      [Markup.button.callback('DOGE/USDT 20x (+200NEST)', 'cb_oi_2')],
+      [Markup.button.callback('XRP/USDT 20x (+200NEST)', 'cb_oi_3')],
+      [Markup.button.callback('History', 'cb_kl_history_KL1_1'), Markup.button.callback('Back', 'cb_kl_KL1')],
+    ]))
+  } catch (e) {
+    ctx.answerCbQuery('Something went wrong.')
+  }
 })
 
 bot.action(/cb_kl_history_.*/, async (ctx) => {
   const kl = ctx.match[1].split('_')[0]
   const page = ctx.match[1].split('_')[1]
-  ctx.editMessageText(`BTC/USDT Long 20x Actual Margin：6418.25 NEST +14.99%
+  try {
+    ctx.editMessageText(`BTC/USDT Long 20x Actual Margin：6418.25 NEST +14.99%
 Open Price: 1418.25 USDT close Price: 1320.99 USDT Liq Price: 1400.00 USDT Open Time：04-15 10:18:15 Close Time : 04-15 10:18:15 `, {
-    parse_mode: 'Markdown',
-    ...Markup.inlineKeyboard([
-      [Markup.button.callback('Next Page', `cb_kl_history_KL1_2`)],
-      [Markup.button.callback('Back', 'cb_ps_KL1_1')],
-    ])
-  })
+      parse_mode: 'Markdown',
+      ...Markup.inlineKeyboard([
+        [Markup.button.callback('Next Page', `cb_kl_history_KL1_2`)],
+        [Markup.button.callback('Back', 'cb_ps_KL1_1')],
+      ])
+    })
+  } catch (e) {
+    ctx.answerCbQuery('Something went wrong.')
+  }
 })
 
 bot.action(/cb_r_stop_kl_.*/, async (ctx) => {
-  ctx.editMessageText(`你想要停止跟单，这会强制以市价平仓目前的单。
+  try {
+    ctx.editMessageText(`你想要停止跟单，这会强制以市价平仓目前的单。
 总跟单金额：200NEST  总保证金余额：260NEST
 净盈利： 60NEST
 
 确定吗？`, {
-    parse_mode: 'Markdown',
-    ...Markup.inlineKeyboard([
-      [Markup.button.callback('Nope', `cb_kl_KL1`)],
-      [Markup.button.callback('Yes, i am 100% sure!', `cb_stop_kl_KL1`)],
-    ])
-  })
+      parse_mode: 'Markdown',
+      ...Markup.inlineKeyboard([
+        [Markup.button.callback('Nope', `cb_kl_KL1`)],
+        [Markup.button.callback('Yes, i am 100% sure!', `cb_stop_kl_KL1`)],
+      ])
+    })
+  } catch (e) {
+    ctx.answerCbQuery('Something went wrong.')
+  }
 })
 
 bot.action(/cb_stop_kl_.*/, async (ctx) => {
-  ctx.editMessageText(`我们已经关闭了你所有的订单！`, {
-    parse_mode: 'Markdown',
-    ...Markup.inlineKeyboard([
-      [Markup.button.callback('Back', `cb_kls_p_1`)],
-    ])
-  })
+  try {
+    ctx.editMessageText(`我们已经关闭了你所有的订单！`, {
+      parse_mode: 'Markdown',
+      ...Markup.inlineKeyboard([
+        [Markup.button.callback('Back', `cb_kls_p_1`)],
+      ])
+    })
+  } catch (e) {
+    ctx.answerCbQuery('Something went wrong.')
+  }
 })
 
 // 我的仓位
 // cb_po_[ORDER_INDEX]
 bot.action(/cb_oi_.*/, async (ctx) => {
   const order_index = ctx.match[1]
-  ctx.editMessageText(`BTC/USDT Long 20x Actual Margin：6418.25 NEST +14.99%
+  try {
+    ctx.editMessageText(`BTC/USDT Long 20x Actual Margin：6418.25 NEST +14.99%
 Open Price: 1418.25 USDT Exit Price: 1320.99 USDT Liq Price: 1400.00 USDT Open Time：04-15 10:18:15 `, {
-    parse_mode: 'Markdown',
-    ...Markup.inlineKeyboard([
-      [Markup.button.callback('Close', 'cb_close_oi_1')],
-      [Markup.button.callback('Back', 'cb_ps_KL_1')],
-    ])
-  })
+      parse_mode: 'Markdown',
+      ...Markup.inlineKeyboard([
+        [Markup.button.callback('Close', 'cb_close_oi_1')],
+        [Markup.button.callback('Back', 'cb_ps_KL_1')],
+      ])
+    })
+  } catch (e) {
+    ctx.answerCbQuery('Something went wrong.')
+  }
 })
 
 // 关闭订单
 // cb_close_oi_[ORDER_INDEX]
 bot.action(/cb_close_oi_.*/, async (ctx) => {
   const order_index = ctx.match[1]
-  ctx.answerCbQuery('Close Successfully')
-  ctx.editMessageText(`您可在这里操作您的仓位`, Markup.inlineKeyboard([
-    [Markup.button.callback('BTC/USDT 20x (+200NEST)', 'cb_oi_1')],
-    [Markup.button.callback('DOGE/USDT 20x (+200NEST)', 'cb_oi_2')],
-    [Markup.button.callback('XRP/USDT 20x (+200NEST)', 'cb_oi_3')],
-    [Markup.button.url('History', 'https://nestfi.org/'), Markup.button.callback('Back', 'cb_kl_KL1')],
-  ]))
+  try {
+    ctx.answerCbQuery('Close Successfully')
+    ctx.editMessageText(`您可在这里操作您的仓位`, Markup.inlineKeyboard([
+      [Markup.button.callback('BTC/USDT 20x (+200NEST)', 'cb_oi_1')],
+      [Markup.button.callback('DOGE/USDT 20x (+200NEST)', 'cb_oi_2')],
+      [Markup.button.callback('XRP/USDT 20x (+200NEST)', 'cb_oi_3')],
+      [Markup.button.url('History', 'https://nestfi.org/'), Markup.button.callback('Back', 'cb_kl_KL1')],
+    ]))
+  } catch (e) {
+    ctx.answerCbQuery('Something went wrong.')
+  }
 })
 
 // Handle logout button click
 bot.action('cb_unauthorize', async (ctx) => {
   const user = ctx.update.callback_query.from;
-  await fetch(`${process.env.UPSTASH_REDIS_REST_URL}/del/auth:${user.id}`, {
-    headers: {
-      "Authorization": `Bearer ${process.env.UPSTASH_REDIS_REST_TOKEN}`
-    }
-  })
-  ctx.editMessageText('You have successfully cancel your NESTFi authorization.', Markup.inlineKeyboard([]))
+  try {
+    await fetch(`${process.env.UPSTASH_REDIS_REST_URL}/del/auth:${user.id}`, {
+      headers: {
+        "Authorization": `Bearer ${process.env.UPSTASH_REDIS_REST_TOKEN}`
+      }
+    })
+    ctx.editMessageText('You have successfully cancel your NESTFi authorization.', Markup.inlineKeyboard([]))
+  } catch (e) {
+    ctx.answerCbQuery('Something went wrong.')
+  }
 })
 
 bot.action('confirm_copy_setting', async (ctx) => {
   const user = ctx.update.callback_query.from;
   // 查询用户意图
-  const intent = await fetch(`${process.env.UPSTASH_REDIS_REST_URL}/get/intent:${user.id}`, {
-    headers: {
-      "Authorization": `Bearer ${process.env.UPSTASH_REDIS_REST_TOKEN}`
-    }
-  })
-    .then(response => response.json())
-    .then((data: any) => data.result)
+  try {
+    const intent = await fetch(`${process.env.UPSTASH_REDIS_REST_URL}/get/intent:${user.id}`, {
+      headers: {
+        "Authorization": `Bearer ${process.env.UPSTASH_REDIS_REST_TOKEN}`
+      }
+    })
+      .then(response => response.json())
+      .then((data: any) => data.result)
 
-  if (intent) {
-    const data = JSON.parse(intent)
-    if (data.category === 'cb_copy_setting') {
-      let {kl, total, single, balance} = data.value
-      // TODO: 调用接口
-      ctx.editMessageText(`Copy trading successful!`, Markup.inlineKeyboard([]))
-    } else {
-      ctx.editMessageText('Sorry, we have not found your copy trading request', {
-        ...Markup.inlineKeyboard([]),
-        ...Markup.removeKeyboard()
-      })
+    if (intent) {
+      const data = JSON.parse(intent)
+      if (data.category === 'cb_copy_setting') {
+        let {kl, total, single, balance} = data.value
+        // TODO: 调用接口
+        ctx.editMessageText(`Copy trading successful!`, Markup.inlineKeyboard([]))
+      } else {
+        ctx.editMessageText('Sorry, we have not found your copy trading request', {
+          ...Markup.inlineKeyboard([]),
+          ...Markup.removeKeyboard()
+        })
+      }
     }
+  } catch (e) {
+    ctx.answerCbQuery('Something went wrong.')
   }
 })
 
 bot.action('cancel_copy_setting', async (ctx) => {
   const user = ctx.update.callback_query.from;
-  await fetch(`${process.env.UPSTASH_REDIS_REST_URL}/del/intent:${user.id}`, {
-    headers: {
-      "Authorization": `Bearer ${process.env.UPSTASH_REDIS_REST_TOKEN}`
-    },
-  });
-  ctx.answerCbQuery('Cancel Successfully!')
-  ctx.editMessageText('Alright, we have cancel your copy trading request!', {
-    ...Markup.inlineKeyboard([]),
-    ...Markup.removeKeyboard(),
-  })
+  try {
+    await fetch(`${process.env.UPSTASH_REDIS_REST_URL}/del/intent:${user.id}`, {
+      headers: {
+        "Authorization": `Bearer ${process.env.UPSTASH_REDIS_REST_TOKEN}`
+      },
+    });
+    ctx.answerCbQuery('Cancel Successfully!')
+    ctx.editMessageText('Alright, we have cancel your copy trading request!', {
+      ...Markup.inlineKeyboard([]),
+      ...Markup.removeKeyboard(),
+    })
+  } catch (e) {
+    ctx.answerCbQuery('Something went wrong.')
+  }
 })
 
 bot.on("message", async (ctx) => {
