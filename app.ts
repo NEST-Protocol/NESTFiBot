@@ -477,10 +477,38 @@ End copy will liquidate your position with market orders, and automatically retu
 
 bot.action(/cb_stop_kl_.*/, async (ctx) => {
   try {
-    ctx.editMessageText(`🥳 Stop Copying Successfully!`, {
+    ctx.editMessageText(`👩‍💻 *Current Copy Trading Position*
+    
+=============================
+1. BTC/USDT Long 20x
+   Actual Margin：6418.25 NEST +14.99%
+   Open Price: 1418.25 USDT
+   Open Time：04-15 10:18:15
+=============================
+2. BTC/USDT Long 20x
+   Actual Margin：2400 NEST +20.99%
+   Open Price: 1898.25 USDT
+   Open Time：04-15 12:00:00
+=============================
+3. BTC/USDT Long 20x
+   Actual Margin：2400 NEST +20.99%
+   Open Price: 1898.25 USDT
+   Open Time：04-15 12:00:00
+=============================
+4. BTC/USDT Long 20x
+   Actual Margin：2400 NEST +20.99%
+   Open Price: 1898.25 USDT
+   Open Time：04-15 12:00:00
+=============================
+5. BTC/USDT Long 20x
+   Actual Margin：2400 NEST +20.99%
+   Open Price: 1898.25 USDT
+   Open Time：04-15 12:00:00
+  `, {
       parse_mode: 'Markdown',
       ...Markup.inlineKeyboard([
-        [Markup.button.callback('« Back', `cb_kls_p_1`)],
+        [Markup.button.callback('1', 'cb_oi_1'), Markup.button.callback('2', 'cb_oi_2'), Markup.button.callback('3', 'cb_oi_3'), Markup.button.callback('4', 'cb_oi_1'), Markup.button.callback('5', 'cb_oi_2')],
+        [Markup.button.callback('History', 'cb_kl_history_KL1_1'), Markup.button.callback('« Back', 'cb_kl_KL1')],
       ])
     })
   } catch (e) {
@@ -519,12 +547,15 @@ bot.action(/cb_close_oi_.*/, async (ctx) => {
   const order_index = ctx.match[1]
   try {
     ctx.answerCbQuery('Close Successfully')
-    ctx.editMessageText(`您可在这里操作您的仓位`, Markup.inlineKeyboard([
-      [Markup.button.callback('BTC/USDT 20x (+200NEST)', 'cb_oi_1')],
-      [Markup.button.callback('DOGE/USDT 20x (+200NEST)', 'cb_oi_2')],
-      [Markup.button.callback('XRP/USDT 20x (+200NEST)', 'cb_oi_3')],
-      [Markup.button.url('History', 'https://nestfi.org/'), Markup.button.callback('« Back', 'cb_kl_KL1')],
-    ]))
+    ctx.editMessageText(`👩‍💻 Current Copy Trading Position`, {
+      parse_mode: 'Markdown',
+      ...Markup.inlineKeyboard([
+        [Markup.button.callback('BTC/USDT 20x (+200NEST)', 'cb_oi_1')],
+        [Markup.button.callback('DOGE/USDT 20x (+200NEST)', 'cb_oi_2')],
+        [Markup.button.callback('XRP/USDT 20x (+200NEST)', 'cb_oi_3')],
+        [Markup.button.url('History', 'https://nestfi.org/'), Markup.button.callback('« Back', 'cb_kl_KL1')],
+      ])
+    })
   } catch (e) {
     ctx.answerCbQuery('Something went wrong.')
   }
