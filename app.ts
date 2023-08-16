@@ -58,7 +58,7 @@ Please select other traders on NESTFi.`, {
         // @ts-ignore
         const profit = data?.value?.profit || 0
         ctx.reply(`📊 *My Trades*
-
+————————————————————
 *Copy trading assets*: ${assets} NEST
 *Profit*: ${profit} NEST
 *Unrealized PNL*: ${unRealizedPnl} NEST
@@ -67,7 +67,7 @@ Please select other traders on NESTFi.`, {
           parse_mode: 'Markdown',
           ...Markup.inlineKeyboard([
             [Markup.button.callback('My Account', 'cb_account')],
-            [Markup.button.callback('My Copy Trading', 'cb_kls_p_1')],
+            [Markup.button.callback('My Traders', 'cb_kls_p_1')],
             [Markup.button.callback('View My Copy Trading', 'cb_ps_all_1')],
           ])
         })
@@ -91,7 +91,6 @@ Please select other traders on NESTFi.`, {
       })
       ctx.reply(`👛 *Link Wallet*
 ————————————————————
-
 Hi there, before copying trading, please link your wallet on NESTFi.
 
 👇Note: The link is valid for 10 minutes.`, {
@@ -158,7 +157,7 @@ bot.command('account', async (ctx) => {
         parse_mode: 'Markdown',
         ...Markup.inlineKeyboard([
           [Markup.button.callback('My Account', 'cb_account')],
-          [Markup.button.callback('My Copy Trading', 'cb_kls_p_1')],
+          [Markup.button.callback('My Traders', 'cb_kls_p_1')],
           [Markup.button.callback('View My Copy Trading', 'cb_ps_all_1')],
         ])
       })
@@ -311,7 +310,7 @@ Address: ${address}
         parse_mode: 'Markdown',
         ...Markup.inlineKeyboard([
           [Markup.button.callback('My Account', 'cb_account')],
-          [Markup.button.callback('My Copy Trading', 'cb_kls_p_1')],
+          [Markup.button.callback('My Traders', 'cb_kls_p_1')],
           [Markup.button.callback('View My Copy Trading', 'cb_ps_all_1')],
         ])
       })
@@ -377,7 +376,7 @@ bot.action(/cb_kls_p_.*/, async (ctx) => {
       .then(response => response.json())
       .then((data: any) => data.result)
     if (jwt) {
-      ctx.editMessageText(`💪 *My Copy Traders*
+      ctx.editMessageText(`💪 *My Traders*
 ————————————————————
 These are the traders you follow, together with your investment amount.
 `, {
@@ -694,7 +693,6 @@ Please enter a valid amount between 200 and your account balance.`, {
         choice[2] = Math.floor(Number(input) * 0.4 / 50) * 50
         ctx.reply(`💵 *Copy Trading Each Order*
 ————————————————————
-
 👤 *Peter Mason*
 Copy Trading Total Amount: ${Number(input)} NEST 
 
@@ -735,7 +733,6 @@ Please enter a valid amount between 50 and your CopyTrading Total Amount.`, {
         })
         ctx.reply(`👩‍💻 *Confirm*
 ————————————————————
-
 👤 *Peter Mason*
 Copy Trading Total Amount: ${total} NEST 
 Copy Trading Each Order: ${Number(input)} NEST 
