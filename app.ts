@@ -630,7 +630,9 @@ bot.action('cancel_copy_setting', async (ctx) => {
     });
     ctx.editMessageText(`🙅‍️ Alright, your copy trading request has been cancelled successfully!`, {
       parse_mode: 'Markdown',
-      ...Markup.inlineKeyboard([]),
+      ...Markup.inlineKeyboard([
+        [Markup.button.callback('« Back', 'cb_menu')],
+      ]),
     })
   } catch (e) {
     ctx.answerCbQuery('Something went wrong.')
