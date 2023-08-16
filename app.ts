@@ -30,7 +30,7 @@ bot.start(async (ctx) => {
           [Markup.button.callback('Yes, i am 100% sure!', 'cb_copy_setting_KL1')],
         ]))
       } else {
-        ctx.reply(`📊My Trades
+        ctx.reply(`📊 My Trades
 
 *Copy trading assets*: xxx NEST
 *Profit*:  xxx NEST
@@ -61,13 +61,13 @@ bot.start(async (ctx) => {
           user,
         })
       })
-      ctx.reply(`👩‍💻Hi there, before copying trading, please link your wallet on NESTFi.
+      ctx.reply(`👩‍💻 Hi there, before copying trading, please link your wallet on NESTFi.
 
-👇Note: The link is valid for 10 minutes.`, {
+👇 Note: The link is valid for 10 minutes.`, {
         parse_mode: 'Markdown',
         ...Markup.inlineKeyboard([
-          [Markup.button.url('💻 ➜ Link My Wallet', `https://connect.nestfi.org/${nonce}`)],
-          [Markup.button.url('📱 ➜ Link My Wallet', `https://metamask.app.link/dapp/connect.nestfi.org/${nonce}`)],
+          [Markup.button.url('💻 Link My Wallet', `https://connect.nestfi.org/${nonce}`)],
+          [Markup.button.url('📱 Link My Wallet', `https://metamask.app.link/dapp/connect.nestfi.org/${nonce}`)],
         ])
       })
     }
@@ -105,7 +105,7 @@ bot.command('account', async (ctx) => {
       const decode = jwt.split('.')[1]
       const decodeJson = JSON.parse(Buffer.from(decode, 'base64').toString())
       const address = decodeJson.walletAddress
-      ctx.reply(`📊My Trades
+      ctx.reply(`📊 My Trades
 
 *Copy trading assets*: xxx NEST
 *Profit*:  xxx NEST
@@ -219,7 +219,7 @@ bot.action('cb_menu', async (ctx) => {
       const decode = jwt.split('.')[1]
       const decodeJson = JSON.parse(Buffer.from(decode, 'base64').toString())
       const address = decodeJson.walletAddress
-      ctx.editMessageText(`📊My Trades
+      ctx.editMessageText(`📊 My Trades
   
 *Copy trading assets*: xxx NEST
 *Profit*:  xxx NEST
@@ -256,7 +256,7 @@ bot.action('cb_account', async (ctx) => {
       .then((data: any) => data.result)
 
     if (jwt) {
-      ctx.editMessageText(`💸Account Balance: xxx NEST`, Markup.inlineKeyboard([
+      ctx.editMessageText(`💸 Account Balance: xxx NEST`, Markup.inlineKeyboard([
         [Markup.button.url('Deposit', 'https://nestfi.org/')],
         [Markup.button.url('Withdraw', 'https://nestfi.org/')],
         [Markup.button.callback('« Back', 'cb_menu')],
@@ -287,7 +287,7 @@ bot.action(/cb_kls_p_.*/, async (ctx) => {
       .then(response => response.json())
       .then((data: any) => data.result)
     if (jwt) {
-      ctx.editMessageText(`💪*My Copy Traders*
+      ctx.editMessageText(`💪 *My Copy Traders*
 
 These are the traders you follow, together with your investment amount.`, Markup.inlineKeyboard([
         [Markup.button.callback('交易员1: 1000 NEST', 'cb_kl_KL1')],
@@ -339,7 +339,7 @@ bot.action(/cb_ps_.*/, async (ctx) => {
   const kl = ctx.match[1].split('_')[0]
   try {
     const page = ctx.match[1].split('_')[1]
-    ctx.editMessageText(`👩‍💻Trader positions are automatically copied and executed for you. You can manage your position as well.`, Markup.inlineKeyboard([
+    ctx.editMessageText(`👩‍💻 Trader positions are automatically copied and executed for you. You can manage your position as well.`, Markup.inlineKeyboard([
       [Markup.button.callback('BTC/USDT 20x (+200NEST)', 'cb_oi_1')],
       [Markup.button.callback('DOGE/USDT 20x (+200NEST)', 'cb_oi_2')],
       [Markup.button.callback('XRP/USDT 20x (+200NEST)', 'cb_oi_3')],
@@ -354,7 +354,7 @@ bot.action(/cb_kl_history_.*/, async (ctx) => {
   const kl = ctx.match[1].split('_')[0]
   const page = ctx.match[1].split('_')[1]
   try {
-    ctx.editMessageText(`🧩History 
+    ctx.editMessageText(`🧩 History 
 
 *BTC/USDT Long 20x*
 *Actual Margin*: 6418.25 NEST +14.99%
@@ -377,7 +377,7 @@ bot.action(/cb_kl_history_.*/, async (ctx) => {
 
 bot.action(/cb_r_stop_kl_.*/, async (ctx) => {
   try {
-    ctx.editMessageText(`🙅Stop Copying
+    ctx.editMessageText(`🙅 Stop Copying
     
 *Total Copy Amount*: 6000 NEST
 *Open Interest*: 5000 NEST
@@ -385,7 +385,7 @@ bot.action(/cb_r_stop_kl_.*/, async (ctx) => {
 
 End copy will liquidate your position with market orders, and automatically return the assets to your Account after deducting the profits sharing.
 
-❓Are you sure to stop copying?
+❓ Are you sure to stop copying?
     `, {
       parse_mode: 'Markdown',
       ...Markup.inlineKeyboard([
@@ -400,7 +400,7 @@ End copy will liquidate your position with market orders, and automatically retu
 
 bot.action(/cb_stop_kl_.*/, async (ctx) => {
   try {
-    ctx.editMessageText(`🥳Stop Copying Successfully!`, {
+    ctx.editMessageText(`🥳 Stop Copying Successfully!`, {
       parse_mode: 'Markdown',
       ...Markup.inlineKeyboard([
         [Markup.button.callback('« Back', `cb_kls_p_1`)],
@@ -416,7 +416,7 @@ bot.action(/cb_stop_kl_.*/, async (ctx) => {
 bot.action(/cb_oi_.*/, async (ctx) => {
   const order_index = ctx.match[1]
   try {
-    ctx.editMessageText(`🍯Current Position
+    ctx.editMessageText(`🍯 Current Position
     
 *BTC/USDT Long 20x*
 *Actual Margin*: 6418.25 NEST +14.99%
@@ -516,7 +516,6 @@ bot.action('cancel_copy_setting', async (ctx) => {
 bot.on("message", async (ctx) => {
   const user = ctx.update.message.from;
   const input = ctx.message.text;
-  // 查询用户意图
   const intent = await fetch(`${process.env.UPSTASH_REDIS_REST_URL}/get/intent:${user.id}`, {
     headers: {
       "Authorization": `Bearer ${process.env.UPSTASH_REDIS_REST_TOKEN}`
