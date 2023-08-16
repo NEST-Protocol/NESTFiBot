@@ -130,11 +130,11 @@ bot.command('account', async (ctx) => {
         }
       }).then((res) => res.json())
       // @ts-ignore
-      const assets = data?.value?.assets || '-'
+      const assets = data?.value?.assets || 0
       // @ts-ignore
-      const unRealizedPnl = data?.value?.unRealizedPnl || '-'
+      const unRealizedPnl = data?.value?.unRealizedPnl || 0
       // @ts-ignore
-      const profit = data?.value?.profit || '-'
+      const profit = data?.value?.profit || 0
       ctx.reply(`📊 *My Trades*
 
 *Copy trading assets*: ${assets} NEST
@@ -242,7 +242,7 @@ Your account balance is insufficient. Please deposit first to initiate lightning
       choice[0] = Math.floor(balance * 0.5 / 50) * 50;
       choice[1] = Math.floor(balance * 0.75 / 50) * 50;
       choice[2] = Math.floor(balance / 50) * 50;
-      ctx.reply(`💵 *Copy Trading Toal Amount*
+      ctx.reply(`💵 *Copy Trading Total Amount*
       
  👤 Peter Mason
 My Account Balance: 0 NEST
