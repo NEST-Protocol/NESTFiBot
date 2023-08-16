@@ -258,8 +258,8 @@ Your account balance is insufficient. Please deposit first to initiate lightning
 ————————————————————
 Copy from Peter Mason
 
-My Account Balance: 0 NEST
-Copy Trading Total Amount: 4000 NEST
+*My Account Balance*: 0 NEST
+*Copy Trading Total Amount*: 4000 NEST
 
 👇 Please confirm the amount you invest to this trader.`, {
         parse_mode: 'Markdown',
@@ -302,10 +302,10 @@ bot.action('cb_menu', async (ctx) => {
 
       ctx.editMessageText(`📊 *My Trades*
 ————————————————————
-Copy Trading Assets: ${assets} NEST
-Profit: ${profit} NEST
-Unrealized PnL: ${unRealizedPnl} NEST
-Address: ${address}
+*Copy Trading Assets*: ${assets} NEST
+*Profit*: ${profit} NEST
+*Unrealized PnL*: ${unRealizedPnl} NEST
+*Address*: ${address}
 `, {
         parse_mode: 'Markdown',
         ...Markup.inlineKeyboard([
@@ -340,8 +340,8 @@ bot.action('cb_account', async (ctx) => {
     if (jwt) {
       ctx.editMessageText(`💸 *My Account*
 ————————————————————
-My Account Balance: 19844.77 NEST
-My Copy Trading Amount: 16844.77 NEST
+*My Account Balance*: 19844.77 NEST
+*My Copy Trading Amount*: 16844.77 NEST
       `, {
         parse_mode: "Markdown",
         ...Markup.inlineKeyboard([
@@ -406,12 +406,12 @@ bot.action(/cb_kl_.*/, async (ctx) => {
   try {
     ctx.editMessageText(`👤 *Woody*
 ————————————————————
-Profit sharing: 10%
-Flowers: 10
-AUM: 20000 NEST        
-7D ROI: 450%              
-7D Earnings: 200NEST
-7D Flowers PnL: 4444 NEST
+*Profit sharing*: 10%
+*Flowers*: 10
+*AUM*: 20000 NEST        
+*7D ROI*: 450%              
+*7D Earnings*: 200NEST
+*7D Flowers PnL*: 4444 NEST
 `, {
       parse_mode: 'Markdown',
       ...Markup.inlineKeyboard([
@@ -435,10 +435,10 @@ bot.action(/cb_ps_.*/, async (ctx) => {
     
 👤 Copied from Woody
 =============================
-1. BTC/USDT Long 20x
-   Actual Margin：6418.25 NEST +14.99%
-   Open Price: 1418.25 USDT
-   Open Time：04-15 10:18:15
+1. *BTC/USDT Long 20x*
+   *Actual Margin*: 6418.25 NEST +14.99%
+   *Open Price*: 1418.25 USDT
+   *Open Time*: 04-15 10:18:15
 =============================
    
 👇 Click the number to manage the corresponding order.
@@ -460,13 +460,13 @@ bot.action(/cb_klh_.*/, async (ctx) => {
   try {
     ctx.editMessageText(`🧩 *History*
 ————————————————————
-BTC/USDT Long 20x
-Actual Margin: 6418.25 NEST +14.99%
-Open Price: 1418.25 USDT
-Close Price: 1320.99 USDT
-Liq Price: 1400.00 USDT
-Open Time: 04-15 10:18:15
-Close Time: 04-15 10:18:15
+*BTC/USDT Long 20x*
+*Actual Margin*: 6418.25 NEST +14.99%
+*Open Price*: 1418.25 USDT
+*Close Price*: 1320.99 USDT
+*Liq Price*: 1400.00 USDT
+*Open Time*: 04-15 10:18:15
+*Close Time*: 04-15 10:18:15
 `, {
       parse_mode: 'Markdown',
       ...Markup.inlineKeyboard([
@@ -483,9 +483,9 @@ bot.action(/cb_r_stop_kl_.*/, async (ctx) => {
   try {
     ctx.editMessageText(`🙅 *Stop Copying*
 ————————————————————
-Total Copy Amount: 6000 NEST
-Open Interest: 5000 NEST
-Total Profit: 6900 NEST
+*Total Copy Amount*: 6000 NEST
+*Open Interest*: 5000 NEST
+*Total Profit*: 6900 NEST
 
 _End copy will liquidate your position with market orders, and automatically return the assets to your Account after deducting the profits sharing._
 
@@ -522,12 +522,12 @@ bot.action(/cb_oi_.*/, async (ctx) => {
   try {
     ctx.editMessageText(`🍯 *Position 1*
 ————————————————————
-BTC/USDT Long 20x
-Actual Margin: 6418.25 NEST +14.99%
-Open Price: 1418.25 USDT
-Market Price: 1320.99 USDT
-Liq Price: 1400.00 USDT
-Open Time: 04-15 10:18:15
+*BTC/USDT Long 20x*
+*Actual Margin*: 6418.25 NEST +14.99%
+*Open Price*: 1418.25 USDT
+*Market Price*: 1320.99 USDT
+*Liq Price*: 1400.00 USDT
+*Open Time*: 04-15 10:18:15
 `, {
       parse_mode: 'Markdown',
       ...Markup.inlineKeyboard([
@@ -550,10 +550,10 @@ bot.action(/cb_close_oi_.*/, async (ctx) => {
     
 👤 Copied from Woody
 =============================
-1. BTC/USDT Long 20x
-   Actual Margin：6418.25 NEST +14.99%
-   Open Price: 1418.25 USDT
-   Open Time：04-15 10:18:15
+1. *BTC/USDT Long 20x*
+   *Actual Margin*: 6418.25 NEST +14.99%
+   *Open Price*: 1418.25 USDT
+   *Open Time*: 04-15 10:18:15
 =============================
    
 👇 Click the number to manage the corresponding order.
@@ -603,7 +603,6 @@ bot.action('confirm_copy_setting', async (ctx) => {
         // TODO: 调用接口
         ctx.editMessageText(`🥳 *Successfully Copy Trading*
 ————————————————————
-
 More latest orders from 👤 *Peter Mason* will be posted in the group.
 
 Telegram Group: copytade@group`, {
@@ -629,7 +628,7 @@ bot.action('cancel_copy_setting', async (ctx) => {
         "Authorization": `Bearer ${process.env.UPSTASH_REDIS_REST_TOKEN}`
       },
     });
-    ctx.editMessageText(`🙅‍ Alright, we have cancelled your copy trading request!`, {
+    ctx.editMessageText(`🙅‍️ Alright, your copy trading request has been cancelled successfully!`, {
       parse_mode: 'Markdown',
       ...Markup.inlineKeyboard([]),
     })
@@ -681,10 +680,9 @@ Please enter a valid amount between 200 and your account balance.`, {
         choice[2] = Math.floor(Number(input) * 0.4 / 50) * 50
         ctx.reply(`💵 *Copy Trading Each Order*
 ————————————————————
-👤 *Peter Mason*
-Copy Trading Total Amount: ${Number(input)} NEST 
+👤 Peter Mason
 
-👇 Please confirm the amount you invest to this trader for each order.
+Please type the amount you invest to this trader for each order below.
 `, {
           parse_mode: 'Markdown',
           ...Markup.keyboard([
@@ -721,9 +719,9 @@ Please enter a valid amount between 50 and your CopyTrading Total Amount.`, {
         })
         ctx.reply(`👩‍💻 *Confirm*
 ————————————————————
-👤 *Peter Mason*
-Copy Trading Total Amount: ${total} NEST 
-Copy Trading Each Order: ${Number(input)} NEST 
+👤 Peter Mason
+*Copy Trading Total Amount*: ${total} NEST 
+*Copy Trading Each Order*: ${input} NEST 
 
 Are you sure?`, {
           parse_mode: 'Markdown',
