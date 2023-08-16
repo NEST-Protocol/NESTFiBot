@@ -45,11 +45,22 @@ Please select other traders on NESTFi.`, {
           })
         }
       } else {
+        const data = await fetch(`https://dev.nestfi.net/nestfi/copy/follower/position/info?chainId=97`, {
+          headers: {
+            'Authorization': jwt
+          }
+        }).then((res) => res.json())
+        // @ts-ignore
+        const assets = data?.value?.assets || 0
+        // @ts-ignore
+        const unRealizedPnl = data?.value?.unRealizedPnl || 0
+        // @ts-ignore
+        const profit = data?.value?.profit || 0
         ctx.reply(`📊 *My Trades*
 
-*Copy trading assets*: xxx NEST
-*Profit*: xxx NEST
-*Unrealized PNL*: xxx NEST
+*Copy trading assets*: ${assets} NEST
+*Profit*: ${profit} NEST
+*Unrealized PNL*: ${unRealizedPnl} NEST
 *Address*: ${address}
 `, {
           parse_mode: 'Markdown',
