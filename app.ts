@@ -504,22 +504,10 @@ _End copy will liquidate your position with market orders, and automatically ret
 
 bot.action(/cb_stop_kl_.*/, async (ctx) => {
   try {
-    ctx.editMessageText(`👩‍💻 *Current Copy Trading Position*
-    
-👤 Copied from Woody
-=============================
-1. BTC/USDT Long 20x
-   Actual Margin：6418.25 NEST +14.99%
-   Open Price: 1418.25 USDT
-   Open Time：04-15 10:18:15
-=============================
-   
-👇 Click the number to manage the corresponding order.
-  `, {
+    ctx.editMessageText(`🥳 Stop Copying Successfully!`, {
       parse_mode: 'Markdown',
       ...Markup.inlineKeyboard([
-        [Markup.button.callback('1', 'cb_oi_1'), Markup.button.callback('2', 'cb_oi_2'), Markup.button.callback('3', 'cb_oi_3'), Markup.button.callback('4', 'cb_oi_1'), Markup.button.callback('5', 'cb_oi_2')],
-        [Markup.button.callback('History', 'cb_klh_KL1_1'), Markup.button.callback('« Back', 'cb_kl_KL1')],
+        [Markup.button.callback('« Back', 'cb_kls_p_1')],
       ])
     })
   } catch (e) {
