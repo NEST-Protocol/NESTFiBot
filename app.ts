@@ -56,6 +56,7 @@ Please select other traders on NESTFi.`, {
           ...Markup.inlineKeyboard([
             [Markup.button.callback('My Account', 'cb_account')],
             [Markup.button.callback('My Copy Trading', 'cb_kls_p_1')],
+            [Markup.button.callback('View My Copy Trading', 'cb_ps_all_1')],
           ])
         })
       }
@@ -133,6 +134,7 @@ bot.command('account', async (ctx) => {
         ...Markup.inlineKeyboard([
           [Markup.button.callback('My Account', 'cb_account')],
           [Markup.button.callback('My Copy Trading', 'cb_kls_p_1')],
+          [Markup.button.callback('View My Copy Trading', 'cb_ps_all_1')],
         ])
       })
     } else {
@@ -261,6 +263,7 @@ bot.action('cb_menu', async (ctx) => {
         ...Markup.inlineKeyboard([
           [Markup.button.callback('My Account', 'cb_account')],
           [Markup.button.callback('My Copy Trading', 'cb_kls_p_1')],
+          [Markup.button.callback('View My Copy Trading', 'cb_ps_all_1')],
         ])
       })
     } else {
