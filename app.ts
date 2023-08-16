@@ -35,7 +35,8 @@ bot.start(async (ctx) => {
           ]))
         } else {
           ctx.reply(`💢 *Invalid Trader*
-          
+———————————————
+👤 *Peter Mason*
 This person is not on the NESTFi Traders list.
 Please select other traders on NESTFi.`, {
             parse_mode: 'Markdown',
@@ -88,11 +89,12 @@ Please select other traders on NESTFi.`, {
           user,
         })
       })
-      ctx.reply(`👩 *Link Wallet*
-      
+      ctx.reply(`👛 *Link Wallet*
+————————————————————
+
 Hi there, before copying trading, please link your wallet on NESTFi.
 
-👇 Note: The link is valid for 10 minutes.`, {
+👇Note: The link is valid for 10 minutes.`, {
         parse_mode: 'Markdown',
         ...Markup.inlineKeyboard([
           [Markup.button.url('PC ➜ Link My Wallet', `https://connect.nestfi.org/${nonce}`)],
@@ -147,10 +149,10 @@ bot.command('account', async (ctx) => {
       // @ts-ignore
       const profit = data?.value?.profit || 0
       ctx.reply(`📊 *My Trades*
-
-*Copy trading assets*: ${assets} NEST
+————————————————————
+*Copy Trading Assets*: ${assets} NEST
 *Profit*: ${profit} NEST
-*Unrealized PNL*: ${unRealizedPnl} NEST
+*Unrealized PnL*: ${unRealizedPnl} NEST
 *Address*: ${address}
 `, {
         parse_mode: 'Markdown',
@@ -223,7 +225,7 @@ bot.action(/cb_copy_setting_.*/, async (ctx) => {
     // 如果余额不足，则提示充值
     if (balance < 200) {
       ctx.reply(`💔 *Insufficient Balance*
-      
+———————————————
 Your account balance is insufficient. Please deposit first to initiate lightning trading on NESTFi.`, {
         parse_mode: 'Markdown',
         ...Markup.inlineKeyboard([
@@ -254,8 +256,9 @@ Your account balance is insufficient. Please deposit first to initiate lightning
       choice[1] = Math.floor(balance * 0.75 / 50) * 50;
       choice[2] = Math.floor(balance / 50) * 50;
       ctx.reply(`💵 *Copy Trading Total Amount*
-      
- 👤 Peter Mason
+————————————————————
+Copy from Peter Mason
+
 My Account Balance: 0 NEST
 Copy Trading Total Amount: 4000 NEST
 
@@ -299,11 +302,11 @@ bot.action('cb_menu', async (ctx) => {
       const profit = data?.value?.profit || 0
 
       ctx.editMessageText(`📊 *My Trades*
-  
-*Copy trading assets*: ${assets} NEST
-*Profit*: ${profit} NEST
-*Unrealized PNL*: ${unRealizedPnl} NEST
-*Address*: ${address}
+————————————————————
+Copy Trading Assets: ${assets} NEST
+Profit: ${profit} NEST
+Unrealized PnL: ${unRealizedPnl} NEST
+Address: ${address}
 `, {
         parse_mode: 'Markdown',
         ...Markup.inlineKeyboard([
@@ -336,11 +339,18 @@ bot.action('cb_account', async (ctx) => {
       .then((data: any) => data.result)
 
     if (jwt) {
-      ctx.editMessageText(`💸 Account Balance: xxx NEST`, Markup.inlineKeyboard([
-        [Markup.button.url('Deposit', 'https://nestfi.org/')],
-        [Markup.button.url('Withdraw', 'https://nestfi.org/')],
-        [Markup.button.callback('« Back', 'cb_menu')],
-      ]))
+      ctx.editMessageText(`💸 *My Account*
+————————————————————
+My Account Balance: 19844.77 NEST
+My Copy Trading Amount: 16844.77 NEST
+      `, {
+        parse_mode: "Markdown",
+        ...Markup.inlineKeyboard([
+          [Markup.button.url('Deposit', 'https://nestfi.org/')],
+          [Markup.button.url('Withdraw', 'https://nestfi.org/')],
+          [Markup.button.callback('« Back', 'cb_menu')],
+        ])
+      })
     } else {
       ctx.editMessageText(`Hi ${user.username}! Please authorize me to set up a NESTFi integration.
 
@@ -368,12 +378,13 @@ bot.action(/cb_kls_p_.*/, async (ctx) => {
       .then((data: any) => data.result)
     if (jwt) {
       ctx.editMessageText(`💪 *My Copy Traders*
-
-These are the traders you follow, together with your investment amount.`, {
+————————————————————
+These are the traders you follow, together with your investment amount.
+`, {
         parse_mode: 'Markdown',
         ...Markup.inlineKeyboard([
-          [Markup.button.callback('交易员1: 1000 NEST', 'cb_kl_KL1')],
-          [Markup.button.callback('交易员2: 2000 NEST', 'cb_kl_KL2')],
+          [Markup.button.callback('Jack: Haven’t  Started', 'cb_kl_KL1')],
+          [Markup.button.callback('Woody: 10000 NEST', 'cb_kl_KL2')],
           [Markup.button.callback('« Back', 'cb_menu')],
         ])
       })
@@ -394,14 +405,14 @@ These are the traders you follow, together with your investment amount.`, {
 bot.action(/cb_kl_.*/, async (ctx) => {
   // const kl = ctx.match[1]
   try {
-    ctx.editMessageText(`👤
-    
-*Profit sharing*: x%
-*Flowers*: x
-*AUM*: x NEST
-*7D ROI*: x%
-*7D Earnings*: x NEST
-*7D Flowers PnL*: x NEST
+    ctx.editMessageText(`👤 *Woody*
+————————————————————
+Profit sharing: 10%
+Flowers: 10
+AUM: 20000 NEST        
+7D ROI: 450%              
+7D Earnings: 200NEST
+7D Flowers PnL: 4444 NEST
 `, {
       parse_mode: 'Markdown',
       ...Markup.inlineKeyboard([
@@ -423,31 +434,15 @@ bot.action(/cb_ps_.*/, async (ctx) => {
     // const page = ctx.match[1].split('_')[1]
     ctx.editMessageText(`👩‍💻 *Current Copy Trading Position*
     
+👤 Copied from Woody
 =============================
 1. BTC/USDT Long 20x
    Actual Margin：6418.25 NEST +14.99%
    Open Price: 1418.25 USDT
    Open Time：04-15 10:18:15
 =============================
-2. BTC/USDT Long 20x
-   Actual Margin：2400 NEST +20.99%
-   Open Price: 1898.25 USDT
-   Open Time：04-15 12:00:00
-=============================
-3. BTC/USDT Long 20x
-   Actual Margin：2400 NEST +20.99%
-   Open Price: 1898.25 USDT
-   Open Time：04-15 12:00:00
-=============================
-4. BTC/USDT Long 20x
-   Actual Margin：2400 NEST +20.99%
-   Open Price: 1898.25 USDT
-   Open Time：04-15 12:00:00
-=============================
-5. BTC/USDT Long 20x
-   Actual Margin：2400 NEST +20.99%
-   Open Price: 1898.25 USDT
-   Open Time：04-15 12:00:00
+   
+👇 Click the number to manage the corresponding order.
   `, {
       parse_mode: 'Markdown',
       ...Markup.inlineKeyboard([
@@ -465,14 +460,14 @@ bot.action(/cb_klh_.*/, async (ctx) => {
   // const page = ctx.match[1].split('_')[1]
   try {
     ctx.editMessageText(`🧩 *History*
-
-*BTC/USDT Long 20x*
-*Actual Margin*: 6418.25 NEST +14.99%
-*Open Price*: 1418.25 USDT
-*Close Price*: 1320.99 USDT
-*Liq Price*: 1400.00 USDT
-*Open Time*: 04-15 10:18:15
-*Close Time*: 04-15 10:18:15
+————————————————————
+BTC/USDT Long 20x
+Actual Margin: 6418.25 NEST +14.99%
+Open Price: 1418.25 USDT
+Close Price: 1320.99 USDT
+Liq Price: 1400.00 USDT
+Open Time: 04-15 10:18:15
+Close Time: 04-15 10:18:15
 `, {
       parse_mode: 'Markdown',
       ...Markup.inlineKeyboard([
@@ -488,19 +483,19 @@ bot.action(/cb_klh_.*/, async (ctx) => {
 bot.action(/cb_r_stop_kl_.*/, async (ctx) => {
   try {
     ctx.editMessageText(`🙅 *Stop Copying*
-    
-*Total Copy Amount*: 6000 NEST
-*Open Interest*: 5000 NEST
-*Total Profit*: 6900 NEST
+————————————————————
+Total Copy Amount: 6000 NEST
+Open Interest: 5000 NEST
+Total Profit: 6900 NEST
 
-End copy will liquidate your position with market orders, and automatically return the assets to your Account after deducting the profits sharing.
+_End copy will liquidate your position with market orders, and automatically return the assets to your Account after deducting the profits sharing._
 
-❓ Are you sure to stop copying?
+❓Are you sure to stop copying?
     `, {
       parse_mode: 'Markdown',
       ...Markup.inlineKeyboard([
-        [Markup.button.callback('Nope, I change my mind', `cb_kl_KL1`)],
-        [Markup.button.callback('Yes, stop copying trading', `cb_stop_kl_KL1`)],
+        [Markup.button.callback('Nope, I change my mind.', `cb_kl_KL1`)],
+        [Markup.button.callback('Yes, stop copying trading.', `cb_stop_kl_KL1`)],
       ])
     })
   } catch (e) {
@@ -512,31 +507,15 @@ bot.action(/cb_stop_kl_.*/, async (ctx) => {
   try {
     ctx.editMessageText(`👩‍💻 *Current Copy Trading Position*
     
+👤 Copied from Woody
 =============================
 1. BTC/USDT Long 20x
    Actual Margin：6418.25 NEST +14.99%
    Open Price: 1418.25 USDT
    Open Time：04-15 10:18:15
 =============================
-2. BTC/USDT Long 20x
-   Actual Margin：2400 NEST +20.99%
-   Open Price: 1898.25 USDT
-   Open Time：04-15 12:00:00
-=============================
-3. BTC/USDT Long 20x
-   Actual Margin：2400 NEST +20.99%
-   Open Price: 1898.25 USDT
-   Open Time：04-15 12:00:00
-=============================
-4. BTC/USDT Long 20x
-   Actual Margin：2400 NEST +20.99%
-   Open Price: 1898.25 USDT
-   Open Time：04-15 12:00:00
-=============================
-5. BTC/USDT Long 20x
-   Actual Margin：2400 NEST +20.99%
-   Open Price: 1898.25 USDT
-   Open Time：04-15 12:00:00
+   
+👇 Click the number to manage the corresponding order.
   `, {
       parse_mode: 'Markdown',
       ...Markup.inlineKeyboard([
@@ -554,14 +533,14 @@ bot.action(/cb_stop_kl_.*/, async (ctx) => {
 bot.action(/cb_oi_.*/, async (ctx) => {
   const order_index = ctx.match[1]
   try {
-    ctx.editMessageText(`🍯 *Position*
-    
-*BTC/USDT Long 20x*
-*Actual Margin*: 6418.25 NEST +14.99%
-*Open Price*: 1418.25 USDT
-*Market Price*: 1320.99 USDT
-*Liq Price*: 1400.00 USDT
-*Open Time*: 04-15 10:18:15
+    ctx.editMessageText(`🍯 *Position 1*
+————————————————————
+BTC/USDT Long 20x
+Actual Margin: 6418.25 NEST +14.99%
+Open Price: 1418.25 USDT
+Market Price: 1320.99 USDT
+Liq Price: 1400.00 USDT
+Open Time: 04-15 10:18:15
 `, {
       parse_mode: 'Markdown',
       ...Markup.inlineKeyboard([
@@ -582,31 +561,15 @@ bot.action(/cb_close_oi_.*/, async (ctx) => {
     ctx.answerCbQuery('Close Successfully')
     ctx.editMessageText(`👩‍💻 *Current Copy Trading Position*
     
+👤 Copied from Woody
 =============================
 1. BTC/USDT Long 20x
    Actual Margin：6418.25 NEST +14.99%
    Open Price: 1418.25 USDT
    Open Time：04-15 10:18:15
 =============================
-2. BTC/USDT Long 20x
-   Actual Margin：2400 NEST +20.99%
-   Open Price: 1898.25 USDT
-   Open Time：04-15 12:00:00
-=============================
-3. BTC/USDT Long 20x
-   Actual Margin：2400 NEST +20.99%
-   Open Price: 1898.25 USDT
-   Open Time：04-15 12:00:00
-=============================
-4. BTC/USDT Long 20x
-   Actual Margin：2400 NEST +20.99%
-   Open Price: 1898.25 USDT
-   Open Time：04-15 12:00:00
-=============================
-5. BTC/USDT Long 20x
-   Actual Margin：2400 NEST +20.99%
-   Open Price: 1898.25 USDT
-   Open Time：04-15 12:00:00
+   
+👇 Click the number to manage the corresponding order.
   `, {
       parse_mode: 'Markdown',
       ...Markup.inlineKeyboard([
@@ -651,7 +614,15 @@ bot.action('confirm_copy_setting', async (ctx) => {
       if (data.category === 'cb_copy_setting') {
         let {kl, total, single, balance} = data.value
         // TODO: 调用接口
-        ctx.editMessageText(`Copy trading successful!`, Markup.inlineKeyboard([]))
+        ctx.editMessageText(`🥳 *Successfully Copy Trading*
+————————————————————
+
+More latest orders from 👤 *Peter Mason* will be posted in the group.
+
+Telegram Group: copytade@group`, {
+          parse_mode: 'Markdown',
+          ...Markup.inlineKeyboard([])
+        })
       } else {
         ctx.editMessageText('Sorry, we have not found your copy trading request', {
           ...Markup.inlineKeyboard([]),
@@ -671,7 +642,7 @@ bot.action('cancel_copy_setting', async (ctx) => {
         "Authorization": `Bearer ${process.env.UPSTASH_REDIS_REST_TOKEN}`
       },
     });
-    ctx.editMessageText(`🙅‍♂️ Alright, we have cancelled your copy trading request!`, {
+    ctx.editMessageText(`🙅‍ Alright, we have cancelled your copy trading request!`, {
       parse_mode: 'Markdown',
       ...Markup.inlineKeyboard([]),
     })
@@ -698,7 +669,6 @@ bot.on("message", async (ctx) => {
       if (total === 0) {
         if (Number(input) < 200 || Number(input) > balance) {
           ctx.reply(`💢 *Invalid Amount*
-          
 Please enter a valid amount between 200 and your account balance.`, {
             parse_mode: 'Markdown',
           })
@@ -722,9 +692,19 @@ Please enter a valid amount between 200 and your account balance.`, {
         choice[0] = Math.floor(Number(input) * 0.1 / 50) * 50
         choice[1] = Math.floor(Number(input) * 0.2 / 50) * 50
         choice[2] = Math.floor(Number(input) * 0.4 / 50) * 50
-        ctx.reply('Enter the amount for a single copy, minimum 50 NEST.', Markup.keyboard([
-          choice.filter((i) => i >= 50).map(i => String(i))
-        ]).oneTime().resize())
+        ctx.reply(`💵 *Copy Trading Each Order*
+————————————————————
+
+👤 *Peter Mason*
+Copy Trading Total Amount: ${Number(input)} NEST 
+
+👇 Please confirm the amount you invest to this trader for each order.
+`, {
+          parse_mode: 'Markdown',
+          ...Markup.keyboard([
+            choice.filter((i) => i >= 50).map(i => String(i))
+          ]).oneTime().resize()
+        })
       } else if (single === 0) {
         if (Number(input) < 50 || Number(input) > total) {
           let choice = [0, 0, 0]
@@ -732,7 +712,6 @@ Please enter a valid amount between 200 and your account balance.`, {
           choice[1] = Math.floor(total * 0.2 / 50) * 50
           choice[2] = Math.floor(total * 0.4 / 50) * 50
           ctx.reply(`💢 *Invalid Amount*
-          
 Please enter a valid amount between 50 and your CopyTrading Total Amount.`, {
             parse_mode: 'Markdown',
             ...Markup.keyboard([
@@ -755,8 +734,9 @@ Please enter a valid amount between 50 and your CopyTrading Total Amount.`, {
           })
         })
         ctx.reply(`👩‍💻 *Confirm*
-        
-👤 Peter Mason
+————————————————————
+
+👤 *Peter Mason*
 Copy Trading Total Amount: ${total} NEST 
 Copy Trading Each Order: ${Number(input)} NEST 
 
