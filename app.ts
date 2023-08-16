@@ -371,10 +371,8 @@ bot.action(/cb_kl_.*/, async (ctx) => {
 `, {
       parse_mode: 'Markdown',
       ...Markup.inlineKeyboard([
-        [Markup.button.callback('View Copy Trading', 'cb_ps_KL1_0')],
-        [Markup.button.callback('Stop Copying', 'cb_r_stop_kl_KL1')],
-        [Markup.button.callback('Settings', 'cb_copy_setting_KL1')],
-        [Markup.button.callback('« Back', 'cb_kls_p_1')],
+        [Markup.button.callback('View Copy Trading', 'cb_ps_KL1_0'), Markup.button.callback('Stop Copying', 'cb_r_stop_kl_KL1')],
+        [Markup.button.callback('Settings', 'cb_copy_setting_KL1'), Markup.button.callback('« Back', 'cb_kls_p_1')]
       ])
     })
   } catch (e) {
@@ -419,7 +417,7 @@ bot.action(/cb_ps_.*/, async (ctx) => {
       parse_mode: 'Markdown',
       ...Markup.inlineKeyboard([
         [Markup.button.callback('1', 'cb_oi_1'), Markup.button.callback('2', 'cb_oi_2'), Markup.button.callback('3', 'cb_oi_3'), Markup.button.callback('4', 'cb_oi_1'), Markup.button.callback('5', 'cb_oi_2')],
-        [Markup.button.callback('History', 'cb_kl_history_KL1_1'), Markup.button.callback('« Back', 'cb_kl_KL1')],
+        [Markup.button.callback('History', 'cb_klh_KL1_1'), Markup.button.callback('« Back', 'cb_kl_KL1')],
       ])
     })
   } catch (e) {
@@ -427,7 +425,7 @@ bot.action(/cb_ps_.*/, async (ctx) => {
   }
 })
 
-bot.action(/cb_kl_history_.*/, async (ctx) => {
+bot.action(/cb_klh_.*/, async (ctx) => {
   const kl = ctx.match[1].split('_')[0]
   const page = ctx.match[1].split('_')[1]
   try {
@@ -443,7 +441,7 @@ bot.action(/cb_kl_history_.*/, async (ctx) => {
 `, {
       parse_mode: 'Markdown',
       ...Markup.inlineKeyboard([
-        [Markup.button.callback('» Next Page', `cb_kl_history_KL1_2`)],
+        [Markup.button.callback('» Next Page', `cb_klh_KL1_2`)],
         [Markup.button.callback('« Back', 'cb_ps_KL1_1')],
       ])
     })
@@ -508,7 +506,7 @@ bot.action(/cb_stop_kl_.*/, async (ctx) => {
       parse_mode: 'Markdown',
       ...Markup.inlineKeyboard([
         [Markup.button.callback('1', 'cb_oi_1'), Markup.button.callback('2', 'cb_oi_2'), Markup.button.callback('3', 'cb_oi_3'), Markup.button.callback('4', 'cb_oi_1'), Markup.button.callback('5', 'cb_oi_2')],
-        [Markup.button.callback('History', 'cb_kl_history_KL1_1'), Markup.button.callback('« Back', 'cb_kl_KL1')],
+        [Markup.button.callback('History', 'cb_klh_KL1_1'), Markup.button.callback('« Back', 'cb_kl_KL1')],
       ])
     })
   } catch (e) {
@@ -578,7 +576,7 @@ bot.action(/cb_close_oi_.*/, async (ctx) => {
       parse_mode: 'Markdown',
       ...Markup.inlineKeyboard([
         [Markup.button.callback('1', 'cb_oi_1'), Markup.button.callback('2', 'cb_oi_2'), Markup.button.callback('3', 'cb_oi_3'), Markup.button.callback('4', 'cb_oi_1'), Markup.button.callback('5', 'cb_oi_2')],
-        [Markup.button.callback('History', 'cb_kl_history_KL1_1'), Markup.button.callback('« Back', 'cb_kl_KL1')],
+        [Markup.button.callback('History', 'cb_klh_KL1_1'), Markup.button.callback('« Back', 'cb_kl_KL1')],
       ])
     })
   } catch (e) {
