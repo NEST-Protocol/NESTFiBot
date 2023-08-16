@@ -292,11 +292,11 @@ bot.action('cb_menu', async (ctx) => {
         }
       }).then((res) => res.json())
       // @ts-ignore
-      const assets = data?.value?.assets || '-'
+      const assets = data?.value?.assets || 0
       // @ts-ignore
-      const unRealizedPnl = data?.value?.unRealizedPnl || '-'
+      const unRealizedPnl = data?.value?.unRealizedPnl || 0
       // @ts-ignore
-      const profit = data?.value?.profit || '-'
+      const profit = data?.value?.profit || 0
 
       ctx.editMessageText(`📊 *My Trades*
   
