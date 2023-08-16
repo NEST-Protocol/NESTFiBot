@@ -607,7 +607,9 @@ More latest orders from 👤 *Peter Mason* will be posted in the group.
 
 Telegram Group: copytade@group`, {
           parse_mode: 'Markdown',
-          ...Markup.inlineKeyboard([])
+          ...Markup.inlineKeyboard([
+            [Markup.button.callback('« Back', 'cb_menu')],
+          ])
         })
       } else {
         ctx.editMessageText('Sorry, we have not found your copy trading request', {
