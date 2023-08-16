@@ -102,7 +102,8 @@ You can control me by sending these commands:
 
 /account - Welcome to NESTFi
 /unauthorize - Cancel my authorization
-/help - How to use?
+/help - How to use
+/cancel - Cancel the current operation
 `, {
     parse_mode: 'Markdown'
   })
@@ -175,6 +176,17 @@ bot.command('unauthorize', async (ctx) => {
   } else {
     ctx.reply('👩‍💻 You have not authorized any wallet yet.')
   }
+})
+
+bot.command('cancel', async (ctx) => {
+  const user = ctx.from;
+  await fetch(`${process.env.UPSTASH_REDIS_REST_URL}/del/intent:${user.id}`, {
+    method: 'POST',
+    headers: {
+      "Authorization": `Bearer ${process.env.UPSTASH_REDIS_REST_TOKEN}`
+    },
+  })
+  ctx.reply('Cancel the current operation successfully!')
 })
 
 // 设置跟单参数
