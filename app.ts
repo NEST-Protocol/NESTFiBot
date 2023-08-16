@@ -335,11 +335,14 @@ bot.action(/cb_kls_p_.*/, async (ctx) => {
     if (jwt) {
       ctx.editMessageText(`💪 *My Copy Traders*
 
-These are the traders you follow, together with your investment amount.`, Markup.inlineKeyboard([
-        [Markup.button.callback('交易员1: 1000 NEST', 'cb_kl_KL1')],
-        [Markup.button.callback('交易员2: 2000 NEST', 'cb_kl_KL2')],
-        [Markup.button.callback('« Back', 'cb_menu')],
-      ]))
+These are the traders you follow, together with your investment amount.`, {
+        parse_mode: 'Markdown',
+        ...Markup.inlineKeyboard([
+          [Markup.button.callback('交易员1: 1000 NEST', 'cb_kl_KL1')],
+          [Markup.button.callback('交易员2: 2000 NEST', 'cb_kl_KL2')],
+          [Markup.button.callback('« Back', 'cb_menu')],
+        ])
+      })
     } else {
       ctx.editMessageText(`Hi ${user.username}! Please authorize me to set up a NESTFi integration.
 
@@ -382,9 +385,9 @@ bot.action(/cb_kl_.*/, async (ctx) => {
 // 查看某个KL下面的所有当前的仓位
 // cb_ps_[KL]_[PAGE]
 bot.action(/cb_ps_.*/, async (ctx) => {
-  const kl = ctx.match[1].split('_')[0]
+  // const kl = ctx.match[1].split('_')[0]
   try {
-    const page = ctx.match[1].split('_')[1]
+    // const page = ctx.match[1].split('_')[1]
     ctx.editMessageText(`👩‍💻 *Current Copy Trading Position*
 =============================
 1. BTC/USDT Long 20x
@@ -414,7 +417,8 @@ bot.action(/cb_ps_.*/, async (ctx) => {
   `, {
       parse_mode: 'Markdown',
       ...Markup.inlineKeyboard([
-        [Markup.button.callback('1', 'cb_oi_1'), Markup.button.callback('2', 'cb_oi_2'), Markup.button.callback('3', 'cb_oi_3'), Markup.button.callback('4', 'cb_oi_1'), Markup.button.callback('5', 'cb_oi_2'), ],
+        [Markup.button.callback('1', 'cb_oi_1'), Markup.button.callback('2', 'cb_oi_2'), Markup.button.callback('3', 'cb_oi_3')],
+        [Markup.button.callback('4', 'cb_oi_1'), Markup.button.callback('5', 'cb_oi_2')],
         [Markup.button.callback('History', 'cb_kl_history_KL1_1'), Markup.button.callback('« Back', 'cb_kl_KL1')],
       ])
     })
