@@ -358,9 +358,9 @@ These are the traders you follow, together with your investment amount.`, {
 // 查看某个KL
 // cb_kl_[KL]
 bot.action(/cb_kl_.*/, async (ctx) => {
-  const kl = ctx.match[1]
+  // const kl = ctx.match[1]
   try {
-    ctx.editMessageText(`👤 ${kl}
+    ctx.editMessageText(`👤
     
 *Profit sharing*: x%
 *Flowers*: x
@@ -389,6 +389,7 @@ bot.action(/cb_ps_.*/, async (ctx) => {
   try {
     // const page = ctx.match[1].split('_')[1]
     ctx.editMessageText(`👩‍💻 *Current Copy Trading Position*
+    
 =============================
 1. BTC/USDT Long 20x
    Actual Margin：6418.25 NEST +14.99%
