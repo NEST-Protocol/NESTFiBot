@@ -25,14 +25,13 @@ bot.start(async (ctx) => {
       const address = decodeJson.walletAddress
 
       if (code && isAddress(code)) {
-        // 可以跟单,需要判断code是否在白名单
         ctx.reply(`Do you want to copy this KOL's trades on NESTFi automatically?`, Markup.inlineKeyboard([
           [Markup.button.callback('Nope', 'cb_menu')],
           [Markup.button.callback('Yes, i am 100% sure!', 'cb_copy_setting_KL1')],
         ]))
       } else {
-        ctx.reply(`Welcome back, ${user.username}
-        
+        ctx.reply(`📊My Trades
+
 *Copy trading assets*: xxx NEST
 *Profit*:  xxx NEST
 *Unrealized PNL*:  xxx NEST
@@ -62,13 +61,13 @@ bot.start(async (ctx) => {
           user,
         })
       })
-      ctx.reply(`Hi here! Please authorize me to set up a NESTFi integration. 
+      ctx.reply(`👩‍💻Hi there, before copying trading, please link your wallet on NESTFi.
 
-*Note*: this link will be valid for 10 minutes.`, {
+👇Note: The link is valid for 10 minutes.`, {
         parse_mode: 'Markdown',
         ...Markup.inlineKeyboard([
-          [Markup.button.url('Authorize me', `https://connect.nestfi.org/${nonce}`)],
-          [Markup.button.url('Authorize in Metamask', `https://metamask.app.link/dapp/connect.nestfi.org/${nonce}`)],
+          [Markup.button.url('💻 ➜ Link My Wallet', `https://connect.nestfi.org/${nonce}`)],
+          [Markup.button.url('📱 ➜ Link My Wallet', `https://metamask.app.link/dapp/connect.nestfi.org/${nonce}`)],
         ])
       })
     }
@@ -106,7 +105,7 @@ bot.command('account', async (ctx) => {
       const decode = jwt.split('.')[1]
       const decodeJson = JSON.parse(Buffer.from(decode, 'base64').toString())
       const address = decodeJson.walletAddress
-      ctx.reply(`Hi, ${user.username}
+      ctx.reply(`📊My Trades
 
 *Copy trading assets*: xxx NEST
 *Profit*:  xxx NEST
@@ -220,7 +219,7 @@ bot.action('cb_menu', async (ctx) => {
       const decode = jwt.split('.')[1]
       const decodeJson = JSON.parse(Buffer.from(decode, 'base64').toString())
       const address = decodeJson.walletAddress
-      ctx.editMessageText(`Welcome back, ${user.username}!
+      ctx.editMessageText(`📊My Trades
   
 *Copy trading assets*: xxx NEST
 *Profit*:  xxx NEST
@@ -257,10 +256,10 @@ bot.action('cb_account', async (ctx) => {
       .then((data: any) => data.result)
 
     if (jwt) {
-      ctx.editMessageText(`可提现金额: xxx NEST`, Markup.inlineKeyboard([
+      ctx.editMessageText(`💸Account Balance: xxx NEST`, Markup.inlineKeyboard([
         [Markup.button.url('Deposit', 'https://nestfi.org/')],
         [Markup.button.url('Withdraw', 'https://nestfi.org/')],
-        [Markup.button.callback('Back', 'cb_menu')],
+        [Markup.button.callback('« Back', 'cb_menu')],
       ]))
     } else {
       ctx.editMessageText(`Hi ${user.username}! Please authorize me to set up a NESTFi integration.
@@ -288,10 +287,12 @@ bot.action(/cb_kls_p_.*/, async (ctx) => {
       .then(response => response.json())
       .then((data: any) => data.result)
     if (jwt) {
-      ctx.editMessageText(`我跟随的交易员:`, Markup.inlineKeyboard([
+      ctx.editMessageText(`💪*My Copy Traders*
+
+These are the traders you follow, together with your investment amount.`, Markup.inlineKeyboard([
         [Markup.button.callback('交易员1: 1000 NEST', 'cb_kl_KL1')],
         [Markup.button.callback('交易员2: 2000 NEST', 'cb_kl_KL2')],
-        [Markup.button.callback('Back', 'cb_menu')],
+        [Markup.button.callback('« Back', 'cb_menu')],
       ]))
     } else {
       ctx.editMessageText(`Hi ${user.username}! Please authorize me to set up a NESTFi integration.
@@ -310,15 +311,21 @@ bot.action(/cb_kls_p_.*/, async (ctx) => {
 bot.action(/cb_kl_.*/, async (ctx) => {
   const kl = ctx.match[1]
   try {
-    ctx.editMessageText(`${kl} (Profit sharing: 10%)
-Flowers: xx/500          AUM: xxNEST        
-7D ROI: xx%              7D Earnings: xxNEST`, {
+    ctx.editMessageText(`👤 ${kl}
+    
+*Profit sharing*: x%
+*Flowers*: x
+*AUM*: x NEST        
+*7D ROI*: x%              
+*7D Earnings*: x NEST
+*7D Flowers PnL*: x NEST
+`, {
       parse_mode: 'Markdown',
       ...Markup.inlineKeyboard([
-        [Markup.button.callback('查看订单', 'cb_ps_KL1_0')],
-        [Markup.button.callback('停止跟单并结算', 'cb_r_stop_kl_KL1')],
-        [Markup.button.callback('跟单设置', 'cb_copy_setting_KL1')],
-        [Markup.button.callback('Back', 'cb_kls_p_1')],
+        [Markup.button.callback('View Copy Trading', 'cb_ps_KL1_0')],
+        [Markup.button.callback('Stop Copying', 'cb_r_stop_kl_KL1')],
+        [Markup.button.callback('Settings', 'cb_copy_setting_KL1')],
+        [Markup.button.callback('« Back', 'cb_kls_p_1')],
       ])
     })
   } catch (e) {
@@ -332,11 +339,11 @@ bot.action(/cb_ps_.*/, async (ctx) => {
   const kl = ctx.match[1].split('_')[0]
   try {
     const page = ctx.match[1].split('_')[1]
-    ctx.editMessageText(`您可在这里操作您的仓位`, Markup.inlineKeyboard([
+    ctx.editMessageText(`👩‍💻Trader positions are automatically copied and executed for you. You can manage your position as well.`, Markup.inlineKeyboard([
       [Markup.button.callback('BTC/USDT 20x (+200NEST)', 'cb_oi_1')],
       [Markup.button.callback('DOGE/USDT 20x (+200NEST)', 'cb_oi_2')],
       [Markup.button.callback('XRP/USDT 20x (+200NEST)', 'cb_oi_3')],
-      [Markup.button.callback('History', 'cb_kl_history_KL1_1'), Markup.button.callback('Back', 'cb_kl_KL1')],
+      [Markup.button.callback('History', 'cb_kl_history_KL1_1'), Markup.button.callback('« Back', 'cb_kl_KL1')],
     ]))
   } catch (e) {
     ctx.answerCbQuery('Something went wrong.')
@@ -347,12 +354,20 @@ bot.action(/cb_kl_history_.*/, async (ctx) => {
   const kl = ctx.match[1].split('_')[0]
   const page = ctx.match[1].split('_')[1]
   try {
-    ctx.editMessageText(`BTC/USDT Long 20x Actual Margin：6418.25 NEST +14.99%
-Open Price: 1418.25 USDT close Price: 1320.99 USDT Liq Price: 1400.00 USDT Open Time：04-15 10:18:15 Close Time : 04-15 10:18:15 `, {
+    ctx.editMessageText(`🧩History 
+
+*BTC/USDT Long 20x*
+*Actual Margin*: 6418.25 NEST +14.99%
+*Open Price*: 1418.25 USDT
+*Close Price*: 1320.99 USDT
+*Liq Price*: 1400.00 USDT
+*Open Time*: 04-15 10:18:15
+*Close Time*: 04-15 10:18:15
+`, {
       parse_mode: 'Markdown',
       ...Markup.inlineKeyboard([
-        [Markup.button.callback('Next Page', `cb_kl_history_KL1_2`)],
-        [Markup.button.callback('Back', 'cb_ps_KL1_1')],
+        [Markup.button.callback('» Next Page', `cb_kl_history_KL1_2`)],
+        [Markup.button.callback('« Back', 'cb_ps_KL1_1')],
       ])
     })
   } catch (e) {
@@ -362,15 +377,20 @@ Open Price: 1418.25 USDT close Price: 1320.99 USDT Liq Price: 1400.00 USDT�
 
 bot.action(/cb_r_stop_kl_.*/, async (ctx) => {
   try {
-    ctx.editMessageText(`你想要停止跟单，这会强制以市价平仓目前的单。
-总跟单金额：200NEST  总保证金余额：260NEST
-净盈利： 60NEST
+    ctx.editMessageText(`🙅Stop Copying
+    
+*Total Copy Amount*: 6000 NEST
+*Open Interest*: 5000 NEST
+*Total Profit*: 6900 NEST
 
-确定吗？`, {
+End copy will liquidate your position with market orders, and automatically return the assets to your Account after deducting the profits sharing.
+
+❓Are you sure to stop copying?
+    `, {
       parse_mode: 'Markdown',
       ...Markup.inlineKeyboard([
-        [Markup.button.callback('Nope', `cb_kl_KL1`)],
-        [Markup.button.callback('Yes, i am 100% sure!', `cb_stop_kl_KL1`)],
+        [Markup.button.callback('Nope, I change my mind', `cb_kl_KL1`)],
+        [Markup.button.callback('Yes, stop copying trading', `cb_stop_kl_KL1`)],
       ])
     })
   } catch (e) {
@@ -380,10 +400,10 @@ bot.action(/cb_r_stop_kl_.*/, async (ctx) => {
 
 bot.action(/cb_stop_kl_.*/, async (ctx) => {
   try {
-    ctx.editMessageText(`我们已经关闭了你所有的订单！`, {
+    ctx.editMessageText(`🥳Stop Copying Successfully!`, {
       parse_mode: 'Markdown',
       ...Markup.inlineKeyboard([
-        [Markup.button.callback('Back', `cb_kls_p_1`)],
+        [Markup.button.callback('« Back', `cb_kls_p_1`)],
       ])
     })
   } catch (e) {
@@ -396,12 +416,19 @@ bot.action(/cb_stop_kl_.*/, async (ctx) => {
 bot.action(/cb_oi_.*/, async (ctx) => {
   const order_index = ctx.match[1]
   try {
-    ctx.editMessageText(`BTC/USDT Long 20x Actual Margin：6418.25 NEST +14.99%
-Open Price: 1418.25 USDT Exit Price: 1320.99 USDT Liq Price: 1400.00 USDT Open Time：04-15 10:18:15 `, {
+    ctx.editMessageText(`🍯Current Position
+    
+*BTC/USDT Long 20x*
+*Actual Margin*: 6418.25 NEST +14.99%
+*Open Price*: 1418.25 USDT
+*Market Price*: 1320.99 USDT
+*Liq Price*: 1400.00 USDT
+*Open Time*: 04-15 10:18:15
+`, {
       parse_mode: 'Markdown',
       ...Markup.inlineKeyboard([
         [Markup.button.callback('Close', 'cb_close_oi_1')],
-        [Markup.button.callback('Back', 'cb_ps_KL_1')],
+        [Markup.button.callback('« Back', 'cb_ps_KL_1')],
       ])
     })
   } catch (e) {
@@ -419,7 +446,7 @@ bot.action(/cb_close_oi_.*/, async (ctx) => {
       [Markup.button.callback('BTC/USDT 20x (+200NEST)', 'cb_oi_1')],
       [Markup.button.callback('DOGE/USDT 20x (+200NEST)', 'cb_oi_2')],
       [Markup.button.callback('XRP/USDT 20x (+200NEST)', 'cb_oi_3')],
-      [Markup.button.url('History', 'https://nestfi.org/'), Markup.button.callback('Back', 'cb_kl_KL1')],
+      [Markup.button.url('History', 'https://nestfi.org/'), Markup.button.callback('« Back', 'cb_kl_KL1')],
     ]))
   } catch (e) {
     ctx.answerCbQuery('Something went wrong.')
