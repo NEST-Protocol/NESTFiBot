@@ -29,7 +29,7 @@ bot.start(async (ctx) => {
         const isKol = true;
         if (isKol) {
           // TODO
-          ctx.reply(`Would you like to copy Trader 👤 Peter Mason 's  positions immediately?`, Markup.inlineKeyboard([
+          ctx.reply(`Would you like to copy Trader 👤 Peter Mason's positions immediately?`, Markup.inlineKeyboard([
             [Markup.button.callback('Nope, I change my mind.', 'cb_menu')],
             [Markup.button.callback('Yes, copy now!', 'cb_copy_setting_KL1')],
           ]))
@@ -48,8 +48,8 @@ Please select other traders on NESTFi.`, {
         ctx.reply(`📊 My Trades
 
 *Copy trading assets*: xxx NEST
-*Profit*:  xxx NEST
-*Unrealized PNL*:  xxx NEST
+*Profit*: xxx NEST
+*Unrealized PNL*: xxx NEST
 *Address*: ${address}
 `, {
           parse_mode: 'Markdown',
@@ -125,8 +125,8 @@ bot.command('account', async (ctx) => {
       ctx.reply(`📊 *My Trades*
 
 *Copy trading assets*: xxx NEST
-*Profit*:  xxx NEST
-*Unrealized PNL*:  xxx NEST
+*Profit*: xxx NEST
+*Unrealized PNL*: xxx NEST
 *Address*: ${address}
 `, {
         parse_mode: 'Markdown',
@@ -148,7 +148,7 @@ bot.command('account', async (ctx) => {
   }
 })
 
-// Stop command use to  delete authorization request
+// Stop command use to delete authorization request
 bot.command('unauthorize', async (ctx) => {
   const user = ctx.from;
   const jwt = await fetch(`${process.env.UPSTASH_REDIS_REST_URL}/get/auth:${user.id}`, {
@@ -166,12 +166,12 @@ bot.command('unauthorize', async (ctx) => {
 *Address*: ${address}`, {
       parse_mode: 'Markdown',
       ...Markup.inlineKeyboard([
-        [Markup.button.callback('Yes, cancel it', 'cb_unauthorize')],
-        [Markup.button.callback('No', 'menu')],
+        [Markup.button.callback('Yes, deauthorize now.', 'cb_unauthorize')],
+        [Markup.button.callback('Nope, I change my mind.', 'cb_menu')],
       ])
     })
   } else {
-    ctx.reply('You have not authorized any wallet yet.')
+    ctx.reply('👩‍💻 You have not authorized any wallet yet.')
   }
 })
 
@@ -253,8 +253,8 @@ bot.action('cb_menu', async (ctx) => {
       ctx.editMessageText(`📊 *My Trades*
   
 *Copy trading assets*: xxx NEST
-*Profit*:  xxx NEST
-*Unrealized PNL*:  xxx NEST
+*Profit*: xxx NEST
+*Unrealized PNL*: xxx NEST
 *Address*: ${address}
 `, {
         parse_mode: 'Markdown',
@@ -346,8 +346,8 @@ bot.action(/cb_kl_.*/, async (ctx) => {
     
 *Profit sharing*: x%
 *Flowers*: x
-*AUM*: x NEST        
-*7D ROI*: x%              
+*AUM*: x NEST
+*7D ROI*: x%
 *7D Earnings*: x NEST
 *7D Flowers PnL*: x NEST
 `, {
@@ -370,12 +370,39 @@ bot.action(/cb_ps_.*/, async (ctx) => {
   const kl = ctx.match[1].split('_')[0]
   try {
     const page = ctx.match[1].split('_')[1]
-    ctx.editMessageText(`👩‍💻 Trader positions are automatically copied and executed for you. You can manage your position as well.`, Markup.inlineKeyboard([
-      [Markup.button.callback('BTC/USDT 20x (+200NEST)', 'cb_oi_1')],
-      [Markup.button.callback('DOGE/USDT 20x (+200NEST)', 'cb_oi_2')],
-      [Markup.button.callback('XRP/USDT 20x (+200NEST)', 'cb_oi_3')],
-      [Markup.button.callback('History', 'cb_kl_history_KL1_1'), Markup.button.callback('« Back', 'cb_kl_KL1')],
-    ]))
+    ctx.editMessageText(`👩‍💻 *Current Copy Trading Position*
+=============================
+1. BTC/USDT Long 20x
+   Actual Margin：6418.25 NEST +14.99%
+   Open Price: 1418.25 USDT
+   Open Time：04-15 10:18:15
+=============================
+2. BTC/USDT Long 20x
+   Actual Margin：2400 NEST +20.99%
+   Open Price: 1898.25 USDT
+   Open Time：04-15 12:00:00
+=============================
+3. BTC/USDT Long 20x
+   Actual Margin：2400 NEST +20.99%
+   Open Price: 1898.25 USDT
+   Open Time：04-15 12:00:00
+=============================
+4. BTC/USDT Long 20x
+   Actual Margin：2400 NEST +20.99%
+   Open Price: 1898.25 USDT
+   Open Time：04-15 12:00:00
+=============================
+5. BTC/USDT Long 20x
+   Actual Margin：2400 NEST +20.99%
+   Open Price: 1898.25 USDT
+   Open Time：04-15 12:00:00
+  `, {
+      parse_mode: 'Markdown',
+      ...Markup.inlineKeyboard([
+        [Markup.button.callback('1', 'cb_oi_1'), Markup.button.callback('2', 'cb_oi_2'), Markup.button.callback('3', 'cb_oi_3'), Markup.button.callback('4', 'cb_oi_1'), Markup.button.callback('5', 'cb_oi_2'), ],
+        [Markup.button.callback('History', 'cb_kl_history_KL1_1'), Markup.button.callback('« Back', 'cb_kl_KL1')],
+      ])
+    })
   } catch (e) {
     ctx.answerCbQuery('Something went wrong.')
   }
@@ -447,7 +474,7 @@ bot.action(/cb_stop_kl_.*/, async (ctx) => {
 bot.action(/cb_oi_.*/, async (ctx) => {
   const order_index = ctx.match[1]
   try {
-    ctx.editMessageText(`🍯 *Current Position*
+    ctx.editMessageText(`🍯 *Position*
     
 *BTC/USDT Long 20x*
 *Actual Margin*: 6418.25 NEST +14.99%
@@ -458,7 +485,7 @@ bot.action(/cb_oi_.*/, async (ctx) => {
 `, {
       parse_mode: 'Markdown',
       ...Markup.inlineKeyboard([
-        [Markup.button.callback('Close', 'cb_close_oi_1')],
+        [Markup.button.callback('Close the Position', 'cb_close_oi_1')],
         [Markup.button.callback('« Back', 'cb_ps_KL_1')],
       ])
     })
@@ -493,7 +520,7 @@ bot.action('cb_unauthorize', async (ctx) => {
         "Authorization": `Bearer ${process.env.UPSTASH_REDIS_REST_TOKEN}`
       }
     })
-    ctx.editMessageText('You have successfully cancel your NESTFi authorization.', Markup.inlineKeyboard([]))
+    ctx.editMessageText('👩‍💻 You have successfully deauthorized the NESTFi Copy Trading bot on NESTFi.', Markup.inlineKeyboard([]))
   } catch (e) {
     ctx.answerCbQuery('Something went wrong.')
   }
@@ -536,7 +563,7 @@ bot.action('cancel_copy_setting', async (ctx) => {
         "Authorization": `Bearer ${process.env.UPSTASH_REDIS_REST_TOKEN}`
       },
     });
-    ctx.editMessageText(`🙅‍♂️ Alright, we have cancelled  your copy trading request!`, {
+    ctx.editMessageText(`🙅‍♂️ Alright, we have cancelled your copy trading request!`, {
       parse_mode: 'Markdown',
       ...Markup.inlineKeyboard([]),
     })
