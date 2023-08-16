@@ -96,14 +96,14 @@ Hi there, before copying trading, please link your wallet on NESTFi.
 });
 
 bot.help((ctx) => {
-  ctx.reply(`I can help you at NESTFi. If you're new to NESTFi, please [see the website](https://nestfi.org).
+  ctx.reply(`🌏 For further information, please acces nestfi.org
 
-You can control me by sending these commands:
+👇 Control me by sending these commands:
 
 /account - Welcome to NESTFi
 /unauthorize - Cancel my authorization
-/help - How to use
-/cancel - Cancel the current operation
+/cancel - Cancel the current Operation 
+/help - How to use?
 `, {
     parse_mode: 'Markdown'
   })
