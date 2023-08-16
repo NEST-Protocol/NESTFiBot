@@ -77,7 +77,7 @@ Please select other traders on NESTFi.`, {
           user,
         })
       })
-      ctx.reply(`👩👛 Link Wallet
+      ctx.reply(`👩 *Link Wallet*
       
 Hi there, before copying trading, please link your wallet on NESTFi.
 
@@ -124,11 +124,22 @@ bot.command('account', async (ctx) => {
       const decode = jwt.split('.')[1]
       const decodeJson = JSON.parse(Buffer.from(decode, 'base64').toString())
       const address = decodeJson.walletAddress
+      const data = await fetch(`https://dev.nestfi.net/nestfi/copy/follower/position/info?chainId=97`, {
+        headers: {
+          'Authorization': jwt
+        }
+      }).then((res) => res.json())
+      // @ts-ignore
+      const assets = data?.value?.assets || '-'
+      // @ts-ignore
+      const unRealizedPnl = data?.value?.unRealizedPnl || '-'
+      // @ts-ignore
+      const profit = data?.value?.profit || '-'
       ctx.reply(`📊 *My Trades*
 
-*Copy trading assets*: xxx NEST
-*Profit*: xxx NEST
-*Unrealized PNL*: xxx NEST
+*Copy trading assets*: ${assets} NEST
+*Profit*: ${profit} NEST
+*Unrealized PNL*: ${unRealizedPnl} NEST
 *Address*: ${address}
 `, {
         parse_mode: 'Markdown',
@@ -264,11 +275,23 @@ bot.action('cb_menu', async (ctx) => {
       const decode = jwt.split('.')[1]
       const decodeJson = JSON.parse(Buffer.from(decode, 'base64').toString())
       const address = decodeJson.walletAddress
+      const data = await fetch(`https://dev.nestfi.net/nestfi/copy/follower/position/info?chainId=97`, {
+        headers: {
+          'Authorization': jwt
+        }
+      }).then((res) => res.json())
+      // @ts-ignore
+      const assets = data?.value?.assets || '-'
+      // @ts-ignore
+      const unRealizedPnl = data?.value?.unRealizedPnl || '-'
+      // @ts-ignore
+      const profit = data?.value?.profit || '-'
+
       ctx.editMessageText(`📊 *My Trades*
   
-*Copy trading assets*: xxx NEST
-*Profit*: xxx NEST
-*Unrealized PNL*: xxx NEST
+*Copy trading assets*: ${assets} NEST
+*Profit*: ${profit} NEST
+*Unrealized PNL*: ${unRealizedPnl} NEST
 *Address*: ${address}
 `, {
         parse_mode: 'Markdown',
