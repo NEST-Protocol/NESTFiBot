@@ -371,8 +371,9 @@ bot.action(/cb_kl_.*/, async (ctx) => {
 `, {
       parse_mode: 'Markdown',
       ...Markup.inlineKeyboard([
-        [Markup.button.callback('View Copy Trading', 'cb_ps_KL1_0'), Markup.button.callback('Stop Copying', 'cb_r_stop_kl_KL1')],
-        [Markup.button.callback('Settings', 'cb_copy_setting_KL1'), Markup.button.callback('« Back', 'cb_kls_p_1')]
+        [Markup.button.callback('View Copy Trading', 'cb_ps_KL1_0')],
+        [Markup.button.callback('Stop Copying', 'cb_r_stop_kl_KL1'), Markup.button.callback('Settings', 'cb_copy_setting_KL1')],
+        [Markup.button.callback('« Back', 'cb_kls_p_1')]
       ])
     })
   } catch (e) {
@@ -426,8 +427,8 @@ bot.action(/cb_ps_.*/, async (ctx) => {
 })
 
 bot.action(/cb_klh_.*/, async (ctx) => {
-  const kl = ctx.match[1].split('_')[0]
-  const page = ctx.match[1].split('_')[1]
+  // const kl = ctx.match[1].split('_')[0]
+  // const page = ctx.match[1].split('_')[1]
   try {
     ctx.editMessageText(`🧩 *History*
 
