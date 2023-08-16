@@ -25,10 +25,25 @@ bot.start(async (ctx) => {
       const address = decodeJson.walletAddress
 
       if (code && isAddress(code)) {
-        ctx.reply(`Do you want to copy this KOL's trades on NESTFi automatically?`, Markup.inlineKeyboard([
-          [Markup.button.callback('Nope', 'cb_menu')],
-          [Markup.button.callback('Yes, i am 100% sure!', 'cb_copy_setting_KL1')],
-        ]))
+        // TODO
+        const isKol = true;
+        if (isKol) {
+          // TODO
+          ctx.reply(`Would you like to copy Trader 👤 Peter Mason 's  positions immediately?`, Markup.inlineKeyboard([
+            [Markup.button.callback('Nope, I change my mind.', 'cb_menu')],
+            [Markup.button.callback('Yes, copy now!', 'cb_copy_setting_KL1')],
+          ]))
+        } else {
+          ctx.reply(`💢 *Invalid Trader*
+          
+This person is not on the NESTFi Traders list.
+Please select other traders on NESTFi.`, {
+            parse_mode: 'Markdown',
+            ...Markup.inlineKeyboard([
+              [Markup.button.url('Access NESTFi Website', 'https://nestfi.org/')]
+            ])
+          })
+        }
       } else {
         ctx.reply(`📊 My Trades
 
@@ -46,8 +61,8 @@ bot.start(async (ctx) => {
       }
     } else {
       if (code && isAddress(code)) {
-        ctx.reply(`First, you should bind your wallet. And then you can copy again.`, Markup.inlineKeyboard([
-          [Markup.button.callback(`Copy again`, `https://t.me/nestfi.org?start=${code}`)],
+        ctx.reply(`👩‍💻 Once you've linked your wallet, click "Copy Now" to continue with the copy trading.`, Markup.inlineKeyboard([
+          [Markup.button.callback(`Copy Now`, `https://t.me/nestfi.org?start=${code}`)],
         ]))
       }
       const nonce = Math.random().toString(36).substring(2, 18);
@@ -61,13 +76,15 @@ bot.start(async (ctx) => {
           user,
         })
       })
-      ctx.reply(`👩‍💻 Hi there, before copying trading, please link your wallet on NESTFi.
+      ctx.reply(`👩👛 Link Wallet
+      
+Hi there, before copying trading, please link your wallet on NESTFi.
 
 👇 Note: The link is valid for 10 minutes.`, {
         parse_mode: 'Markdown',
         ...Markup.inlineKeyboard([
-          [Markup.button.url('💻 Link My Wallet', `https://connect.nestfi.org/${nonce}`)],
-          [Markup.button.url('📱 Link My Wallet', `https://metamask.app.link/dapp/connect.nestfi.org/${nonce}`)],
+          [Markup.button.url('PC ➜ Link My Wallet*', `https://connect.nestfi.org/${nonce}`)],
+          [Markup.button.url('Mobile ➜ Link My Wallet*', `https://metamask.app.link/dapp/connect.nestfi.org/${nonce}`)],
         ])
       })
     }
@@ -105,7 +122,7 @@ bot.command('account', async (ctx) => {
       const decode = jwt.split('.')[1]
       const decodeJson = JSON.parse(Buffer.from(decode, 'base64').toString())
       const address = decodeJson.walletAddress
-      ctx.reply(`📊 My Trades
+      ctx.reply(`📊 *My Trades*
 
 *Copy trading assets*: xxx NEST
 *Profit*:  xxx NEST
@@ -169,10 +186,15 @@ bot.action(/cb_copy_setting_.*/, async (ctx) => {
     const balance = 2000
     // 如果余额不足，则提示充值
     if (balance < 200) {
-      ctx.reply(`You don't have enough balance to set up a copy. Please recharge your account.`, Markup.inlineKeyboard([
-        [Markup.button.url('Deposit', 'https://nestfi.org/')],
-        [Markup.button.callback('I have deposit enough, continue!', 'cb_copy_setting_KL1')],
-      ]))
+      ctx.reply(`💔 *Insufficient Balance*
+      
+Your account balance is insufficient. Please deposit first to initiate lightning trading on NESTFi.`, {
+        parse_mode: 'Markdown',
+        ...Markup.inlineKeyboard([
+          [Markup.button.url('Deposit', 'https://nestfi.org/')],
+          [Markup.button.callback('Completed, go on!', 'cb_copy_setting_KL1')],
+        ])
+      })
       return
     } else {
       // 暂存用户的输入意图，为输入total balance, 有效期10分钟
@@ -195,9 +217,18 @@ bot.action(/cb_copy_setting_.*/, async (ctx) => {
       choice[0] = Math.floor(balance * 0.5 / 50) * 50;
       choice[1] = Math.floor(balance * 0.75 / 50) * 50;
       choice[2] = Math.floor(balance / 50) * 50;
-      ctx.reply(`Enter the total copy amount, minimum 200. Your current account balance: xxx NEST.`, Markup.keyboard([
-        choice.filter((i) => i >= 200).map((i: number) => String(i)),
-      ]).oneTime().resize())
+      ctx.reply(`💵 *Copy Trading Toal Amount*
+      
+ 👤 Peter Mason
+My Account Balance: 0 NEST
+Copy Trading Total Amount: 4000 NEST
+
+👇 Please confirm the amount you invest to this trader.`, {
+        parse_mode: 'Markdown',
+        ...Markup.keyboard([
+          choice.filter((i) => i >= 200).map((i: number) => String(i)),
+        ]).oneTime().resize()
+      })
     }
   } catch (e) {
     ctx.answerCbQuery('Something went wrong.')
@@ -219,7 +250,7 @@ bot.action('cb_menu', async (ctx) => {
       const decode = jwt.split('.')[1]
       const decodeJson = JSON.parse(Buffer.from(decode, 'base64').toString())
       const address = decodeJson.walletAddress
-      ctx.editMessageText(`📊 My Trades
+      ctx.editMessageText(`📊 *My Trades*
   
 *Copy trading assets*: xxx NEST
 *Profit*:  xxx NEST
@@ -354,7 +385,7 @@ bot.action(/cb_kl_history_.*/, async (ctx) => {
   const kl = ctx.match[1].split('_')[0]
   const page = ctx.match[1].split('_')[1]
   try {
-    ctx.editMessageText(`🧩 History 
+    ctx.editMessageText(`🧩 *History*
 
 *BTC/USDT Long 20x*
 *Actual Margin*: 6418.25 NEST +14.99%
@@ -377,7 +408,7 @@ bot.action(/cb_kl_history_.*/, async (ctx) => {
 
 bot.action(/cb_r_stop_kl_.*/, async (ctx) => {
   try {
-    ctx.editMessageText(`🙅 Stop Copying
+    ctx.editMessageText(`🙅 *Stop Copying*
     
 *Total Copy Amount*: 6000 NEST
 *Open Interest*: 5000 NEST
@@ -416,7 +447,7 @@ bot.action(/cb_stop_kl_.*/, async (ctx) => {
 bot.action(/cb_oi_.*/, async (ctx) => {
   const order_index = ctx.match[1]
   try {
-    ctx.editMessageText(`🍯 Current Position
+    ctx.editMessageText(`🍯 *Current Position*
     
 *BTC/USDT Long 20x*
 *Actual Margin*: 6418.25 NEST +14.99%
@@ -505,7 +536,8 @@ bot.action('cancel_copy_setting', async (ctx) => {
         "Authorization": `Bearer ${process.env.UPSTASH_REDIS_REST_TOKEN}`
       },
     });
-    ctx.editMessageText('Alright, we have cancel your copy trading request!', {
+    ctx.editMessageText(`🙅‍♂️ Alright, we have cancelled  your copy trading request!`, {
+      parse_mode: 'Markdown',
       ...Markup.inlineKeyboard([]),
     })
   } catch (e) {
@@ -530,7 +562,11 @@ bot.on("message", async (ctx) => {
       let {kl, total, single, balance} = data.value
       if (total === 0) {
         if (Number(input) < 200 || Number(input) > balance) {
-          ctx.reply('Please enter a valid amount between 200 and your balance.')
+          ctx.reply(`💢 *Invalid Amount*
+          
+Please enter a valid amount between 200 and your account balance.`, {
+            parse_mode: 'Markdown',
+          })
           return
         }
         // 更新intent
@@ -560,9 +596,14 @@ bot.on("message", async (ctx) => {
           choice[0] = Math.floor(total * 0.1 / 50) * 50
           choice[1] = Math.floor(total * 0.2 / 50) * 50
           choice[2] = Math.floor(total * 0.4 / 50) * 50
-          ctx.reply('Please enter a valid amount between 50 and the total amount.', Markup.keyboard([
-            choice.filter((i) => i >= 50).map(i => String(i))
-          ]))
+          ctx.reply(`💢 *Invalid Amount*
+          
+Please enter a valid amount between 50 and your CopyTrading Total Amount.`, {
+            parse_mode: 'Markdown',
+            ...Markup.keyboard([
+              choice.filter((i) => i >= 50).map(i => String(i))
+            ])
+          })
           return
         }
         await fetch(`${process.env.UPSTASH_REDIS_REST_URL}/set/intent:${user.id}?EX=600`, {
@@ -578,16 +619,19 @@ bot.on("message", async (ctx) => {
             }
           })
         })
-        ctx.reply(`Please confirm your copy trading details: 
+        ctx.reply(`👩‍💻 *Confirm*
         
-Single copy amount: ${Number(input)} NEST 
-Total copy amount: ${total} NEST 
-You can copy up to ${Math.ceil(total / single)} trades at the same time.
+👤 Peter Mason
+Copy Trading Total Amount: ${total} NEST 
+Copy Trading Each Order: ${Number(input)} NEST 
 
-Are you sure?`, Markup.inlineKeyboard([
-          [Markup.button.callback('Yes, i am 100% sure!', 'confirm_copy_setting')],
-          [Markup.button.callback('Nope', 'cancel_copy_setting')]
-        ]))
+Are you sure?`, {
+          parse_mode: 'Markdown',
+          ...Markup.inlineKeyboard([
+            [Markup.button.callback('Yes, I’m sure.', 'confirm_copy_setting')],
+            [Markup.button.callback('Nope, I change my mind.', 'cancel_copy_setting')]
+          ])
+        })
       }
       return
     } else {
