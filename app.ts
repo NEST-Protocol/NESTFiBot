@@ -45,7 +45,7 @@ Please select other traders on NESTFi.`, {
           })
         }
       } else {
-        ctx.reply(`📊 My Trades
+        ctx.reply(`📊 *My Trades*
 
 *Copy trading assets*: xxx NEST
 *Profit*: xxx NEST
