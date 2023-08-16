@@ -84,8 +84,8 @@ Hi there, before copying trading, please link your wallet on NESTFi.
 👇 Note: The link is valid for 10 minutes.`, {
         parse_mode: 'Markdown',
         ...Markup.inlineKeyboard([
-          [Markup.button.url('PC ➜ Link My Wallet*', `https://connect.nestfi.org/${nonce}`)],
-          [Markup.button.url('Mobile ➜ Link My Wallet*', `https://metamask.app.link/dapp/connect.nestfi.org/${nonce}`)],
+          [Markup.button.url('PC ➜ Link My Wallet', `https://connect.nestfi.org/${nonce}`)],
+          [Markup.button.url('Mobile ➜ Link My Wallet', `https://metamask.app.link/dapp/connect.nestfi.org/${nonce}`)],
         ])
       })
     }
