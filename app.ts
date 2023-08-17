@@ -162,9 +162,9 @@ bot.command('account', async (ctx) => {
       const profit = data?.value?.profit || 0
       ctx.reply(`📊 *My Trades*
 ————————————————————
-*Copy Trading Assets*: ${assets} NEST
-*Profit*: ${profit} NEST
-*Unrealized PnL*: ${unRealizedPnl} NEST
+*Copy Trading Assets*: ${assets.toFixed(2)} NEST
+*Profit*: ${profit.toFixed(2)} NEST
+*Unrealized PnL*: ${unRealizedPnl.toFixed(2)} NEST
 *Address*: ${address}
 `, {
         parse_mode: 'Markdown',
@@ -472,12 +472,11 @@ bot.action(/cb_kl_.*/, async (ctx) => {
       const decode = jwt.split('.')[1]
       const decodeJson = JSON.parse(Buffer.from(decode, 'base64').toString())
       const address = decodeJson.walletAddress
-      // const klAddress = '';
-      // const data = await fetch(`${hostname}/copy/kol/info?chainId=${chainId}&walletAddress=${klAddress}`, {
-      //   headers: {
-      //     'Authorization': jwt
-      //   }
-      // }).then(res => res.json())
+      const data = await fetch(`${hostname}/copy/kol/info?chainId=${chainId}&walletAddress=${klAddress}`, {
+        headers: {
+          'Authorization': jwt
+        }
+      }).then(res => res.json())
       // // @ts-ignore
       // const copyBalance = data?.value?.copyBalance?.toFixed(2) || 0
       // // @ts-ignore
@@ -489,7 +488,6 @@ bot.action(/cb_kl_.*/, async (ctx) => {
       // // @ts-ignore
       // const roi = data?.value?.roi?.toFixed(2) || 0
 
-
       ctx.editMessageText(`👤 *Woody*
 ————————————————————
 *Profit sharing*: 10%
@@ -499,8 +497,8 @@ bot.action(/cb_kl_.*/, async (ctx) => {
 *7D Earnings*: 200NEST
 *7D Flowers PnL*: 4444 NEST
 
---- klAddress
-${klAddress}
+--- GET ${hostname}/copy/kol/info?chainId=${chainId}&walletAddress=${klAddress}
+${JSON.stringify(data)}
 `, {
         parse_mode: 'Markdown',
         ...Markup.inlineKeyboard([
