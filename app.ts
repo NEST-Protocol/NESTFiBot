@@ -997,7 +997,7 @@ bot.action('confirm_copy_setting', async (ctx) => {
           const address = decodeJson.walletAddress
 
           // @ts-ignore
-          let {kl, total, single, nickName, availableBalance, position} = data.value
+          const {kl, total, single, nickName, availableBalance, position} = data.value
           const request = await fetch(`${hostname}/nestfi/copy/follower/setting`, {
             method: 'POST',
             headers: {
@@ -1022,7 +1022,7 @@ bot.action('confirm_copy_setting', async (ctx) => {
 ————————————————————
 More latest orders from ${nickName} will be posted in the group.
 
-Telegram Group: TBD*`, {
+Telegram Group: TBD`, {
               parse_mode: 'Markdown',
               ...Markup.inlineKeyboard([
                 [Markup.button.callback('« Back', 'cb_menu')],
