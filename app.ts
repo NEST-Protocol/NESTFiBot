@@ -215,7 +215,8 @@ bot.command('cancel', async (ctx) => {
     parse_mode: 'Markdown',
     ...Markup.inlineKeyboard([
       [Markup.button.callback('« Back', 'cb_menu')],
-    ])
+    ]),
+    ...Markup.removeKeyboard()
   })
 })
 
@@ -276,6 +277,7 @@ ${JSON.stringify(ctx.match)}`, {
         parse_mode: 'Markdown',
         ...Markup.keyboard([
           choice.filter((i) => i >= 200).map((i: number) => String(i)),
+          ['/cancel'],
         ]).oneTime().resize()
       })
     }
@@ -932,7 +934,8 @@ Please type the amount you invest to this trader for each order below.
 `, {
           parse_mode: 'Markdown',
           ...Markup.keyboard([
-            choice.filter((i) => i >= 50).map(i => String(i))
+            choice.filter((i) => i >= 50).map(i => String(i)),
+            ['/cancel'],
           ]).oneTime().resize()
         })
       } else if (single === 0) {
@@ -945,7 +948,8 @@ Please type the amount you invest to this trader for each order below.
 Please enter a valid amount between 50 and your CopyTrading Total Amount.`, {
             parse_mode: 'Markdown',
             ...Markup.keyboard([
-              choice.filter((i) => i >= 50).map(i => String(i))
+              choice.filter((i) => i >= 50).map(i => String(i)),
+              ['/cancel'],
             ])
           })
           return
