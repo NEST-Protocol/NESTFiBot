@@ -502,11 +502,7 @@ Flowers: ${currentFollowers}/${maxFollowers}
 AUM: ${aum} NEST
 7D ROI: ${kolProfitLossRate.toFixed(2)}%
 7D Earnings: ${kolProfitLoss.toFixed(2)} NEST
-7D Flowers PnL: ${followerProfitLoss.toFixed(2)} NEST
-
---- GET ${hostname}/nestfi/copy/kol/info?chainId=${chainId}&walletAddress=${klAddress}
-
-`, {
+7D Flowers PnL: ${followerProfitLoss.toFixed(2)} NEST`, {
         parse_mode: 'Markdown',
         ...Markup.inlineKeyboard([
           [Markup.button.callback('View Copy Trading', `cb_ps_${klAddress}_1`)],
