@@ -47,9 +47,9 @@ bot.start(async (ctx) => {
             [Markup.button.callback('Yes, copy now!', `cb_copy_setting_${klAddress}`)],
           ]))
         } else {
-          ctx.reply(`💢 *Invalid Trader*
+          ctx.reply(`💢 Invalid Trader
 ———————————————
-👤 *Peter Mason*
+👤 Peter Mason
 This person is not on the NESTFi Traders list.
 Please select other traders on NESTFi.`, {
             parse_mode: 'Markdown',
@@ -70,12 +70,12 @@ Please select other traders on NESTFi.`, {
         const unRealizedPnl = data?.value?.unRealizedPnl || 0
         // @ts-ignore
         const profit = data?.value?.profit || 0
-        ctx.reply(`📊 *My Trades*
+        ctx.reply(`📊 My Trades
 ————————————————————
-*Copy trading assets*: ${assets.toFixed(2)} NEST
-*Profit*: ${profit.toFixed(2)} NEST
-*Unrealized PnL*: ${unRealizedPnl.toFixed(2)} NEST
-*Address*: ${address}
+Copy trading assets: ${assets.toFixed(2)} NEST
+Profit: ${profit.toFixed(2)} NEST
+Unrealized PnL: ${unRealizedPnl.toFixed(2)} NEST
+Address: ${address}
 `, {
           parse_mode: 'Markdown',
           ...Markup.inlineKeyboard([
@@ -102,7 +102,7 @@ Please select other traders on NESTFi.`, {
           user: from,
         })
       })
-      ctx.reply(`👛 *Link Wallet*
+      ctx.reply(`👛 Link Wallet
 ————————————————————
 Hi there, before copying trading, please link your wallet on NESTFi.
 
@@ -160,12 +160,12 @@ bot.command('account', async (ctx) => {
       const unRealizedPnl = data?.value?.unRealizedPnl || 0
       // @ts-ignore
       const profit = data?.value?.profit || 0
-      ctx.reply(`📊 *My Trades*
+      ctx.reply(`📊 My Trades
 ————————————————————
-*Copy Trading Assets*: ${assets.toFixed(2)} NEST
-*Profit*: ${profit.toFixed(2)} NEST
-*Unrealized PnL*: ${unRealizedPnl.toFixed(2)} NEST
-*Address*: ${address}
+Copy Trading Assets: ${assets.toFixed(2)} NEST
+Profit: ${profit.toFixed(2)} NEST
+Unrealized PnL: ${unRealizedPnl.toFixed(2)} NEST
+Address: ${address}
 `, {
         parse_mode: 'Markdown',
         ...Markup.inlineKeyboard([
@@ -177,7 +177,7 @@ bot.command('account', async (ctx) => {
     } else {
       ctx.reply(`Hi here! Please authorize me to set up a NESTFi integration. 
       
-*You can use command*: /start`, {
+You can use command: /start`, {
         parse_mode: 'Markdown',
       })
     }
@@ -202,7 +202,7 @@ bot.command('unauthorize', async (ctx) => {
     const address = decodeJson.walletAddress
     ctx.reply(`You are about to cancel your NESTFi authorization in this bot. Is that correct?
     
-*Address*: ${address}`, {
+Address: ${address}`, {
       parse_mode: 'Markdown',
       ...Markup.inlineKeyboard([
         [Markup.button.callback('Yes, deauthorize now.', 'cb_unauthorize')],
@@ -243,7 +243,7 @@ bot.action(/cb_copy_setting_.*/, async (ctx) => {
     const balance = 2000
     // 如果余额不足，则提示充值
     if (balance < 200) {
-      ctx.reply(`💔 *Insufficient Balance*
+      ctx.reply(`💔 Insufficient Balance
 ———————————————
 Your account balance is insufficient. Please deposit first to initiate lightning trading on NESTFi.`, {
         parse_mode: 'Markdown',
@@ -274,12 +274,12 @@ Your account balance is insufficient. Please deposit first to initiate lightning
       choice[0] = Math.floor(balance * 0.5 / 50) * 50;
       choice[1] = Math.floor(balance * 0.75 / 50) * 50;
       choice[2] = Math.floor(balance / 50) * 50;
-      ctx.reply(`💵 *Copy Trading Total Amount*
+      ctx.reply(`💵 Copy Trading Total Amount
 ————————————————————
 Copy from Peter Mason
 
-*My Account Balance*: 0 NEST
-*Copy Trading Total Amount*: 4000 NEST
+My Account Balance: 0 NEST
+Copy Trading Total Amount: 4000 NEST
 
 👇 Please confirm the amount you invest to this trader.
 
@@ -324,12 +324,12 @@ bot.action('cb_menu', async (ctx) => {
       // @ts-ignore
       const profit = data?.value?.profit || 0
 
-      ctx.editMessageText(`📊 *My Trades*
+      ctx.editMessageText(`📊 My Trades
 ————————————————————
-*Copy Trading Assets*: ${assets.toFixed(2)} NEST
-*Profit*: ${profit.toFixed(2)} NEST
-*Unrealized PnL*: ${unRealizedPnl.toFixed(2)} NEST
-*Address*: ${address}
+Copy Trading Assets: ${assets.toFixed(2)} NEST
+Profit: ${profit.toFixed(2)} NEST
+Unrealized PnL: ${unRealizedPnl.toFixed(2)} NEST
+Address: ${address}
 `, {
         parse_mode: 'Markdown',
         ...Markup.inlineKeyboard([
@@ -341,7 +341,7 @@ bot.action('cb_menu', async (ctx) => {
     } else {
       ctx.reply(`Hi ${from.username}! Please authorize me to set up a NESTFi integration.
 
-*You can use command*: /start`, {
+You can use command: /start`, {
         parse_mode: 'Markdown',
       })
     }
@@ -374,10 +374,10 @@ bot.action('cb_account', async (ctx) => {
       const copyBalance = data?.value?.copyBalance?.toFixed(2) || 0
       // @ts-ignore
       const availableBalance = data?.value?.availableBalance?.toFixed(2) || 0
-      ctx.editMessageText(`💸 *My Account*
+      ctx.editMessageText(`💸 My Account
 ————————————————————
-*My Account Balance*: ${availableBalance} NEST
-*My Copy Trading Amount*: ${copyBalance} NEST
+My Account Balance: ${availableBalance} NEST
+My Copy Trading Amount: ${copyBalance} NEST
       `, {
         parse_mode: "Markdown",
         ...Markup.inlineKeyboard([
@@ -389,7 +389,7 @@ bot.action('cb_account', async (ctx) => {
     } else {
       ctx.editMessageText(`Hi ${from.username}! Please authorize me to set up a NESTFi integration.
 
-*You can use command*: /start`, {
+You can use command: /start`, {
         parse_mode: 'Markdown',
       })
     }
@@ -434,7 +434,7 @@ bot.action(/cb_kls_p_.*/, async (ctx) => {
         inlineKeyboard.push([Markup.button.callback('» Next Page', `cb_kls_p_${page + 1}`)])
       }
       inlineKeyboard.push([Markup.button.callback('« Back', 'cb_menu')])
-      ctx.editMessageText(`💪 *My Traders*
+      ctx.editMessageText(`💪 My Traders
 ————————————————————
 These are the traders you follow, together with your investment amount.
 `, {
@@ -444,7 +444,7 @@ These are the traders you follow, together with your investment amount.
     } else {
       ctx.editMessageText(`Hi ${from.username}! Please authorize me to set up a NESTFi integration.
 
-*You can use command*: /start`, {
+You can use command: /start`, {
         parse_mode: 'Markdown',
       })
     }
@@ -472,33 +472,34 @@ bot.action(/cb_kl_.*/, async (ctx) => {
       const decode = jwt.split('.')[1]
       const decodeJson = JSON.parse(Buffer.from(decode, 'base64').toString())
       const address = decodeJson.walletAddress
-      const data = await fetch(`${hostname}/copy/kol/info?chainId=${chainId}&walletAddress=${klAddress}`, {
+      const data = await fetch(`${hostname}/nestfi/copy/kol/info?chainId=${chainId}&walletAddress=${klAddress}`, {
         headers: {
           'Authorization': jwt
         }
       }).then(res => res.json())
-      // // @ts-ignore
-      // const copyBalance = data?.value?.copyBalance?.toFixed(2) || 0
-      // // @ts-ignore
-      // const availableBalance = data?.value?.availableBalance?.toFixed(2) || 0
-      // // @ts-ignore
-      // const profitSharing = data?.value?.profitSharing?.toFixed(2) || 0
-      // // @ts-ignore
-      // const aum = data?.value?.aum?.toFixed(2) || 0
-      // // @ts-ignore
-      // const roi = data?.value?.roi?.toFixed(2) || 0
+      // @ts-ignore
+      const currentFollowers = data?.value?.currentFollowers || 0
+      // @ts-ignore
+      const maxFollowers = data?.value?.maxFollowers || 0
+      // @ts-ignore
+      const aum = data?.value?.followersAssets?.toFixed(2) || 0
+      // @ts-ignore
+      const nickName = data?.value?.nickname || '-'
 
-      ctx.editMessageText(`👤 *Woody*
+      // TODO
+
+      // @ts-ignore
+      ctx.editMessageText(`👤 ${nickName}
 ————————————————————
-*Profit sharing*: 10%
-*Flowers*: 10
-*AUM*: 20000 NEST        
-*7D ROI*: 450%              
-*7D Earnings*: 200NEST
-*7D Flowers PnL*: 4444 NEST
+Profit sharing: 10%
+Flowers: ${currentFollowers}/${maxFollowers}
+AUM: ${aum} NEST
+7D ROI: xxx %
+7D Earnings: xxx NEST
+7D Flowers PnL: xxx NEST
 
---- GET ${hostname}/copy/kol/info?chainId=${chainId}&walletAddress=${klAddress}
-${JSON.stringify(data)}
+--- GET ${hostname}/nestfi/copy/kol/info?chainId=${chainId}&walletAddress=${klAddress}
+
 `, {
         parse_mode: 'Markdown',
         ...Markup.inlineKeyboard([
@@ -510,7 +511,7 @@ ${JSON.stringify(data)}
     } else {
       ctx.editMessageText(`Hi ${from.username}! Please authorize me to set up a NESTFi integration.
 
-*You can use command*: /start`, {
+You can use command: /start`, {
         parse_mode: 'Markdown',
       })
     }
@@ -541,14 +542,14 @@ bot.action(/cb_ps_.*/, async (ctx) => {
       const decodeJson = JSON.parse(Buffer.from(decode, 'base64').toString())
       const address = decodeJson.walletAddress
 
-      ctx.editMessageText(`👩‍💻 *Current Copy Trading Position*
+      ctx.editMessageText(`👩‍💻 Current Copy Trading Position
     
 👤 Copied from Woody
 =============================
-1. *BTC/USDT Long 20x*
-   *Actual Margin*: 6418.25 NEST +14.99%
-   *Open Price*: 1418.25 USDT
-   *Open Time*: 04-15 10:18:15
+1. BTC/USDT Long 20x
+   Actual Margin: 6418.25 NEST +14.99%
+   Open Price: 1418.25 USDT
+   Open Time: 04-15 10:18:15
 =============================
    
 👇 Click the number to manage the corresponding order.
@@ -568,7 +569,7 @@ ${page}
     } else {
       ctx.editMessageText(`Hi ${from.username}! Please authorize me to set up a NESTFi integration.
 
-*You can use command*: /start`, {
+You can use command: /start`, {
         parse_mode: 'Markdown',
       })
     }
@@ -596,15 +597,15 @@ bot.action(/cb_klh_.*/, async (ctx) => {
       const decode = jwt.split('.')[1]
       const decodeJson = JSON.parse(Buffer.from(decode, 'base64').toString())
       const address = decodeJson.walletAddress
-      ctx.editMessageText(`🧩 *History*
+      ctx.editMessageText(`🧩 History
 ————————————————————
-*BTC/USDT Long 20x*
-*Actual Margin*: 6418.25 NEST +14.99%
-*Open Price*: 1418.25 USDT
-*Close Price*: 1320.99 USDT
-*Liq Price*: 1400.00 USDT
-*Open Time*: 04-15 10:18:15
-*Close Time*: 04-15 10:18:15
+BTC/USDT Long 20x
+Actual Margin: 6418.25 NEST +14.99%
+Open Price: 1418.25 USDT
+Close Price: 1320.99 USDT
+Liq Price: 1400.00 USDT
+Open Time: 04-15 10:18:15
+Close Time: 04-15 10:18:15
 
 --- klAddress
 ${klAddress}
@@ -620,7 +621,7 @@ ${page}
     } else {
       ctx.editMessageText(`Hi ${from.username}! Please authorize me to set up a NESTFi integration.
 
-*You can use command*: /start`, {
+You can use command: /start`, {
         parse_mode: 'Markdown',
       })
     }
@@ -647,11 +648,11 @@ bot.action(/cb_r_stop_kl_.*/, async (ctx) => {
       const decode = jwt.split('.')[1]
       const decodeJson = JSON.parse(Buffer.from(decode, 'base64').toString())
       const address = decodeJson.walletAddress
-      ctx.editMessageText(`🙅 *Stop Copying*
+      ctx.editMessageText(`🙅 Stop Copying
 ————————————————————
-*Total Copy Amount*: 6000 NEST
-*Open Interest*: 5000 NEST
-*Total Profit*: 6900 NEST
+Total Copy Amount: 6000 NEST
+Open Interest: 5000 NEST
+Total Profit: 6900 NEST
 
 _End copy will liquidate your position with market orders, and automatically return the assets to your Account after deducting the profits sharing._
 
@@ -669,7 +670,7 @@ ${klAddress}
     } else {
       ctx.editMessageText(`Hi ${from.username}! Please authorize me to set up a NESTFi integration.
 
-*You can use command*: /start`, {
+You can use command: /start`, {
         parse_mode: 'Markdown',
       })
     }
@@ -709,7 +710,7 @@ ${klAddress}`, {
     } else {
       ctx.editMessageText(`Hi ${from.username}! Please authorize me to set up a NESTFi integration.
 
-*You can use command*: /start`, {
+You can use command: /start`, {
         parse_mode: 'Markdown',
       })
     }
@@ -737,14 +738,14 @@ bot.action(/cb_oi_.*/, async (ctx) => {
       const decode = jwt.split('.')[1]
       const decodeJson = JSON.parse(Buffer.from(decode, 'base64').toString())
       const address = decodeJson.walletAddress
-      ctx.editMessageText(`🍯 *Position 1*
+      ctx.editMessageText(`🍯 Position 1
 ————————————————————
-*BTC/USDT Long 20x*
-*Actual Margin*: 6418.25 NEST +14.99%
-*Open Price*: 1418.25 USDT
-*Market Price*: 1320.99 USDT
-*Liq Price*: 1400.00 USDT
-*Open Time*: 04-15 10:18:15
+BTC/USDT Long 20x
+Actual Margin: 6418.25 NEST +14.99%
+Open Price: 1418.25 USDT
+Market Price: 1320.99 USDT
+Liq Price: 1400.00 USDT
+Open Time: 04-15 10:18:15
 
 -- oi
 ${oi}
@@ -759,7 +760,7 @@ ${oi}
     } else {
       ctx.editMessageText(`Hi ${from.username}! Please authorize me to set up a NESTFi integration.
 
-*You can use command*: /start`, {
+You can use command: /start`, {
         parse_mode: 'Markdown',
       })
     }
@@ -789,14 +790,14 @@ bot.action(/cb_close_oi_.*/, async (ctx) => {
       const address = decodeJson.walletAddress
 
       ctx.answerCbQuery('Close Successfully')
-      ctx.editMessageText(`👩‍💻 *Current Copy Trading Position*
+      ctx.editMessageText(`👩‍💻 Current Copy Trading Position
     
 👤 Copied from Woody
 =============================
-1. *BTC/USDT Long 20x*
-   *Actual Margin*: 6418.25 NEST +14.99%
-   *Open Price*: 1418.25 USDT
-   *Open Time*: 04-15 10:18:15
+1. BTC/USDT Long 20x
+   Actual Margin: 6418.25 NEST +14.99%
+   Open Price: 1418.25 USDT
+   Open Time: 04-15 10:18:15
 =============================
    
 👇 Click the number to manage the corresponding order.
@@ -814,7 +815,7 @@ ${oi}
     } else {
       ctx.editMessageText(`Hi ${from.username}! Please authorize me to set up a NESTFi integration.
 
-*You can use command*: /start`, {
+You can use command: /start`, {
         parse_mode: 'Markdown',
       })
     }
@@ -855,9 +856,9 @@ bot.action('confirm_copy_setting', async (ctx) => {
       if (data.category === 'cb_copy_setting') {
         let {kl, total, single, balance} = data.value
         // TODO: 调用接口
-        ctx.editMessageText(`🥳 *Successfully Copy Trading*
+        ctx.editMessageText(`🥳 Successfully Copy Trading
 ————————————————————
-More latest orders from 👤 *Peter Mason* will be posted in the group.
+More latest orders from 👤 Peter Mason will be posted in the group.
 
 Telegram Group: copytade@group`, {
           parse_mode: 'Markdown',
@@ -912,7 +913,7 @@ bot.on("message", async (ctx) => {
       let {kl, total, single, balance} = data.value
       if (total === 0) {
         if (Number(input) < 200 || Number(input) > balance) {
-          ctx.reply(`💢 *Invalid Amount*
+          ctx.reply(`💢 Invalid Amount
 Please enter a valid amount between 200 and your account balance.`, {
             parse_mode: 'Markdown',
           })
@@ -936,7 +937,7 @@ Please enter a valid amount between 200 and your account balance.`, {
         choice[0] = Math.floor(Number(input) * 0.1 / 50) * 50
         choice[1] = Math.floor(Number(input) * 0.2 / 50) * 50
         choice[2] = Math.floor(Number(input) * 0.4 / 50) * 50
-        ctx.reply(`💵 *Copy Trading Each Order*
+        ctx.reply(`💵 Copy Trading Each Order
 ————————————————————
 👤 Peter Mason
 
@@ -954,7 +955,7 @@ Please type the amount you invest to this trader for each order below.
           choice[0] = Math.floor(total * 0.1 / 50) * 50
           choice[1] = Math.floor(total * 0.2 / 50) * 50
           choice[2] = Math.floor(total * 0.4 / 50) * 50
-          ctx.reply(`💢 *Invalid Amount*
+          ctx.reply(`💢 Invalid Amount
 Please enter a valid amount between 50 and your CopyTrading Total Amount.`, {
             parse_mode: 'Markdown',
             ...Markup.keyboard([
@@ -977,11 +978,11 @@ Please enter a valid amount between 50 and your CopyTrading Total Amount.`, {
             }
           })
         })
-        ctx.reply(`👩‍💻 *Confirm*
+        ctx.reply(`👩‍💻 Confirm
 ————————————————————
 👤 Peter Mason
-*Copy Trading Total Amount*: ${total} NEST 
-*Copy Trading Each Order*: ${input} NEST 
+Copy Trading Total Amount: ${total} NEST 
+Copy Trading Each Order: ${input} NEST 
 
 Are you sure?`, {
           parse_mode: 'Markdown',
