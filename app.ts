@@ -385,6 +385,7 @@ bot.action('cb_account', async (ctx) => {
 bot.action(/cb_kls_p_.*/, async (ctx) => {
   // @ts-ignore
   const {from, data: action} = ctx.update.callback_query;
+  const page = Number(action.split('_')[3])
   try {
     const jwt = await fetch(`${process.env.UPSTASH_REDIS_REST_URL}/get/auth:${from.id}`, {
       headers: {
@@ -409,13 +410,14 @@ These are the traders you follow, together with your investment amount.
 
 --- GET /nestfi/copy/follower/kolList?chainId=${chainId}
 ${JSON.stringify(data)}
---- action, callback_query.data
-${JSON.stringify(action)}
+--- page
+${page}
 `, {
         parse_mode: 'Markdown',
         ...Markup.inlineKeyboard([
-          [Markup.button.callback('Jack: Haven’t  Started', 'cb_kl_KL1')],
+          [Markup.button.callback('Jack: Haven’t  Started', `cb_kl_KL1`)],
           [Markup.button.callback('Woody: 10000 NEST', 'cb_kl_KL2')],
+          [Markup.button.callback('» Next Page', `cb_kls_p_${page + 1}`)],
           [Markup.button.callback('« Back', 'cb_menu')],
         ])
       })
@@ -436,6 +438,7 @@ ${JSON.stringify(action)}
 bot.action(/cb_kl_.*/, async (ctx) => {
   // @ts-ignore
   const {from, data: action} = ctx.update.callback_query;
+  const klAddress = action.split('_')[2]
   try {
     const jwt = await fetch(`${process.env.UPSTASH_REDIS_REST_URL}/get/auth:${from.id}`, {
       headers: {
@@ -476,18 +479,22 @@ bot.action(/cb_kl_.*/, async (ctx) => {
 *7D Earnings*: 200NEST
 *7D Flowers PnL*: 4444 NEST
 
----ctx.match
-${JSON.stringify(ctx.match)}
+--- klAddress
+${klAddress}
 `, {
         parse_mode: 'Markdown',
         ...Markup.inlineKeyboard([
-          [Markup.button.callback('View Copy Trading', 'cb_ps_KL1_0')],
-          [Markup.button.callback('Stop Copying', 'cb_r_stop_kl_KL1'), Markup.button.callback('Settings', 'cb_copy_setting_KL1')],
+          [Markup.button.callback('View Copy Trading', `cb_ps_${klAddress}_1`)],
+          [Markup.button.callback('Stop Copying', `cb_r_stop_kl_${klAddress}`), Markup.button.callback('Settings', `cb_copy_setting_${klAddress}`)],
           [Markup.button.callback('« Back', 'cb_kls_p_1')]
         ])
       })
     } else {
+      ctx.editMessageText(`Hi ${from.username}! Please authorize me to set up a NESTFi integration.
 
+*You can use command*: /start`, {
+        parse_mode: 'Markdown',
+      })
     }
   } catch (e) {
     ctx.answerCbQuery('Something went wrong.')
@@ -500,6 +507,8 @@ ${JSON.stringify(ctx.match)}
 bot.action(/cb_ps_.*/, async (ctx) => {
   // @ts-ignore
   const {from, data: action} = ctx.update.callback_query;
+  const klAddress = action.split('_')[2]
+  const page = Number(action.split('_')[3])
   try {
     const jwt = await fetch(`${process.env.UPSTASH_REDIS_REST_URL}/get/auth:${from.id}`, {
       headers: {
@@ -527,26 +536,36 @@ bot.action(/cb_ps_.*/, async (ctx) => {
    
 👇 Click the number to manage the corresponding order.
 
--- ctx.match
-${JSON.stringify(ctx.match)}
+--- klAddress
+${klAddress}
+--- page
+${page}
   `, {
         parse_mode: 'Markdown',
         ...Markup.inlineKeyboard([
           [Markup.button.callback('1', 'cb_oi_1'), Markup.button.callback('2', 'cb_oi_2'), Markup.button.callback('3', 'cb_oi_3'), Markup.button.callback('4', 'cb_oi_1'), Markup.button.callback('5', 'cb_oi_2')],
-          [Markup.button.callback('History', 'cb_klh_KL1_1'), Markup.button.callback('« Back', 'cb_kl_KL1')],
+          [Markup.button.callback('» Next Page', `cb_ps_${klAddress}_${page + 1}`)],
+          [Markup.button.callback('History', `cb_klh_${klAddress}_1`), Markup.button.callback('« Back', `cb_kl_${klAddress}`)],
         ])
       })
     } else {
-      // TODO
+      ctx.editMessageText(`Hi ${from.username}! Please authorize me to set up a NESTFi integration.
+
+*You can use command*: /start`, {
+        parse_mode: 'Markdown',
+      })
     }
   } catch (e) {
     ctx.answerCbQuery('Something went wrong.')
   }
 })
 
+// cb_klh_[KL]_[PAGE]
 bot.action(/cb_klh_.*/, async (ctx) => {
   // @ts-ignore
   const {from, data: action} = ctx.update.callback_query;
+  const klAddress = action.split('_')[2]
+  const page = Number(action.split('_')[3])
   try {
     const jwt = await fetch(`${process.env.UPSTASH_REDIS_REST_URL}/get/auth:${from.id}`, {
       headers: {
@@ -570,26 +589,34 @@ bot.action(/cb_klh_.*/, async (ctx) => {
 *Open Time*: 04-15 10:18:15
 *Close Time*: 04-15 10:18:15
 
--- ctx.match
-${JSON.stringify(ctx.match)}
+--- klAddress
+${klAddress}
+--- page
+${page}
 `, {
         parse_mode: 'Markdown',
         ...Markup.inlineKeyboard([
-          [Markup.button.callback('» Next Page', `cb_klh_KL1_2`)],
-          [Markup.button.callback('« Back', 'cb_ps_KL1_1')],
+          [Markup.button.callback('» Next Page', `cb_klh_${klAddress}_${page + 1}`)],
+          [Markup.button.callback('« Back', `cb_ps_${klAddress}_1`)],
         ])
       })
     } else {
-      // TODO
+      ctx.editMessageText(`Hi ${from.username}! Please authorize me to set up a NESTFi integration.
+
+*You can use command*: /start`, {
+        parse_mode: 'Markdown',
+      })
     }
   } catch (e) {
     ctx.answerCbQuery('Something went wrong.')
   }
 })
 
+// cb_r_stop_kl_[KL]
 bot.action(/cb_r_stop_kl_.*/, async (ctx) => {
   // @ts-ignore
   const {from, data: action} = ctx.update.callback_query;
+  const klAddress = action.split('_')[4]
   try {
     const jwt = await fetch(`${process.env.UPSTASH_REDIS_REST_URL}/get/auth:${from.id}`, {
       headers: {
@@ -613,26 +640,32 @@ _End copy will liquidate your position with market orders, and automatically ret
 
 ❓Are you sure to stop copying?
 
--- ctx.match
-${JSON.stringify(ctx.match)}
+-- klAddress
+${klAddress}
     `, {
         parse_mode: 'Markdown',
         ...Markup.inlineKeyboard([
-          [Markup.button.callback('Nope, I change my mind.', `cb_kl_KL1`)],
-          [Markup.button.callback('Yes, stop copying trading.', `cb_stop_kl_KL1`)],
+          [Markup.button.callback('Nope, I change my mind.', `cb_kl_${klAddress}`)],
+          [Markup.button.callback('Yes, stop copying trading.', `cb_stop_kl_${klAddress}`)],
         ])
       })
     } else {
-      // TODO
+      ctx.editMessageText(`Hi ${from.username}! Please authorize me to set up a NESTFi integration.
+
+*You can use command*: /start`, {
+        parse_mode: 'Markdown',
+      })
     }
   } catch (e) {
     ctx.answerCbQuery('Something went wrong.')
   }
 })
 
+// cb_stop_kl_[KL]
 bot.action(/cb_stop_kl_.*/, async (ctx) => {
   // @ts-ignore
   const {from, data: action} = ctx.update.callback_query;
+  const klAddress = action.split('_')[3]
   try {
     const jwt = await fetch(`${process.env.UPSTASH_REDIS_REST_URL}/get/auth:${from.id}`, {
       headers: {
@@ -649,15 +682,19 @@ bot.action(/cb_stop_kl_.*/, async (ctx) => {
 
       ctx.editMessageText(`🥳 Stop Copying Successfully!
     
--- ctx.match
-${JSON.stringify(ctx.match)}`, {
+-- klAddress
+${klAddress}`, {
         parse_mode: 'Markdown',
         ...Markup.inlineKeyboard([
           [Markup.button.callback('« Back', 'cb_kls_p_1')],
         ])
       })
     } else {
-      // TODO
+      ctx.editMessageText(`Hi ${from.username}! Please authorize me to set up a NESTFi integration.
+
+*You can use command*: /start`, {
+        parse_mode: 'Markdown',
+      })
     }
   } catch (e) {
     ctx.answerCbQuery('Something went wrong.')
@@ -669,6 +706,7 @@ ${JSON.stringify(ctx.match)}`, {
 bot.action(/cb_oi_.*/, async (ctx) => {
   // @ts-ignore
   const {from, data: action} = ctx.update.callback_query;
+  const oi = action.split('_')[2]
   try {
     const jwt = await fetch(`${process.env.UPSTASH_REDIS_REST_URL}/get/auth:${from.id}`, {
       headers: {
@@ -691,17 +729,22 @@ bot.action(/cb_oi_.*/, async (ctx) => {
 *Liq Price*: 1400.00 USDT
 *Open Time*: 04-15 10:18:15
 
--- ctx.match
-${JSON.stringify(ctx.match)}
+-- oi
+${oi}
 `, {
         parse_mode: 'Markdown',
         ...Markup.inlineKeyboard([
           [Markup.button.callback('Close the Position', 'cb_close_oi_1')],
+          // TODO
           [Markup.button.callback('« Back', 'cb_ps_KL_1')],
         ])
       })
     } else {
-      // TODO
+      ctx.editMessageText(`Hi ${from.username}! Please authorize me to set up a NESTFi integration.
+
+*You can use command*: /start`, {
+        parse_mode: 'Markdown',
+      })
     }
   } catch (e) {
     ctx.answerCbQuery('Something went wrong.')
@@ -713,6 +756,7 @@ ${JSON.stringify(ctx.match)}
 bot.action(/cb_close_oi_.*/, async (ctx) => {
   // @ts-ignore
   const {from, data: action} = ctx.update.callback_query;
+  const oi = action.split('_')[3]
   try {
     const jwt = await fetch(`${process.env.UPSTASH_REDIS_REST_URL}/get/auth:${from.id}`, {
       headers: {
@@ -740,17 +784,22 @@ bot.action(/cb_close_oi_.*/, async (ctx) => {
    
 👇 Click the number to manage the corresponding order.
 
--- ctx.match
-${JSON.stringify(ctx.match)}
+--- oi
+${oi}
   `, {
         parse_mode: 'Markdown',
         ...Markup.inlineKeyboard([
           [Markup.button.callback('1', 'cb_oi_1'), Markup.button.callback('2', 'cb_oi_2'), Markup.button.callback('3', 'cb_oi_3'), Markup.button.callback('4', 'cb_oi_1'), Markup.button.callback('5', 'cb_oi_2')],
+          // TODO
           [Markup.button.callback('History', 'cb_klh_KL1_1'), Markup.button.callback('« Back', 'cb_kl_KL1')],
         ])
       })
     } else {
-      // TODO
+      ctx.editMessageText(`Hi ${from.username}! Please authorize me to set up a NESTFi integration.
+
+*You can use command*: /start`, {
+        parse_mode: 'Markdown',
+      })
     }
   } catch (e) {
     ctx.answerCbQuery('Something went wrong.')
