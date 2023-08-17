@@ -542,9 +542,9 @@ bot.action(/cb_ps_.*/, async (ctx) => {
       const decodeJson = JSON.parse(Buffer.from(decode, 'base64').toString())
       const address = decodeJson.walletAddress
 
-      ctx.editMessageText(`👩‍💻 Current Copy Trading Position
+      ctx.editMessageText(`🎯 Current Copy Trading Position
     
-👤 Copied from Woody
+Copied from Woody
 =============================
 1. BTC/USDT Long 20x
    Actual Margin: 6418.25 NEST +14.99%
@@ -790,9 +790,9 @@ bot.action(/cb_close_oi_.*/, async (ctx) => {
       const address = decodeJson.walletAddress
 
       ctx.answerCbQuery('Close Successfully')
-      ctx.editMessageText(`👩‍💻 Current Copy Trading Position
+      ctx.editMessageText(`🎯 Current Copy Trading Position
     
-👤 Copied from Woody
+Copied from Woody
 =============================
 1. BTC/USDT Long 20x
    Actual Margin: 6418.25 NEST +14.99%
