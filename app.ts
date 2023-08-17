@@ -594,28 +594,24 @@ bot.action(/cb_ps_.*/, async (ctx) => {
       const decode = jwt.split('.')[1]
       const decodeJson = JSON.parse(Buffer.from(decode, 'base64').toString())
       const address = decodeJson.walletAddress
-      let data, length, showData
+      let data;
       if (klAddress === "all") {
-        data = await fetch(`${hostname}/nestfi/op/future/list?&status=2&chainId=${chainId}&walletAddress=${address}`, {
-          headers: {
-            'Authorization': jwt
-          }
-        }).then(res => res.json())
-        // @ts-ignore
-        const copy_data = data?.value?.filter((item: any) => item.copy === true)
-        length = copy_data.length || 0
-        showData = copy_data.slice((page - 1) * 5, page * 5)
-      } else {
         data = await fetch(`${hostname}/nestfi/copy/follower/future/list?chainId=${chainId}&copyKolAddress=${klAddress}`, {
           headers: {
             'Authorization': jwt
           }
         }).then(res => res.json())
-        // @ts-ignore
-        length = data.value.length || 0
-        // @ts-ignore
-        showData = data.value.slice((page - 1) * 5, page * 5)
+      } else {
+        data = await fetch(`${hostname}/nestfi/copy/follower/future/list?chainId=${chainId}`, {
+          headers: {
+            'Authorization': jwt
+          }
+        }).then(res => res.json())
       }
+      // @ts-ignore
+      const length = data?.value?.length || 0
+      // @ts-ignore
+      const showData = data?.value?.slice((page - 1) * 5, page * 5)
       let inlineKeyboard: any [] = []
       const buttons = showData.map((item: any, index: number) => (
         Markup.button.callback(`${index + 1 + (page - 1) * 5}`, `cb_oi_${item.id}`)
@@ -672,6 +668,8 @@ bot.action(/cb_klh_.*/, async (ctx) => {
       const decode = jwt.split('.')[1]
       const decodeJson = JSON.parse(Buffer.from(decode, 'base64').toString())
       const address = decodeJson.walletAddress
+
+
 
 
       ctx.editMessageText(`🧩 History
@@ -898,43 +896,47 @@ bot.action(/cb_close_oi_.*/, async (ctx) => {
       const decodeJson = JSON.parse(Buffer.from(decode, 'base64').toString())
       const address = decodeJson.walletAddress
       const page = 1
-      // TODO
-      ctx.answerCbQuery('Close Successfully')
-      let data, length, showData
-      if (klAddress === 'all') {
-        data = await fetch(`${hostname}/nestfi/op/future/list?&status=2&chainId=${chainId}&walletAddress=${address}`, {
-          headers: {
-            'Authorization': jwt
-          }
-        }).then(res => res.json())
+      const request = await fetch(`${hostname}/nestfi/op/future/close?id=${oi}`, {
+        headers: {
+          'Authorization': jwt
+        }
+      }).then(res => res.json())
         // @ts-ignore
-        const copy_data = data?.value?.filter((item: any) => item.copy === true)
-        length = copy_data.length || 0
-        showData = copy_data.slice((page - 1) * 5, page * 5)
-      } else {
-        data = await fetch(`${hostname}/nestfi/copy/follower/future/list?chainId=${chainId}&copyKolAddress=${klAddress}`, {
-          headers: {
-            'Authorization': jwt
-          }
-        }).then(res => res.json())
-        // @ts-ignore
-        length = data.value.length || 0
-        // @ts-ignore
-        showData = data.value.slice((page - 1) * 5, page * 5)
-      }
+        .then(data => data?.value || false)
 
-      let inlineKeyboard: any [] = []
-      const buttons = showData.map((item: any, index: number) => (
-        Markup.button.callback(`${index + 1 + (page - 1) * 5}`, `cb_oi_${item.id}`)
-      ))
-      if (buttons.length > 0) {
-        inlineKeyboard.push(buttons)
-      }
-      if (page * 5 < length) {
-        inlineKeyboard.push([Markup.button.callback('» Next Page', `cb_ps_${klAddress}_${page + 1}`)])
-      }
-      inlineKeyboard.push([Markup.button.callback('History', `cb_klh_${klAddress}_1`), Markup.button.callback('« Back', `cb_kl_${klAddress}`)])
-      ctx.editMessageText(`🎯 Current Copy Trading Position
+      if (request) {
+        ctx.answerCbQuery('Close Successfully')
+        // TODO
+        let data;
+        if (klAddress === "all") {
+          data = await fetch(`${hostname}/nestfi/copy/follower/future/list?chainId=${chainId}&copyKolAddress=${klAddress}`, {
+            headers: {
+              'Authorization': jwt
+            }
+          }).then(res => res.json())
+        } else {
+          data = await fetch(`${hostname}/nestfi/copy/follower/future/list?chainId=${chainId}`, {
+            headers: {
+              'Authorization': jwt
+            }
+          }).then(res => res.json())
+        }
+        // @ts-ignore
+        const length = data?.value?.length || 0
+        // @ts-ignore
+        const showData = data?.value?.slice((page - 1) * 5, page * 5)
+        let inlineKeyboard: any [] = []
+        const buttons = showData.map((item: any, index: number) => (
+          Markup.button.callback(`${index + 1 + (page - 1) * 5}`, `cb_oi_${item.id}`)
+        ))
+        if (buttons.length > 0) {
+          inlineKeyboard.push(buttons)
+        }
+        if (page * 5 < length) {
+          inlineKeyboard.push([Markup.button.callback('» Next Page', `cb_ps_${klAddress}_${page + 1}`)])
+        }
+        inlineKeyboard.push([Markup.button.callback('History', `cb_klh_${klAddress}_1`), Markup.button.callback('« Back', `cb_kl_${klAddress}`)])
+        ctx.editMessageText(`🎯 Current Copy Trading Position
       
 ${showData.length > 0 ? `${showData.map((item: any, index: number) => (`
 =============================
@@ -945,9 +947,12 @@ ${index + 1 + (page - 1) * 5}. ${item?.product || '-'} ${item?.direction ? 'Long
 `)).join('\n')}
 👇 Click the number to manage the corresponding order.
 ` : 'No copy trading position yet!'}`, {
-        parse_mode: 'Markdown',
-        ...Markup.inlineKeyboard(inlineKeyboard)
-      })
+          parse_mode: 'Markdown',
+          ...Markup.inlineKeyboard(inlineKeyboard)
+        })
+      } else {
+        ctx.answerCbQuery('Something went wrong.')
+      }
     } else {
       ctx.editMessageText(`Hi ${from.username}! Please authorize me to set up a NESTFi integration.
 
