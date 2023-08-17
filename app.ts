@@ -12,7 +12,7 @@ bot.start(async (ctx) => {
   const from = ctx.from;
   const message_id = ctx.message.message_id;
   try {
-    const code = ctx.startPayload;
+    const klAddress = ctx.startPayload;
 
     const jwt = await fetch(`${process.env.UPSTASH_REDIS_REST_URL}/get/auth:${from.id}`, {
       headers: {
@@ -26,14 +26,25 @@ bot.start(async (ctx) => {
       const decodeJson = JSON.parse(Buffer.from(decode, 'base64').toString())
       const address = decodeJson.walletAddress
 
-      if (code && isAddress(code)) {
-        // TODO
-        const isKol = true;
+      if (klAddress && isAddress(klAddress)) {
+        const isKol = await fetch(`${hostname}/nestfi/copy/kol/isKol?walletAddress=${klAddress}`, {
+          headers: {
+            'Authorization': jwt
+          }
+        }).then(res => res.json())
+          // @ts-ignore
+          .then(data => data?.value || false)
         if (isKol) {
-          // TODO
-          ctx.reply(`Would you like to copy Trader 👤 Peter Mason's positions immediately?`, Markup.inlineKeyboard([
+          const data = await fetch(`${hostname}/nestfi/copy/kol/info?chainId=${chainId}&walletAddress=${klAddress}`, {
+            headers: {
+              'Authorization': jwt
+            }
+          }).then(res => res.json())
+          // @ts-ignore
+          const nickname = data?.value?.nickname || 'No name'
+          ctx.reply(`Would you like to copy Trader 👤 ${nickname}'s positions immediately?`, Markup.inlineKeyboard([
             [Markup.button.callback('Nope, I change my mind.', 'cb_menu')],
-            [Markup.button.callback('Yes, copy now!', 'cb_copy_setting_KL1')],
+            [Markup.button.callback('Yes, copy now!', `cb_copy_setting_${klAddress}`)],
           ]))
         } else {
           ctx.reply(`💢 *Invalid Trader*
@@ -75,9 +86,9 @@ Please select other traders on NESTFi.`, {
         })
       }
     } else {
-      if (code && isAddress(code)) {
+      if (klAddress && isAddress(klAddress)) {
         ctx.reply(`👩‍💻 Once you've linked your wallet, click "Copy Now" to continue with the copy trading.`, Markup.inlineKeyboard([
-          [Markup.button.callback(`Copy Now`, `https://t.me/nestfi.org?start=${code}`)],
+          [Markup.button.callback(`Copy Now`, `https://t.me/nestfi.org?start=${klAddress}`)],
         ]))
       }
       const nonce = Math.random().toString(36).substring(2, 18);
@@ -530,7 +541,6 @@ bot.action(/cb_ps_.*/, async (ctx) => {
       const decodeJson = JSON.parse(Buffer.from(decode, 'base64').toString())
       const address = decodeJson.walletAddress
 
-      // const page = ctx.match[1].split('_')[1]
       ctx.editMessageText(`👩‍💻 *Current Copy Trading Position*
     
 👤 Copied from Woody
