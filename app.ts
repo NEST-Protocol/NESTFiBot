@@ -520,7 +520,7 @@ You can use command: /start`, {
   }
 })
 
-// 查看某个KL下面的所有当前的仓位
+// 查看某个KL下面的所有当前的仓位, KL 可为 all
 // cb_ps_[KL]_[PAGE]
 // GET /copy/follower/future/list
 bot.action(/cb_ps_.*/, async (ctx) => {
@@ -541,12 +541,17 @@ bot.action(/cb_ps_.*/, async (ctx) => {
       const decode = jwt.split('.')[1]
       const decodeJson = JSON.parse(Buffer.from(decode, 'base64').toString())
       const address = decodeJson.walletAddress
+      let data
+      if (klAddress === "all") {
+        // TODO
+      } else {
+        data = await fetch(`${hostname}/nestfi/copy/follower/future/list?chainId=${chainId}&copyKolAddress=${klAddress}`, {
+          headers: {
+            'Authorization': jwt
+          }
+        }).then(res => res.json())
+      }
 
-      const data = await fetch(`${hostname}/nestfi/copy/follower/future/list?chainId=${chainId}&copyKolAddress=${klAddress}`, {
-        headers: {
-          'Authorization': jwt
-        }
-      }).then(res => res.json())
       // @ts-ignore
       const length = data.value.length || 0
       // @ts-ignore
@@ -564,16 +569,15 @@ bot.action(/cb_ps_.*/, async (ctx) => {
       inlineKeyboard.push([Markup.button.callback('History', `cb_klh_${klAddress}_1`), Markup.button.callback('« Back', `cb_kl_${klAddress}`)])
       ctx.editMessageText(`🎯 Current Copy Trading Position
       
-${showData.map((item: any, index: number) => (`
+${showData.length > 0 ? `${showData.map((item: any, index: number) => (`
 =============================
 ${index + 1 + (page - 1) * 5}. BTC/USDT Long 20x
    Actual Margin: 6418.25 NEST +14.99%
    Open Price: 1418.25 USDT
    Open Time: 04-15 10:18:15
 `)).join('\n')}
-
 👇 Click the number to manage the corresponding order.
-  `, {
+` : ''}`, {
         parse_mode: 'Markdown',
         ...Markup.inlineKeyboard(inlineKeyboard)
       })
@@ -709,7 +713,6 @@ bot.action(/cb_stop_kl_.*/, async (ctx) => {
       const decode = jwt.split('.')[1]
       const decodeJson = JSON.parse(Buffer.from(decode, 'base64').toString())
       const address = decodeJson.walletAddress
-      // TODO: 请求报错
       const data = await fetch(`${hostname}/nestfi/copy/follower/cancle?chainId=${chainId}&copyKolAddress=${klAddress}`, {
         method: 'POST',
         headers: {
@@ -742,11 +745,12 @@ You can use command: /start`, {
 })
 
 // 我的仓位
-// cb_po_[ORDER_INDEX]
+// cb_po_[ORDER_INDEX]_[KL]
 bot.action(/cb_oi_.*/, async (ctx) => {
   // @ts-ignore
   const {from, data: action} = ctx.update.callback_query;
   const oi = action.split('_')[2]
+  const klAddress = action.split('_')[3]
   try {
     const jwt = await fetch(`${process.env.UPSTASH_REDIS_REST_URL}/get/auth:${from.id}`, {
       headers: {
@@ -760,23 +764,41 @@ bot.action(/cb_oi_.*/, async (ctx) => {
       const decode = jwt.split('.')[1]
       const decodeJson = JSON.parse(Buffer.from(decode, 'base64').toString())
       const address = decodeJson.walletAddress
-      ctx.editMessageText(`🍯 Position 1
-————————————————————
-BTC/USDT Long 20x
-Actual Margin: 6418.25 NEST +14.99%
-Open Price: 1418.25 USDT
-Market Price: 1320.99 USDT
-Liq Price: 1400.00 USDT
-Open Time: 04-15 10:18:15
 
--- oi
-${oi}
-`, {
+      const data = await fetch(`${hostname}/nestfi/op/future/getById/${oi}`, {
+        headers: {
+          'Authorization': jwt,
+        }
+      }).then(res => res.json())
+
+      // @ts-ignore
+      const product = data?.value?.product || '-'
+      // @ts-ignore
+      const direction = data?.value?.direction ? 'Long' : 'Short'
+      // @ts-ignore
+      const leverage = data?.value?.leverage || '-'
+      // @ts-ignore
+      const margin = data?.value?.margin.toFixed(2) || '-'
+      // @ts-ignore
+      const orderPrice = data?.value?.orderPrice.toFixed(2) || '-'
+      // @ts-ignore
+      const marketPrice = data?.value?.marketPrice.toFixed(2) || '-'
+      // @ts-ignore
+      const openTime = new Date(data?.value?.timestamp * 1000 || 0).toLocaleString()
+
+      // TODO
+      ctx.editMessageText(`🍯 Position ${oi}
+————————————————————
+${product} ${direction} ${leverage}x
+Actual Margin: ${margin} NEST +14.99%
+Open Price: ${orderPrice} USDT
+Market Price: ${marketPrice} USDT
+Liq Price: 1400.00 USDT
+Open Time: ${openTime}`, {
         parse_mode: 'Markdown',
         ...Markup.inlineKeyboard([
-          [Markup.button.callback('Close the Position', 'cb_close_oi_1')],
-          // TODO
-          [Markup.button.callback('« Back', 'cb_ps_KL_1')],
+          [Markup.button.callback('Close the Position', `cb_close_oi_${oi}`)],
+          [Markup.button.callback('« Back', `cb_ps_${klAddress}_1`)],
         ])
       })
     } else {
@@ -792,11 +814,12 @@ You can use command: /start`, {
 })
 
 // 关闭订单
-// cb_close_oi_[ORDER_INDEX]
+// cb_close_oi_[ORDER_INDEX]_[KL]
 bot.action(/cb_close_oi_.*/, async (ctx) => {
   // @ts-ignore
   const {from, data: action} = ctx.update.callback_query;
   const oi = action.split('_')[3]
+  const klAddress = action.split('_')[4]
   try {
     const jwt = await fetch(`${process.env.UPSTASH_REDIS_REST_URL}/get/auth:${from.id}`, {
       headers: {
@@ -810,29 +833,44 @@ bot.action(/cb_close_oi_.*/, async (ctx) => {
       const decode = jwt.split('.')[1]
       const decodeJson = JSON.parse(Buffer.from(decode, 'base64').toString())
       const address = decodeJson.walletAddress
-
+      const page = 1
+      // TODO
+      const klAddress = ''
       ctx.answerCbQuery('Close Successfully')
+
+      const data = await fetch(`${hostname}/nestfi/copy/follower/future/list?chainId=${chainId}&copyKolAddress=${klAddress}`, {
+        headers: {
+          'Authorization': jwt
+        }
+      }).then(res => res.json())
+      // @ts-ignore
+      const length = data.value.length || 0
+      // @ts-ignore
+      const showData = data.value.slice((page - 1) * 5, page * 5)
+      let inlineKeyboard: any [] = []
+      const buttons = showData.map((item: any, index: number) => (
+        Markup.button.callback(`${index + 1 + (page - 1) * 5}`, `cb_oi_${item.id}`)
+      ))
+      if (buttons.length > 0) {
+        inlineKeyboard.push(buttons)
+      }
+      if (page * 5 < length) {
+        inlineKeyboard.push([Markup.button.callback('» Next Page', `cb_ps_${klAddress}_${page + 1}`)])
+      }
+      inlineKeyboard.push([Markup.button.callback('History', `cb_klh_${klAddress}_1`), Markup.button.callback('« Back', `cb_kl_${klAddress}`)])
       ctx.editMessageText(`🎯 Current Copy Trading Position
-    
-Copied from Woody
+      
+${showData.length > 0 ? `${showData.map((item: any, index: number) => (`
 =============================
-1. BTC/USDT Long 20x
+${index + 1 + (page - 1) * 5}. BTC/USDT Long 20x
    Actual Margin: 6418.25 NEST +14.99%
    Open Price: 1418.25 USDT
    Open Time: 04-15 10:18:15
-=============================
-   
+`)).join('\n')}
 👇 Click the number to manage the corresponding order.
-
---- oi
-${oi}
-  `, {
+` : ''}`, {
         parse_mode: 'Markdown',
-        ...Markup.inlineKeyboard([
-          [Markup.button.callback('1', 'cb_oi_1'), Markup.button.callback('2', 'cb_oi_2'), Markup.button.callback('3', 'cb_oi_3'), Markup.button.callback('4', 'cb_oi_1'), Markup.button.callback('5', 'cb_oi_2')],
-          // TODO
-          [Markup.button.callback('History', 'cb_klh_KL1_1'), Markup.button.callback('« Back', 'cb_kl_KL1')],
-        ])
+        ...Markup.inlineKeyboard(inlineKeyboard)
       })
     } else {
       ctx.editMessageText(`Hi ${from.username}! Please authorize me to set up a NESTFi integration.
