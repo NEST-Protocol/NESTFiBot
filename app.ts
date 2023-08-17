@@ -623,7 +623,6 @@ bot.action(/cb_ps_.*/, async (ctx) => {
       }
       inlineKeyboard.push([Markup.button.callback('History', `cb_klh_${klAddress}_1`), Markup.button.callback('« Back', klAddress === 'all' ? 'cb_menu' : `cb_kl_${klAddress}`)])
       ctx.editMessageText(`🎯 Current Copy Trading Position
-      
 ${showData.length > 0 ? `${showData.map((item: any, index: number) => (`
 =============================
 ${index + 1 + (page - 1) * 5}. ${item?.product || '-'} ${item?.direction ? 'Long' : 'Short'} ${item?.leverage || '-'}x
@@ -688,7 +687,6 @@ bot.action(/cb_klh_.*/, async (ctx) => {
       }
       inlineKeyboard.push([Markup.button.callback('« Back', `cb_ps_${klAddress}_1`)])
       ctx.editMessageText(`🧩 History
-
 ${showData?.length > 0 ? `${showData?.map((item: any, index: number) => (`
 =============================
 ${index + 1 + (page - 1) * 5}. ${item?.product || '-'} ${item?.direction ? 'Long' : 'Short'} ${item?.leverage || '-'}x
@@ -937,7 +935,6 @@ bot.action(/cb_close_oi_.*/, async (ctx) => {
         }
         inlineKeyboard.push([Markup.button.callback('History', `cb_klh_${klAddress}_1`), Markup.button.callback('« Back', `cb_kl_${klAddress}`)])
         ctx.editMessageText(`🎯 Current Copy Trading Position
-      
 ${showData.length > 0 ? `${showData.map((item: any, index: number) => (`
 =============================
 ${index + 1 + (page - 1) * 5}. ${item?.product || '-'} ${item?.direction ? 'Long' : 'Short'} ${item?.leverage || '-'}x
