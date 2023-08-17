@@ -688,11 +688,6 @@ bot.action(/cb_klh_.*/, async (ctx) => {
         inlineKeyboard.push([Markup.button.callback('» Next Page', `cb_klh_${klAddress}_${page + 1}`)])
       }
       inlineKeyboard.push([Markup.button.callback('« Back', `cb_ps_${klAddress}_1`)])
-      ctx.reply(`
-      url: ${url},
-      length: ${length},
-      showData: ${JSON.stringify(showData)}
-      `)
       ctx.editMessageText(`🧩 History
 
 ${showData?.length > 0 ? `${showData?.map((item: any, index: number) => (`

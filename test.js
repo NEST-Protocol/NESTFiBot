@@ -1,2 +1,2 @@
-const a = [1]
-console.log(a.slice(0, 5))
+const a = [1,2,3,4,5]
+console.log(a.map(item => item).join('\n'))
