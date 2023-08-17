@@ -485,18 +485,24 @@ bot.action(/cb_kl_.*/, async (ctx) => {
       const aum = data?.value?.followersAssets?.toFixed(2) || 0
       // @ts-ignore
       const nickName = data?.value?.nickname || '-'
-
-      // TODO
+      // @ts-ignore
+      const followerProfitLoss = data?.value?.followerProfitLoss || 0
+      // @ts-ignore
+      const kolProfitLoss = data?.value.kolProfitLoss || 0
+      // @ts-ignore
+      const kolProfitLossRate = data?.value.kolProfitLossRate || 0
+      // @ts-ignore
+      const rewardRatio = (data?.value?.rewardRatio * 100).toFixed(2) || 0
 
       // @ts-ignore
       ctx.editMessageText(`👤 ${nickName}
 ————————————————————
-Profit sharing: 10%
+Profit sharing: ${rewardRatio}%
 Flowers: ${currentFollowers}/${maxFollowers}
 AUM: ${aum} NEST
-7D ROI: xxx %
-7D Earnings: xxx NEST
-7D Flowers PnL: xxx NEST
+7D ROI: ${kolProfitLossRate.toFixed(2)}%
+7D Earnings: ${kolProfitLoss.toFixed(2)} NEST
+7D Flowers PnL: ${followerProfitLoss.toFixed(2)} NEST
 
 --- GET ${hostname}/nestfi/copy/kol/info?chainId=${chainId}&walletAddress=${klAddress}
 
