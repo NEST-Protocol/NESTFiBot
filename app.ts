@@ -74,7 +74,7 @@ Please select other traders on NESTFi.`, {
 ————————————————————
 *Copy trading assets*: ${assets} NEST
 *Profit*: ${profit} NEST
-*Unrealized PNL*: ${unRealizedPnl} NEST
+*Unrealized PnL*: ${unRealizedPnl} NEST
 *Address*: ${address}
 `, {
           parse_mode: 'Markdown',
