@@ -423,6 +423,17 @@ bot.action(/cb_kls_p_.*/, async (ctx) => {
       }).then(res => res.json())
       // @ts-ignore
       const length = data?.value?.length || 0
+      let inlineKeyboard: any[] = []
+      // @ts-ignore
+      const showArray = data?.value.slice((page - 1) * 5, page * 5)
+      for (let i = 0; i < showArray.length; i++) {
+        // @ts-ignore
+        inlineKeyboard.push([Markup.button.callback(`${showArray[i]?.nickName}: ${showArray[i]?.position > 0 ? showArray[i]?.position.toFixed(2) : `Havent't Started`}`, `cb_kl_${showArray[i]?.walletAddress}`)])
+      }
+      if (page * 5 < length) {
+        inlineKeyboard.push([Markup.button.callback('» Next Page', `cb_kls_p_${page + 1}`)])
+      }
+      inlineKeyboard.push([Markup.button.callback('« Back', 'cb_menu')])
       ctx.editMessageText(`💪 *My Traders*
 ————————————————————
 These are the traders you follow, together with your investment amount.
@@ -433,14 +444,7 @@ ${JSON.stringify(data)}
 ${page}
 `, {
         parse_mode: 'Markdown',
-        ...Markup.inlineKeyboard([
-          // @ts-ignore
-          data?.value?.slice((page - 1) * 5, page * 5).map(item => (
-            [Markup.button.callback(`${item.nickName}: ${item.position > 0 ? item.position.toFixed(2) : `Havent't Started`}`, `cb_kl_${item.walletAddress}`)]
-          )),
-          page * 5 >= length ? [] : [Markup.button.callback('» Next Page', `cb_kls_p_${page + 1}`)],
-          [Markup.button.callback('« Back', 'cb_menu')],
-        ])
+        ...Markup.inlineKeyboard(inlineKeyboard)
       })
     } else {
       ctx.editMessageText(`Hi ${from.username}! Please authorize me to set up a NESTFi integration.
