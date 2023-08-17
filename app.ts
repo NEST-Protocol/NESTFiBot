@@ -263,7 +263,10 @@ Copy from Peter Mason
 *My Account Balance*: 0 NEST
 *Copy Trading Total Amount*: 4000 NEST
 
-👇 Please confirm the amount you invest to this trader.`, {
+👇 Please confirm the amount you invest to this trader.
+
+-- ctx.match
+${JSON.stringify(ctx.match)}`, {
         parse_mode: 'Markdown',
         ...Markup.keyboard([
           choice.filter((i) => i >= 200).map((i: number) => String(i)),
@@ -376,7 +379,7 @@ bot.action('cb_account', async (ctx) => {
   }
 })
 
-// 查看所有的跟单人员，跟页码，默认是0
+// 查看所有的跟单人员，跟页码，默认是1
 // cb_kls_p_[PAGE]
 bot.action(/cb_kls_p_.*/, async (ctx) => {
   const page = ctx.match[1]
@@ -390,9 +393,23 @@ bot.action(/cb_kls_p_.*/, async (ctx) => {
       .then(response => response.json())
       .then((data: any) => data.result)
     if (jwt) {
+      const decode = jwt.split('.')[1]
+      const decodeJson = JSON.parse(Buffer.from(decode, 'base64').toString())
+      const address = decodeJson.walletAddress
+      const data = await fetch(`${hostname}/nestfi/copy/follower/kolList?chainId=${chainId}`, {
+        headers: {
+          'Authorization': jwt
+        }
+      }).then(res => res.json())
+
       ctx.editMessageText(`💪 *My Traders*
 ————————————————————
 These are the traders you follow, together with your investment amount.
+
+--- GET /nestfi/copy/follower/kolList?chainId=${chainId}
+${JSON.stringify(data)}
+--- ctx.match
+${JSON.stringify(ctx.match)}
 `, {
         parse_mode: 'Markdown',
         ...Markup.inlineKeyboard([
@@ -417,8 +434,39 @@ These are the traders you follow, together with your investment amount.
 // cb_kl_[KL]
 bot.action(/cb_kl_.*/, async (ctx) => {
   // const kl = ctx.match[1]
+  const user = ctx.update.callback_query.from;
   try {
-    ctx.editMessageText(`👤 *Woody*
+    const jwt = await fetch(`${process.env.UPSTASH_REDIS_REST_URL}/get/auth:${user.id}`, {
+      headers: {
+        "Authorization": `Bearer ${process.env.UPSTASH_REDIS_REST_TOKEN}`
+      }
+    })
+      .then(response => response.json())
+      .then((data: any) => data.result)
+
+    if (jwt) {
+      const decode = jwt.split('.')[1]
+      const decodeJson = JSON.parse(Buffer.from(decode, 'base64').toString())
+      const address = decodeJson.walletAddress
+      // const klAddress = '';
+      // const data = await fetch(`${hostname}/copy/kol/info?chainId=${chainId}&walletAddress=${klAddress}`, {
+      //   headers: {
+      //     'Authorization': jwt
+      //   }
+      // }).then(res => res.json())
+      // // @ts-ignore
+      // const copyBalance = data?.value?.copyBalance?.toFixed(2) || 0
+      // // @ts-ignore
+      // const availableBalance = data?.value?.availableBalance?.toFixed(2) || 0
+      // // @ts-ignore
+      // const profitSharing = data?.value?.profitSharing?.toFixed(2) || 0
+      // // @ts-ignore
+      // const aum = data?.value?.aum?.toFixed(2) || 0
+      // // @ts-ignore
+      // const roi = data?.value?.roi?.toFixed(2) || 0
+
+
+      ctx.editMessageText(`👤 *Woody*
 ————————————————————
 *Profit sharing*: 10%
 *Flowers*: 10
@@ -426,14 +474,20 @@ bot.action(/cb_kl_.*/, async (ctx) => {
 *7D ROI*: 450%              
 *7D Earnings*: 200NEST
 *7D Flowers PnL*: 4444 NEST
+
+---ctx.match
+${JSON.stringify(ctx.match)}
 `, {
-      parse_mode: 'Markdown',
-      ...Markup.inlineKeyboard([
-        [Markup.button.callback('View Copy Trading', 'cb_ps_KL1_0')],
-        [Markup.button.callback('Stop Copying', 'cb_r_stop_kl_KL1'), Markup.button.callback('Settings', 'cb_copy_setting_KL1')],
-        [Markup.button.callback('« Back', 'cb_kls_p_1')]
-      ])
-    })
+        parse_mode: 'Markdown',
+        ...Markup.inlineKeyboard([
+          [Markup.button.callback('View Copy Trading', 'cb_ps_KL1_0')],
+          [Markup.button.callback('Stop Copying', 'cb_r_stop_kl_KL1'), Markup.button.callback('Settings', 'cb_copy_setting_KL1')],
+          [Markup.button.callback('« Back', 'cb_kls_p_1')]
+        ])
+      })
+    } else {
+
+    }
   } catch (e) {
     ctx.answerCbQuery('Something went wrong.')
   }
@@ -456,6 +510,9 @@ bot.action(/cb_ps_.*/, async (ctx) => {
 =============================
    
 👇 Click the number to manage the corresponding order.
+
+-- ctx.match
+${JSON.stringify(ctx.match)}
   `, {
       parse_mode: 'Markdown',
       ...Markup.inlineKeyboard([
@@ -481,6 +538,9 @@ bot.action(/cb_klh_.*/, async (ctx) => {
 *Liq Price*: 1400.00 USDT
 *Open Time*: 04-15 10:18:15
 *Close Time*: 04-15 10:18:15
+
+-- ctx.match
+${JSON.stringify(ctx.match)}
 `, {
       parse_mode: 'Markdown',
       ...Markup.inlineKeyboard([
@@ -504,6 +564,9 @@ bot.action(/cb_r_stop_kl_.*/, async (ctx) => {
 _End copy will liquidate your position with market orders, and automatically return the assets to your Account after deducting the profits sharing._
 
 ❓Are you sure to stop copying?
+
+-- ctx.match
+${JSON.stringify(ctx.match)}
     `, {
       parse_mode: 'Markdown',
       ...Markup.inlineKeyboard([
@@ -518,7 +581,10 @@ _End copy will liquidate your position with market orders, and automatically ret
 
 bot.action(/cb_stop_kl_.*/, async (ctx) => {
   try {
-    ctx.editMessageText(`🥳 Stop Copying Successfully!`, {
+    ctx.editMessageText(`🥳 Stop Copying Successfully!
+    
+-- ctx.match
+${JSON.stringify(ctx.match)}`, {
       parse_mode: 'Markdown',
       ...Markup.inlineKeyboard([
         [Markup.button.callback('« Back', 'cb_kls_p_1')],
@@ -542,6 +608,9 @@ bot.action(/cb_oi_.*/, async (ctx) => {
 *Market Price*: 1320.99 USDT
 *Liq Price*: 1400.00 USDT
 *Open Time*: 04-15 10:18:15
+
+-- ctx.match
+${JSON.stringify(ctx.match)}
 `, {
       parse_mode: 'Markdown',
       ...Markup.inlineKeyboard([
@@ -571,6 +640,9 @@ bot.action(/cb_close_oi_.*/, async (ctx) => {
 =============================
    
 👇 Click the number to manage the corresponding order.
+
+-- ctx.match
+${JSON.stringify(ctx.match)}
   `, {
       parse_mode: 'Markdown',
       ...Markup.inlineKeyboard([
