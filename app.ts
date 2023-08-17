@@ -5,6 +5,8 @@ import {isAddress} from "ethers";
 
 const token = process.env.BOT_TOKEN!;
 const bot = new Telegraf(token);
+const chainId = 97;
+const hostname = 'https://dev.nestfi.net'
 
 bot.start(async (ctx) => {
   const user = ctx.from;
@@ -46,7 +48,7 @@ Please select other traders on NESTFi.`, {
           })
         }
       } else {
-        const data = await fetch(`https://dev.nestfi.net/nestfi/copy/follower/position/info?chainId=97`, {
+        const data = await fetch(`${hostname}/nestfi/copy/follower/position/info?chainId=${chainId}`, {
           headers: {
             'Authorization': jwt
           }
@@ -136,7 +138,7 @@ bot.command('account', async (ctx) => {
       const decode = jwt.split('.')[1]
       const decodeJson = JSON.parse(Buffer.from(decode, 'base64').toString())
       const address = decodeJson.walletAddress
-      const data = await fetch(`https://dev.nestfi.net/nestfi/copy/follower/position/info?chainId=97`, {
+      const data = await fetch(`${hostname}/nestfi/copy/follower/position/info?chainId=${chainId}`, {
         headers: {
           'Authorization': jwt
         }
@@ -288,7 +290,7 @@ bot.action('cb_menu', async (ctx) => {
       const decode = jwt.split('.')[1]
       const decodeJson = JSON.parse(Buffer.from(decode, 'base64').toString())
       const address = decodeJson.walletAddress
-      const data = await fetch(`https://dev.nestfi.net/nestfi/copy/follower/position/info?chainId=97`, {
+      const data = await fetch(`${hostname}/nestfi/copy/follower/position/info?chainId=${chainId}`, {
         headers: {
           'Authorization': jwt
         }
@@ -338,10 +340,22 @@ bot.action('cb_account', async (ctx) => {
       .then((data: any) => data.result)
 
     if (jwt) {
+      const decode = jwt.split('.')[1]
+      const decodeJson = JSON.parse(Buffer.from(decode, 'base64').toString())
+      const address = decodeJson.walletAddress
+      const data = await fetch(`${hostname}/nestfi/op/user/asset?chainId=${chainId}&walletAddress=${address}`, {
+        headers: {
+          'Authorization': jwt
+        }
+      }).then(res => res.json())
+      // @ts-ignore
+      const copyBalance = data?.value?.copyBalance?.toFixed(2) || 0
+      // @ts-ignore
+      const availableBalance = data?.value?.availableBalance?.toFixed(2) || 0
       ctx.editMessageText(`💸 *My Account*
 ————————————————————
-*My Account Balance*: 19844.77 NEST
-*My Copy Trading Amount*: 16844.77 NEST
+*My Account Balance*: ${availableBalance} NEST
+*My Copy Trading Amount*: ${copyBalance} NEST
       `, {
         parse_mode: "Markdown",
         ...Markup.inlineKeyboard([
