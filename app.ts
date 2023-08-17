@@ -480,8 +480,6 @@ bot.action(/cb_kl_.*/, async (ctx) => {
       // @ts-ignore
       const currentFollowers = data?.value?.currentFollowers || 0
       // @ts-ignore
-      const maxFollowers = data?.value?.maxFollowers || 0
-      // @ts-ignore
       const aum = data?.value?.followersAssets?.toFixed(2) || 0
       // @ts-ignore
       const nickName = data?.value?.nickName || '-'
@@ -498,7 +496,7 @@ bot.action(/cb_kl_.*/, async (ctx) => {
       ctx.editMessageText(`👤 ${nickName}
 ————————————————————
 Profit sharing: ${rewardRatio}%
-Flowers: ${currentFollowers}/${maxFollowers}
+Flowers: ${currentFollowers}
 AUM: ${aum} NEST
 7D ROI: ${kolProfitLossRate.toFixed(2)}%
 7D Earnings: ${kolProfitLoss.toFixed(2)} NEST
