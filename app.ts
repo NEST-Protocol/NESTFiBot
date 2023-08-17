@@ -216,7 +216,8 @@ bot.command('cancel', async (ctx) => {
 
 // 设置跟单参数
 bot.action(/cb_copy_setting_.*/, async (ctx) => {
-  const {from} = ctx.update.callback_query;
+  // @ts-ignore
+  const {from, data: action} = ctx.update.callback_query;
   const kl = ctx.match[1]
   try {
     // TODO, get user balance of NEST
@@ -433,8 +434,8 @@ ${JSON.stringify(action)}
 // 查看某个KL
 // cb_kl_[KL]
 bot.action(/cb_kl_.*/, async (ctx) => {
-  // const kl = ctx.match[1]
-  const {from} = ctx.update.callback_query;
+  // @ts-ignore
+  const {from, data: action} = ctx.update.callback_query;
   try {
     const jwt = await fetch(`${process.env.UPSTASH_REDIS_REST_URL}/get/auth:${from.id}`, {
       headers: {
@@ -497,8 +498,8 @@ ${JSON.stringify(ctx.match)}
 // cb_ps_[KL]_[PAGE]
 // GET /copy/follower/future/list
 bot.action(/cb_ps_.*/, async (ctx) => {
-  // const kl = ctx.match[1].split('_')[0]
-  const {from} = ctx.update.callback_query;
+  // @ts-ignore
+  const {from, data: action} = ctx.update.callback_query;
   try {
     const jwt = await fetch(`${process.env.UPSTASH_REDIS_REST_URL}/get/auth:${from.id}`, {
       headers: {
@@ -544,9 +545,8 @@ ${JSON.stringify(ctx.match)}
 })
 
 bot.action(/cb_klh_.*/, async (ctx) => {
-  // const kl = ctx.match[1].split('_')[0]
-  // const page = ctx.match[1].split('_')[1]
-  const {from} = ctx.update.callback_query;
+  // @ts-ignore
+  const {from, data: action} = ctx.update.callback_query;
   try {
     const jwt = await fetch(`${process.env.UPSTASH_REDIS_REST_URL}/get/auth:${from.id}`, {
       headers: {
@@ -588,7 +588,8 @@ ${JSON.stringify(ctx.match)}
 })
 
 bot.action(/cb_r_stop_kl_.*/, async (ctx) => {
-  const {from} = ctx.update.callback_query;
+  // @ts-ignore
+  const {from, data: action} = ctx.update.callback_query;
   try {
     const jwt = await fetch(`${process.env.UPSTASH_REDIS_REST_URL}/get/auth:${from.id}`, {
       headers: {
@@ -630,7 +631,8 @@ ${JSON.stringify(ctx.match)}
 })
 
 bot.action(/cb_stop_kl_.*/, async (ctx) => {
-  const {from} = ctx.update.callback_query;
+  // @ts-ignore
+  const {from, data: action} = ctx.update.callback_query;
   try {
     const jwt = await fetch(`${process.env.UPSTASH_REDIS_REST_URL}/get/auth:${from.id}`, {
       headers: {
@@ -665,8 +667,8 @@ ${JSON.stringify(ctx.match)}`, {
 // 我的仓位
 // cb_po_[ORDER_INDEX]
 bot.action(/cb_oi_.*/, async (ctx) => {
-  const order_index = ctx.match[1]
-  const {from} = ctx.update.callback_query;
+  // @ts-ignore
+  const {from, data: action} = ctx.update.callback_query;
   try {
     const jwt = await fetch(`${process.env.UPSTASH_REDIS_REST_URL}/get/auth:${from.id}`, {
       headers: {
@@ -709,8 +711,8 @@ ${JSON.stringify(ctx.match)}
 // 关闭订单
 // cb_close_oi_[ORDER_INDEX]
 bot.action(/cb_close_oi_.*/, async (ctx) => {
-  const order_index = ctx.match[1]
-  const {from} = ctx.update.callback_query;
+  // @ts-ignore
+  const {from, data: action} = ctx.update.callback_query;
   try {
     const jwt = await fetch(`${process.env.UPSTASH_REDIS_REST_URL}/get/auth:${from.id}`, {
       headers: {
