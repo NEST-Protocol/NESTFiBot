@@ -293,7 +293,6 @@ bot.action(/cb_copy_setting_.*/, async (ctx) => {
       const nickName = positionInfo?.[0]?.nickName || '-'
 
       const balance = availableBalance + position
-      // 如果余额不足，则提示充值
       if (balance < 200) {
         ctx.reply(`💔 Insufficient Balance
 ———————————————
@@ -306,7 +305,6 @@ Your account balance is insufficient. Please deposit first to initiate lightning
         })
         return
       } else {
-        // 暂存用户的输入意图，为输入total balance, 有效期10分钟
         await fetch(`${process.env.UPSTASH_REDIS_REST_URL}/set/intent:${from.id}?EX=600`, {
           method: 'POST',
           headers: {
@@ -315,11 +313,11 @@ Your account balance is insufficient. Please deposit first to initiate lightning
           body: JSON.stringify({
             category: 'cb_copy_setting',
             value: {
-              kl: klAddress, // 跟单KL地址
-              total: 0, // 总金额
-              single: 0, // 单笔金额
-              availableBalance: availableBalance, // 缓存的可用账户余额
-              position: position, // 现有持仓
+              kl: klAddress,
+              total: 0,
+              single: 0,
+              availableBalance: availableBalance,
+              position: position,
               nickName: nickName,
             }
           })
@@ -454,7 +452,6 @@ You can use command: /start`, {
   }
 })
 
-// 查看所有的跟单人员，跟页码，默认是1
 // cb_kls_p_[PAGE]
 bot.action(/cb_kls_p_.*/, async (ctx) => {
   // @ts-ignore
@@ -509,7 +506,6 @@ You can use command: /start`, {
   }
 })
 
-// 查看某个KL
 // cb_kl_[KL]
 bot.action(/cb_kl_.*/, async (ctx) => {
   // @ts-ignore
@@ -576,7 +572,6 @@ You can use command: /start`, {
   }
 })
 
-// 查看某个KL下面的所有当前的仓位, KL 可为 all
 // cb_ps_[KL]_[PAGE]
 bot.action(/cb_ps_.*/, async (ctx) => {
   // @ts-ignore
@@ -806,7 +801,6 @@ You can use command: /start`, {
   }
 })
 
-// 我的仓位
 // cb_po_[ORDER_INDEX]_[KL]
 bot.action(/cb_oi_.*/, async (ctx) => {
   // @ts-ignore
@@ -877,7 +871,6 @@ You can use command: /start`, {
   }
 })
 
-// 关闭订单
 // cb_close_oi_[ORDER_INDEX]_[KL]
 bot.action(/cb_close_oi_.*/, async (ctx) => {
   // @ts-ignore
@@ -979,7 +972,6 @@ bot.action('cb_unauthorize', async (ctx) => {
 
 bot.action('confirm_copy_setting', async (ctx) => {
   const {from} = ctx.update.callback_query;
-  // 查询用户意图
   try {
     const intent = await fetch(`${process.env.UPSTASH_REDIS_REST_URL}/get/intent:${from.id}`, {
       headers: {
@@ -1078,6 +1070,7 @@ bot.action('cancel_copy_setting', async (ctx) => {
 
 bot.on("message", async (ctx) => {
   const {from} = ctx.update.message;
+  // @ts-ignore
   const input = ctx.message.text;
   const intent = await fetch(`${process.env.UPSTASH_REDIS_REST_URL}/get/intent:${from.id}`, {
     headers: {
@@ -1172,13 +1165,8 @@ Are you sure?`, {
         })
       }
       return
-    } else {
-      // nothing
     }
   }
-
-  // 发送指定的回复
-
 })
 
 export const handler = http(bot.webhookCallback("/bot"));
