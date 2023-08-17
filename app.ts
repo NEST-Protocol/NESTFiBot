@@ -542,29 +542,40 @@ bot.action(/cb_ps_.*/, async (ctx) => {
       const decodeJson = JSON.parse(Buffer.from(decode, 'base64').toString())
       const address = decodeJson.walletAddress
 
+      const data = await fetch(`${hostname}/nestfi/copy/follower/future/list?chainId=${chainId}&copyKolAddress=${klAddress}`, {
+        headers: {
+          'Authorization': jwt
+        }
+      }).then(res => res.json())
+      // @ts-ignore
+      const length = data.value.length || 0
+      // @ts-ignore
+      const showData = data.value.slice((page - 1) * 5, page * 5)
+      let inlineKeyboard: any [] = []
+      const buttons = showData.map((item: any, index: number) => (
+        Markup.button.callback(`${index + 1 + (page - 1) * 5}`, `cb_oi_${item.id}`)
+      ))
+      if (buttons.length > 0) {
+        inlineKeyboard.push(buttons)
+      }
+      if (page * 5 < length) {
+        inlineKeyboard.push([Markup.button.callback('» Next Page', `cb_ps_${klAddress}_${page + 1}`)])
+      }
+      inlineKeyboard.push([Markup.button.callback('History', `cb_klh_${klAddress}_1`), Markup.button.callback('« Back', `cb_kl_${klAddress}`)])
       ctx.editMessageText(`🎯 Current Copy Trading Position
-    
-Copied from Woody
+      
+${showData.map((item: any, index: number) => (`
 =============================
-1. BTC/USDT Long 20x
+${index + 1 + (page - 1) * 5}. BTC/USDT Long 20x
    Actual Margin: 6418.25 NEST +14.99%
    Open Price: 1418.25 USDT
    Open Time: 04-15 10:18:15
-=============================
-   
-👇 Click the number to manage the corresponding order.
+`)).join('\n')}
 
---- klAddress
-${klAddress}
---- page
-${page}
+👇 Click the number to manage the corresponding order.
   `, {
         parse_mode: 'Markdown',
-        ...Markup.inlineKeyboard([
-          [Markup.button.callback('1', 'cb_oi_1'), Markup.button.callback('2', 'cb_oi_2'), Markup.button.callback('3', 'cb_oi_3'), Markup.button.callback('4', 'cb_oi_1'), Markup.button.callback('5', 'cb_oi_2')],
-          [Markup.button.callback('» Next Page', `cb_ps_${klAddress}_${page + 1}`)],
-          [Markup.button.callback('History', `cb_klh_${klAddress}_1`), Markup.button.callback('« Back', `cb_kl_${klAddress}`)],
-        ])
+        ...Markup.inlineKeyboard(inlineKeyboard)
       })
     } else {
       ctx.editMessageText(`Hi ${from.username}! Please authorize me to set up a NESTFi integration.
