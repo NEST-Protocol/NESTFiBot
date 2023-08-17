@@ -484,7 +484,7 @@ bot.action(/cb_kl_.*/, async (ctx) => {
       // @ts-ignore
       const aum = data?.value?.followersAssets?.toFixed(2) || 0
       // @ts-ignore
-      const nickName = data?.value?.nickname || '-'
+      const nickName = data?.value?.nickName || '-'
       // @ts-ignore
       const followerProfitLoss = data?.value?.followerProfitLoss || 0
       // @ts-ignore
