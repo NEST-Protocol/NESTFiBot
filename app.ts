@@ -281,7 +281,7 @@ bot.action(/cb_copy_setting_.*/, async (ctx) => {
       }).then(res => res.json())
         // @ts-ignore
         .then(data => data?.value?.availableBalance || 0)
-      const positionInfo = await fetch(`https://dev.nestfi.net/nestfi/copy/follower/kolList?chainId=97`, {
+      const positionInfo = await fetch(`${hostname}/nestfi/copy/follower/kolList?chainId=${chainId}`, {
         headers: {
           'Authorization': jwt
         }
@@ -342,11 +342,15 @@ Please type the amount you invest to this trader below.`, {
         })
       }
     } else {
-      // TODO
-
+      ctx.reply(`Hi here! Please authorize me to set up a NESTFi integration. 
+      
+You can use command: /start`, {
+        parse_mode: 'Markdown',
+      })
     }
   } catch (e) {
     ctx.answerCbQuery('Something went wrong.')
+    ctx.reply(JSON.stringify(e))
   }
 })
 
@@ -1071,6 +1075,7 @@ You can use command: /start`, {
     }
   } catch (e) {
     ctx.answerCbQuery('Something went wrong.')
+    ctx.reply(JSON.stringify(e))
   }
 })
 
