@@ -42,6 +42,33 @@ bot.start(async (ctx) => {
           }).then(res => res.json())
           // @ts-ignore
           const nickname = data?.value?.nickname || 'No name'
+          const isFollowed = await fetch(`${hostname}/nestfi/copy/follower/kolList?chainId=${chainId}`, {
+            headers: {
+              'Authorization': jwt
+            }
+          }).then(res => res.json())
+            // @ts-ignore
+            .then(data => data?.value?.filter((item: any) => item.walletAddress.toLowerCase() === klAddress.toLowerCase()).length > 0 || false )
+
+          if (!isFollowed) {
+            await fetch(`${hostname}/nestfi/copy/follower/setting`, {
+              method: 'POST',
+              headers: {
+                'Authorization': jwt,
+                'Content-Type': 'application/json',
+                'token': `${Math.ceil(Date.now() / 1000)}`
+              },
+              body: JSON.stringify({
+                chainId: chainId,
+                copyAccountBalance: 0,
+                copyKolAddress: klAddress,
+                follow: false,
+                followingMethod: "FIEXD",
+                followingValue: 0
+              })
+            })
+          }
+
           ctx.reply(`Would you like to copy Trader 👤 ${nickname}'s positions immediately?`, Markup.inlineKeyboard([
             [Markup.button.callback('Nope, I change my mind.', 'cb_menu')],
             [Markup.button.callback('Yes, copy now!', `cb_copy_setting_${klAddress}`)],
@@ -49,8 +76,7 @@ bot.start(async (ctx) => {
         } else {
           ctx.reply(`💢 Invalid Trader
 ———————————————
-👤 Peter Mason
-This person is not on the NESTFi Traders list.
+Peter Mason is not on the NESTFi traders list.
 Please select other traders on NESTFi.`, {
             parse_mode: 'Markdown',
             ...Markup.inlineKeyboard([
@@ -235,62 +261,89 @@ bot.command('cancel', async (ctx) => {
 bot.action(/cb_copy_setting_.*/, async (ctx) => {
   // @ts-ignore
   const {from, data: action} = ctx.update.callback_query;
-  const kl = ctx.match[1]
+  const klAddress = action.split('_')[3]
   try {
-    // TODO, get user balance of NEST
+    const jwt = await fetch(`${process.env.UPSTASH_REDIS_REST_URL}/get/auth:${from.id}`, {
+      headers: {
+        "Authorization": `Bearer ${process.env.UPSTASH_REDIS_REST_TOKEN}`
+      }
+    })
+      .then(response => response.json())
+      .then((data: any) => data.result)
+    if (jwt) {
+      const decode = jwt.split('.')[1]
+      const decodeJson = JSON.parse(Buffer.from(decode, 'base64').toString())
+      const address = decodeJson.walletAddress
+      const availableBalance = await fetch(`${hostname}/nestfi/op/user/asset?chainId=${chainId}&walletAddress=${address}`, {
+        headers: {
+          'Authorization': jwt
+        }
+      }).then(res => res.json())
+        // @ts-ignore
+        .then(data => data?.value?.availableBalance || 0)
+      const positionInfo = await fetch(`https://dev.nestfi.net/nestfi/copy/follower/kolList?chainId=97`, {
+        headers: {
+          'Authorization': jwt
+        }
+      }).then(res => res.json())
+        // @ts-ignore
+        .then(data => data?.value?.filter((item: any) => item?.walletAddress.toLowerCase() === klAddress.toLowerCase()))
 
-    // TODO，balance 为可支配余额 + 已划转余额
-    const balance = 2000
-    // 如果余额不足，则提示充值
-    if (balance < 200) {
-      ctx.reply(`💔 Insufficient Balance
+      const position = positionInfo?.[0]?.position || 0
+      const nickName = positionInfo?.[0]?.nickName || '-'
+
+      const balance = availableBalance + position
+      // 如果余额不足，则提示充值
+      if (balance < 200) {
+        ctx.reply(`💔 Insufficient Balance
 ———————————————
 Your account balance is insufficient. Please deposit first to initiate lightning trading on NESTFi.`, {
-        parse_mode: 'Markdown',
-        ...Markup.inlineKeyboard([
-          [Markup.button.url('Deposit', 'https://nestfi.org/')],
-          [Markup.button.callback('Completed, go on!', 'cb_copy_setting_KL1')],
-        ])
-      })
-      return
-    } else {
-      // 暂存用户的输入意图，为输入total balance, 有效期10分钟
-      await fetch(`${process.env.UPSTASH_REDIS_REST_URL}/set/intent:${from.id}?EX=600`, {
-        method: 'POST',
-        headers: {
-          "Authorization": `Bearer ${process.env.UPSTASH_REDIS_REST_TOKEN}`
-        },
-        body: JSON.stringify({
-          category: 'cb_copy_setting',
-          value: {
-            kl: kl, // 跟单KL地址
-            total: 0, // 总金额
-            single: 0, // 单笔金额
-            balance: 2000, // 缓存的可用账户余额
-          }
+          parse_mode: 'Markdown',
+          ...Markup.inlineKeyboard([
+            [Markup.button.url('Deposit', 'https://nestfi.org/')],
+            [Markup.button.callback('Completed, go on!', 'cb_copy_setting_KL1')],
+          ])
         })
-      })
-      let choice = [0, 0, 0];
-      choice[0] = Math.floor(balance * 0.5 / 50) * 50;
-      choice[1] = Math.floor(balance * 0.75 / 50) * 50;
-      choice[2] = Math.floor(balance / 50) * 50;
-      ctx.reply(`💵 Copy Trading Total Amount
+        return
+      } else {
+        // 暂存用户的输入意图，为输入total balance, 有效期10分钟
+        await fetch(`${process.env.UPSTASH_REDIS_REST_URL}/set/intent:${from.id}?EX=600`, {
+          method: 'POST',
+          headers: {
+            "Authorization": `Bearer ${process.env.UPSTASH_REDIS_REST_TOKEN}`
+          },
+          body: JSON.stringify({
+            category: 'cb_copy_setting',
+            value: {
+              kl: klAddress, // 跟单KL地址
+              total: 0, // 总金额
+              single: 0, // 单笔金额
+              availableBalance: availableBalance, // 缓存的可用账户余额
+              position: position, // 现有持仓
+              nickName: nickName,
+            }
+          })
+        })
+        let choice = [0, 0, 0];
+        choice[0] = Math.floor(balance * 0.5 / 50) * 50;
+        choice[1] = Math.floor(balance * 0.75 / 50) * 50;
+        choice[2] = Math.floor(balance / 50) * 50;
+        ctx.reply(`💵 Copy Trading Total Amount
 ————————————————————
-Copy from Peter Mason
+My Account Balance: ${availableBalance?.toFixed(2) || 0} NEST${position > 0 ? `\nCopy Trading Total Amount: ${position?.toFixed(2) || 0} NEST` : ''}
 
-My Account Balance: 0 NEST
-Copy Trading Total Amount: 4000 NEST
+Copy ${nickName}
+Please type the amount you invest to this trader below.`, {
+          parse_mode: 'Markdown',
+          ...Markup.keyboard([
+            choice.filter((i) => i >= 200).map((i: number) => String(i)),
+            ['/cancel'],
+          ]).oneTime().resize()
+        })
+      }
+    } else {
+      // TODO
 
-👇 Please confirm the amount you invest to this trader.
-
--- ctx.match
-${JSON.stringify(ctx.match)}`, {
-        parse_mode: 'Markdown',
-        ...Markup.keyboard([
-          choice.filter((i) => i >= 200).map((i: number) => String(i)),
-          ['/cancel'],
-        ]).oneTime().resize()
-      })
     }
   } catch (e) {
     ctx.answerCbQuery('Something went wrong.')
@@ -621,8 +674,6 @@ bot.action(/cb_klh_.*/, async (ctx) => {
       const address = decodeJson.walletAddress
 
 
-
-
       ctx.editMessageText(`🧩 History
 ————————————————————
 BTC/USDT Long 20x
@@ -938,19 +989,61 @@ bot.action('confirm_copy_setting', async (ctx) => {
 
     if (intent) {
       const data = JSON.parse(intent)
-      if (data.category === 'cb_copy_setting') {
-        let {kl, total, single, balance} = data.value
-        // TODO: 调用接口
-        ctx.editMessageText(`🥳 Successfully Copy Trading
-————————————————————
-More latest orders from 👤 Peter Mason will be posted in the group.
-
-Telegram Group: copytade@group`, {
-          parse_mode: 'Markdown',
-          ...Markup.inlineKeyboard([
-            [Markup.button.callback('« Back', 'cb_menu')],
-          ])
+      if (data?.category === 'cb_copy_setting') {
+        const jwt = await fetch(`${process.env.UPSTASH_REDIS_REST_URL}/get/auth:${from.id}`, {
+          headers: {
+            "Authorization": `Bearer ${process.env.UPSTASH_REDIS_REST_TOKEN}`
+          }
         })
+          .then(response => response.json())
+          .then((data: any) => data.result)
+        if (jwt) {
+          const decode = jwt.split('.')[1]
+          const decodeJson = JSON.parse(Buffer.from(decode, 'base64').toString())
+          const address = decodeJson.walletAddress
+
+          // @ts-ignore
+          let {kl, total, single, nickName, availableBalance, position} = data.value
+          const request = await fetch(`${hostname}/nestfi/copy/follower/setting`, {
+            method: 'POST',
+            headers: {
+              'Authorization': jwt,
+              'token': `${Math.ceil(Date.now() / 1000)}`,
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              chainId: chainId,
+              copyAccountBalance: total,
+              copyKolAddress: kl,
+              follow: true,
+              followingMethod: "FIEXD",
+              followingValue: single,
+            })
+          }).then(res => res.json())
+            // @ts-ignore
+            .then(data => data?.value || false)
+
+          if (request) {
+            ctx.editMessageText(`🥳 Successfully Copy Trading
+————————————————————
+More latest orders from ${nickName} will be posted in the group.
+
+Telegram Group: TBD*`, {
+              parse_mode: 'Markdown',
+              ...Markup.inlineKeyboard([
+                [Markup.button.callback('« Back', 'cb_menu')],
+              ])
+            })
+          } else {
+            ctx.answerCbQuery('Something went wrong.')
+          }
+        } else {
+          ctx.editMessageText(`Hi ${from.username}! Please authorize me to set up a NESTFi integration.
+
+You can use command: /start`, {
+            parse_mode: 'Markdown',
+          })
+        }
       } else {
         ctx.editMessageText('Sorry, we have not found your copy trading request', {
           ...Markup.inlineKeyboard([]),
@@ -995,9 +1088,9 @@ bot.on("message", async (ctx) => {
   if (intent) {
     const data = JSON.parse(intent)
     if (data.category === 'cb_copy_setting') {
-      let {kl, total, single, balance} = data.value
+      let {kl, total, single, availableBalance, position, nickName} = data.value
       if (total === 0) {
-        if (Number(input) < 200 || Number(input) > balance) {
+        if ((Number(input) + position) < 200 || Number(input) > availableBalance) {
           ctx.reply(`💢 Invalid Amount
 Please enter a valid amount between 200 and your account balance.`, {
             parse_mode: 'Markdown',
@@ -1024,8 +1117,7 @@ Please enter a valid amount between 200 and your account balance.`, {
         choice[2] = Math.floor(Number(input) * 0.4 / 50) * 50
         ctx.reply(`💵 Copy Trading Each Order
 ————————————————————
-👤 Peter Mason
-
+Copy ${nickName}
 Please type the amount you invest to this trader for each order below.
 `, {
           parse_mode: 'Markdown',
@@ -1065,10 +1157,10 @@ Please enter a valid amount between 50 and your CopyTrading Total Amount.`, {
         })
         ctx.reply(`👩‍💻 Confirm
 ————————————————————
-👤 Peter Mason
 Copy Trading Total Amount: ${total} NEST 
 Copy Trading Each Order: ${input} NEST 
 
+Copy ${nickName}
 Are you sure?`, {
           parse_mode: 'Markdown',
           ...Markup.inlineKeyboard([
