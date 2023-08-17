@@ -631,7 +631,7 @@ ${index + 1 + (page - 1) * 5}. ${item?.product || '-'} ${item?.direction ? 'Long
    Open Time: ${new Date(item?.timestamp * 1000 || 0).toLocaleString()}
 `))}
 👇 Click the number to manage the corresponding order.
-` : 'No copy trading position yet!'}`, {
+` : '\nNo copy trading position yet!'}`, {
         parse_mode: 'Markdown',
         ...Markup.inlineKeyboard(inlineKeyboard)
       })
@@ -695,7 +695,7 @@ ${index + 1 + (page - 1) * 5}. ${item?.product || '-'} ${item?.direction ? 'Long
    Close price: ${item?.closePrice?.toFixed(2)} USDT
    Liq Price: xxx USDT
    Open Time: ${new Date(item?.timestamp * 1000 || 0).toLocaleString()}
-   Close Time: xxx`)).join('')}` : 'No copy trading position yet!'}`, {
+   Close Time: xxx`)).join('')}` : '\nNo copy trading position yet!'}`, {
         parse_mode: 'Markdown',
         ...Markup.inlineKeyboard(inlineKeyboard)
       })
@@ -943,7 +943,7 @@ ${index + 1 + (page - 1) * 5}. ${item?.product || '-'} ${item?.direction ? 'Long
    Open Time: ${new Date(item?.timestamp * 1000 || 0).toLocaleString()}
 `)).join('')}
 👇 Click the number to manage the corresponding order.
-` : 'No copy trading position yet!'}`, {
+` : '\nNo copy trading position yet!'}`, {
           parse_mode: 'Markdown',
           ...Markup.inlineKeyboard(inlineKeyboard)
         })
