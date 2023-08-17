@@ -231,7 +231,7 @@ bot.command('cancel', async (ctx) => {
   })
 })
 
-// 设置跟单参数
+// cb_copy_setting_[KL]
 bot.action(/cb_copy_setting_.*/, async (ctx) => {
   // @ts-ignore
   const {from, data: action} = ctx.update.callback_query;
@@ -421,7 +421,8 @@ bot.action(/cb_kls_p_.*/, async (ctx) => {
           'Authorization': jwt
         }
       }).then(res => res.json())
-
+      // @ts-ignore
+      const length = data?.value?.length || 0
       ctx.editMessageText(`💪 *My Traders*
 ————————————————————
 These are the traders you follow, together with your investment amount.
@@ -433,9 +434,11 @@ ${page}
 `, {
         parse_mode: 'Markdown',
         ...Markup.inlineKeyboard([
-          [Markup.button.callback('Jack: Haven’t  Started', `cb_kl_KL1`)],
-          [Markup.button.callback('Woody: 10000 NEST', 'cb_kl_KL2')],
-          [Markup.button.callback('» Next Page', `cb_kls_p_${page + 1}`)],
+          // @ts-ignore
+          data?.value?.slice((page - 1) * 5, page * 5).map(item => (
+            [Markup.button.callback(`${item.nickName}: ${item.position > 0 ? item.position.toFixed(2) : `Havent't Started`}`, `cb_kl_${item.walletAddress}`)]
+          )),
+          page * 5 >= length ? [] : [Markup.button.callback('» Next Page', `cb_kls_p_${page + 1}`)],
           [Markup.button.callback('« Back', 'cb_menu')],
         ])
       })
