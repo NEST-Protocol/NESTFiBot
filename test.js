@@ -1,3 +1,2 @@
-const a = "cb_kls_p_1"
-
-console.log(a.split('_')[3])
+const a = Math.ceil(Date.now() / 1000)
+console.log(a)

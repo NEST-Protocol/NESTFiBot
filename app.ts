@@ -659,6 +659,7 @@ bot.action(/cb_r_stop_kl_.*/, async (ctx) => {
       const decode = jwt.split('.')[1]
       const decodeJson = JSON.parse(Buffer.from(decode, 'base64').toString())
       const address = decodeJson.walletAddress
+      // TODO 查询我在某个KL下面的所有订单汇总信息
       ctx.editMessageText(`🙅 Stop Copying
 ————————————————————
 Total Copy Amount: 6000 NEST
@@ -708,16 +709,26 @@ bot.action(/cb_stop_kl_.*/, async (ctx) => {
       const decode = jwt.split('.')[1]
       const decodeJson = JSON.parse(Buffer.from(decode, 'base64').toString())
       const address = decodeJson.walletAddress
-
-      ctx.editMessageText(`🥳 Stop Copying Successfully!
-    
--- klAddress
-${klAddress}`, {
-        parse_mode: 'Markdown',
-        ...Markup.inlineKeyboard([
-          [Markup.button.callback('« Back', 'cb_kls_p_1')],
-        ])
-      })
+      // TODO: 请求报错
+      const data = await fetch(`${hostname}/nestfi/copy/follower/cancle?chainId=${chainId}&copyKolAddress=${klAddress}`, {
+        method: 'POST',
+        headers: {
+          "Authorization": jwt,
+          "token": `${Math.ceil(Date.now() / 1000)}`,
+        }
+      }).then(res => res.json())
+      // @ts-ignore
+      const status = data?.value || false
+      if (status) {
+        ctx.editMessageText(`🥳 Stop Copying Successfully!`, {
+          parse_mode: 'Markdown',
+          ...Markup.inlineKeyboard([
+            [Markup.button.callback('« Back', 'cb_kls_p_1')],
+          ])
+        })
+      } else {
+        ctx.answerCbQuery('Something went wrong.')
+      }
     } else {
       ctx.editMessageText(`Hi ${from.username}! Please authorize me to set up a NESTFi integration.
 
