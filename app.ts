@@ -211,7 +211,12 @@ bot.command('cancel', async (ctx) => {
       "Authorization": `Bearer ${process.env.UPSTASH_REDIS_REST_TOKEN}`
     },
   })
-  ctx.reply('Cancel the current operation successfully! /help')
+  ctx.reply('Cancel the current operation successfully! /help', {
+    parse_mode: 'Markdown',
+    ...Markup.inlineKeyboard([
+      [Markup.button.callback('« Back', 'cb_menu')],
+    ])
+  })
 })
 
 // 设置跟单参数
