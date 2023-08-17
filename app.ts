@@ -578,7 +578,6 @@ You can use command: /start`, {
 
 // 查看某个KL下面的所有当前的仓位, KL 可为 all
 // cb_ps_[KL]_[PAGE]
-// GET /copy/follower/future/list
 bot.action(/cb_ps_.*/, async (ctx) => {
   // @ts-ignore
   const {from, data: action} = ctx.update.callback_query;
@@ -622,7 +621,7 @@ bot.action(/cb_ps_.*/, async (ctx) => {
       if (page * 5 < length) {
         inlineKeyboard.push([Markup.button.callback('» Next Page', `cb_ps_${klAddress}_${page + 1}`)])
       }
-      inlineKeyboard.push([Markup.button.callback('History', `cb_klh_${klAddress}_1`), Markup.button.callback('« Back', `cb_kl_${klAddress}`)])
+      inlineKeyboard.push([Markup.button.callback('History', `cb_klh_${klAddress}_1`), Markup.button.callback('« Back', klAddress === 'all' ? 'cb_menu' : `cb_kl_${klAddress}`)])
       ctx.editMessageText(`🎯 Current Copy Trading Position
       
 ${showData.length > 0 ? `${showData.map((item: any, index: number) => (`
@@ -698,8 +697,7 @@ ${index + 1 + (page - 1) * 5}. ${item?.product || '-'} ${item?.direction ? 'Long
    Close price: ${item?.closePrice?.toFixed(2)} USDT
    Liq Price: xxx USDT
    Open Time: ${new Date(item?.timestamp * 1000 || 0).toLocaleString()}
-   Close Time: xxx
-`))}` : 'No copy trading position yet!'}`, {
+   Close Time: xxx`)).join('')}` : 'No copy trading position yet!'}`, {
         parse_mode: 'Markdown',
         ...Markup.inlineKeyboard(inlineKeyboard)
       })
@@ -946,7 +944,7 @@ ${index + 1 + (page - 1) * 5}. ${item?.product || '-'} ${item?.direction ? 'Long
    Actual Margin: ${item?.margin} NEST +xxx%
    Open Price: ${item?.orderPrice.toFixed(2)} USDT
    Open Time: ${new Date(item?.timestamp * 1000 || 0).toLocaleString()}
-`)).join('\n')}
+`)).join('')}
 👇 Click the number to manage the corresponding order.
 ` : 'No copy trading position yet!'}`, {
           parse_mode: 'Markdown',
