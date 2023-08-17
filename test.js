@@ -1,2 +1,2 @@
-const a = Math.ceil(Date.now() / 1000)
-console.log(a)
+const a = [1]
+console.log(a.slice(0, 5))

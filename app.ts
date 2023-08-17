@@ -350,7 +350,6 @@ You can use command: /start`, {
     }
   } catch (e) {
     ctx.answerCbQuery('Something went wrong.')
-    ctx.reply(JSON.stringify(e))
   }
 })
 
@@ -598,20 +597,17 @@ bot.action(/cb_ps_.*/, async (ctx) => {
       const decode = jwt.split('.')[1]
       const decodeJson = JSON.parse(Buffer.from(decode, 'base64').toString())
       const address = decodeJson.walletAddress
-      let data;
+      let url;
       if (klAddress === "all") {
-        data = await fetch(`${hostname}/nestfi/copy/follower/future/list?chainId=${chainId}&copyKolAddress=${klAddress}`, {
-          headers: {
-            'Authorization': jwt
-          }
-        }).then(res => res.json())
+        url = `${hostname}/nestfi/copy/follower/future/list?chainId=${chainId}`
       } else {
-        data = await fetch(`${hostname}/nestfi/copy/follower/future/list?chainId=${chainId}`, {
-          headers: {
-            'Authorization': jwt
-          }
-        }).then(res => res.json())
+        url = `${hostname}/nestfi/copy/follower/future/list?chainId=${chainId}&copyKolAddress=${klAddress}`
       }
+      const data = await fetch(url, {
+        headers: {
+          'Authorization': jwt
+        }
+      }).then(res => res.json())
       // @ts-ignore
       const length = data?.value?.length || 0
       // @ts-ignore
@@ -672,20 +668,17 @@ bot.action(/cb_klh_.*/, async (ctx) => {
       const decode = jwt.split('.')[1]
       const decodeJson = JSON.parse(Buffer.from(decode, 'base64').toString())
       const address = decodeJson.walletAddress
-      let data;
+      let url;
       if (klAddress === "all") {
-        data = await fetch(`${hostname}/nestfi/copy/follower/future/history?chainId=${chainId}&copyKolAddress=${klAddress}`, {
-          headers: {
-            'Authorization': jwt
-          }
-        }).then(res => res.json())
+        url = `${hostname}/nestfi/copy/follower/future/history?chainId=${chainId}`
       } else {
-        data = await fetch(`${hostname}/nestfi/copy/follower/future/history?chainId=${chainId}`, {
-          headers: {
-            'Authorization': jwt
-          }
-        }).then(res => res.json())
+        url = `${hostname}/nestfi/copy/follower/future/history?chainId=${chainId}&copyKolAddress=${klAddress}`
       }
+      const data = await fetch(url, {
+        headers: {
+          'Authorization': jwt
+        }
+      }).then(res => res.json())
       // @ts-ignore
       const length = data?.value?.length || 0
       // @ts-ignore
@@ -695,22 +688,26 @@ bot.action(/cb_klh_.*/, async (ctx) => {
         inlineKeyboard.push([Markup.button.callback('» Next Page', `cb_klh_${klAddress}_${page + 1}`)])
       }
       inlineKeyboard.push([Markup.button.callback('« Back', `cb_ps_${klAddress}_1`)])
-
-      ctx.editMessageText(`🧩 History
-
-${showData.length > 0 ? `${showData.map((item: any, index: number) => (`
-=============================
-${index + 1 + (page - 1) * 5}. ${item?.product || '-'} ${item?.direction ? 'Long' : 'Short'} ${item?.leverage || '-'}x
-   Actual Margin: ${item?.margin} NEST ${item?.profitLossRate > 0 ? `+${item.profitLossRate * 100}` : item?.profitLossRate * 100}%
-   Open Price: ${item?.orderPrice.toFixed(2)} USDT
-   Close price: ${item?.closePrice.toFixed(2)} USDT} USDT
-   Liq Price: xxx USDT
-   Open Time: ${new Date(item?.timestamp * 1000 || 0).toLocaleString()}
-   Close Time: xxx
-`)).join('\n')}` : 'No copy trading position yet!'}`, {
-        parse_mode: 'Markdown',
-        ...Markup.inlineKeyboard(inlineKeyboard)
-      })
+      ctx.reply(`
+      url: ${url},
+      length: ${length},
+      showData: ${JSON.stringify(showData)}
+      `)
+//       ctx.editMessageText(`🧩 History
+//
+// ${showData?.length > 0 ? `${showData?.map((item: any, index: number) => (`
+// =============================
+// ${index + 1 + (page - 1) * 5}. ${item?.product || '-'} ${item?.direction ? 'Long' : 'Short'} ${item?.leverage || '-'}x
+//    Actual Margin: ${item?.margin} NEST ${item?.profitLossRate > 0 ? `+${item?.profitLossRate * 100}` : item?.profitLossRate * 100}%
+//    Open Price: ${item?.orderPrice?.toFixed(2)} USDT
+//    Close price: ${item?.closePrice?.toFixed(2)} USDT} USDT
+//    Liq Price: xxx USDT
+//    Open Time: ${new Date(item?.timestamp * 1000 || 0).toLocaleString()}
+//    Close Time: xxx
+// `)).join('\n')}` : 'No copy trading position yet!'}`, {
+//         parse_mode: 'Markdown',
+//         ...Markup.inlineKeyboard(inlineKeyboard)
+//       })
     } else {
       ctx.editMessageText(`Hi ${from.username}! Please authorize me to set up a NESTFi integration.
 
@@ -750,11 +747,7 @@ Total Profit: 6900 NEST
 
 _End copy will liquidate your position with market orders, and automatically return the assets to your Account after deducting the profits sharing._
 
-❓Are you sure to stop copying?
-
--- klAddress
-${klAddress}
-    `, {
+❓Are you sure to stop copying?`, {
         parse_mode: 'Markdown',
         ...Markup.inlineKeyboard([
           [Markup.button.callback('Nope, I change my mind.', `cb_kl_${klAddress}`)],
@@ -924,21 +917,17 @@ bot.action(/cb_close_oi_.*/, async (ctx) => {
 
       if (request) {
         ctx.answerCbQuery('Close Successfully')
-        // TODO
-        let data;
+        let url;
         if (klAddress === "all") {
-          data = await fetch(`${hostname}/nestfi/copy/follower/future/list?chainId=${chainId}&copyKolAddress=${klAddress}`, {
-            headers: {
-              'Authorization': jwt
-            }
-          }).then(res => res.json())
+          url = `${hostname}/nestfi/copy/follower/future/list?chainId=${chainId}`
         } else {
-          data = await fetch(`${hostname}/nestfi/copy/follower/future/list?chainId=${chainId}`, {
-            headers: {
-              'Authorization': jwt
-            }
-          }).then(res => res.json())
+          url = `${hostname}/nestfi/copy/follower/future/list?chainId=${chainId}&copyKolAddress=${klAddress}`
         }
+        const data = await fetch(url, {
+          headers: {
+            'Authorization': jwt
+          }
+        }).then(res => res.json())
         // @ts-ignore
         const length = data?.value?.length || 0
         // @ts-ignore
@@ -1075,7 +1064,6 @@ You can use command: /start`, {
     }
   } catch (e) {
     ctx.answerCbQuery('Something went wrong.')
-    ctx.reply(JSON.stringify(e))
   }
 })
 
