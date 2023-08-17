@@ -72,7 +72,7 @@ Please select other traders on NESTFi.`, {
         const profit = data?.value?.profit || 0
         ctx.reply(`📊 My Trades
 ————————————————————
-Copy trading assets: ${assets.toFixed(2)} NEST
+Copy Trading Assets: ${assets.toFixed(2)} NEST
 Profit: ${profit.toFixed(2)} NEST
 Unrealized PnL: ${unRealizedPnl.toFixed(2)} NEST
 Address: ${address}
@@ -81,7 +81,7 @@ Address: ${address}
           ...Markup.inlineKeyboard([
             [Markup.button.callback('My Account', 'cb_account')],
             [Markup.button.callback('My Traders', 'cb_kls_p_1')],
-            [Markup.button.callback('View My Copy Trading', 'cb_ps_all_1')],
+            [Markup.button.callback('My Copy Trading', 'cb_ps_all_1')],
           ])
         })
       }
@@ -171,7 +171,7 @@ Address: ${address}
         ...Markup.inlineKeyboard([
           [Markup.button.callback('My Account', 'cb_account')],
           [Markup.button.callback('My Traders', 'cb_kls_p_1')],
-          [Markup.button.callback('View My Copy Trading', 'cb_ps_all_1')],
+          [Markup.button.callback('My Copy Trading', 'cb_ps_all_1')],
         ])
       })
     } else {
@@ -335,7 +335,7 @@ Address: ${address}
         ...Markup.inlineKeyboard([
           [Markup.button.callback('My Account', 'cb_account')],
           [Markup.button.callback('My Traders', 'cb_kls_p_1')],
-          [Markup.button.callback('View My Copy Trading', 'cb_ps_all_1')],
+          [Markup.button.callback('My Copy Trading', 'cb_ps_all_1')],
         ])
       })
     } else {
@@ -374,7 +374,7 @@ bot.action('cb_account', async (ctx) => {
       const copyBalance = data?.value?.copyBalance?.toFixed(2) || 0
       // @ts-ignore
       const availableBalance = data?.value?.availableBalance?.toFixed(2) || 0
-      ctx.editMessageText(`💸 My Account
+      ctx.editMessageText(`💳 My Account
 ————————————————————
 My Account Balance: ${availableBalance} NEST
 My Copy Trading Amount: ${copyBalance} NEST
