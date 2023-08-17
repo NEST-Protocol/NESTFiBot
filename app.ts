@@ -693,21 +693,21 @@ bot.action(/cb_klh_.*/, async (ctx) => {
       length: ${length},
       showData: ${JSON.stringify(showData)}
       `)
-//       ctx.editMessageText(`🧩 History
-//
-// ${showData?.length > 0 ? `${showData?.map((item: any, index: number) => (`
-// =============================
-// ${index + 1 + (page - 1) * 5}. ${item?.product || '-'} ${item?.direction ? 'Long' : 'Short'} ${item?.leverage || '-'}x
-//    Actual Margin: ${item?.margin} NEST ${item?.profitLossRate > 0 ? `+${item?.profitLossRate * 100}` : item?.profitLossRate * 100}%
-//    Open Price: ${item?.orderPrice?.toFixed(2)} USDT
-//    Close price: ${item?.closePrice?.toFixed(2)} USDT} USDT
-//    Liq Price: xxx USDT
-//    Open Time: ${new Date(item?.timestamp * 1000 || 0).toLocaleString()}
-//    Close Time: xxx
-// `)).join('\n')}` : 'No copy trading position yet!'}`, {
-//         parse_mode: 'Markdown',
-//         ...Markup.inlineKeyboard(inlineKeyboard)
-//       })
+      ctx.editMessageText(`🧩 History
+
+${showData?.length > 0 ? `${showData?.map((item: any, index: number) => (`
+=============================
+${index + 1 + (page - 1) * 5}. ${item?.product || '-'} ${item?.direction ? 'Long' : 'Short'} ${item?.leverage || '-'}x
+   Actual Margin: ${item?.margin} NEST ${item?.profitLossRate > 0 ? `+${item?.profitLossRate * 100}` : item?.profitLossRate * 100}%
+   Open Price: ${item?.orderPrice?.toFixed(2)} USDT
+   Close price: ${item?.closePrice?.toFixed(2)} USDT} USDT
+   Liq Price: xxx USDT
+   Open Time: ${new Date(item?.timestamp * 1000 || 0).toLocaleString()}
+   Close Time: xxx
+`)).join('\n')}` : 'No copy trading position yet!'}`, {
+        parse_mode: 'Markdown',
+        ...Markup.inlineKeyboard(inlineKeyboard)
+      })
     } else {
       ctx.editMessageText(`Hi ${from.username}! Please authorize me to set up a NESTFi integration.
 
