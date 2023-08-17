@@ -541,21 +541,28 @@ bot.action(/cb_ps_.*/, async (ctx) => {
       const decode = jwt.split('.')[1]
       const decodeJson = JSON.parse(Buffer.from(decode, 'base64').toString())
       const address = decodeJson.walletAddress
-      let data
+      let data, length, showData
       if (klAddress === "all") {
-        // TODO
+        data = await fetch(`${hostname}/nestfi/op/future/list?&status=2&chainId=${chainId}&walletAddress=${address}`, {
+          headers: {
+            'Authorization': jwt
+          }
+        }).then(res => res.json())
+        // @ts-ignore
+        const copy_data = data?.value?.filter((item: any) => item.copy === true)
+        length = copy_data.length || 0
+        showData = copy_data.slice((page - 1) * 5, page * 5)
       } else {
         data = await fetch(`${hostname}/nestfi/copy/follower/future/list?chainId=${chainId}&copyKolAddress=${klAddress}`, {
           headers: {
             'Authorization': jwt
           }
         }).then(res => res.json())
+        // @ts-ignore
+        length = data.value.length || 0
+        // @ts-ignore
+        showData = data.value.slice((page - 1) * 5, page * 5)
       }
-
-      // @ts-ignore
-      const length = data.value.length || 0
-      // @ts-ignore
-      const showData = data.value.slice((page - 1) * 5, page * 5)
       let inlineKeyboard: any [] = []
       const buttons = showData.map((item: any, index: number) => (
         Markup.button.callback(`${index + 1 + (page - 1) * 5}`, `cb_oi_${item.id}`)
@@ -571,13 +578,13 @@ bot.action(/cb_ps_.*/, async (ctx) => {
       
 ${showData.length > 0 ? `${showData.map((item: any, index: number) => (`
 =============================
-${index + 1 + (page - 1) * 5}. BTC/USDT Long 20x
-   Actual Margin: 6418.25 NEST +14.99%
-   Open Price: 1418.25 USDT
-   Open Time: 04-15 10:18:15
+${index + 1 + (page - 1) * 5}. ${item?.product || '-'} ${item?.direction ? 'Long' : 'Short'} ${item?.leverage || '-'}x
+   Actual Margin: ${item?.margin} NEST +xxx%
+   Open Price: ${item?.orderPrice.toFixed(2)} USDT
+   Open Time: ${new Date(item?.timestamp * 1000 || 0).toLocaleString()}
 `)).join('\n')}
 👇 Click the number to manage the corresponding order.
-` : ''}`, {
+` : 'No copy trading position yet!'}`, {
         parse_mode: 'Markdown',
         ...Markup.inlineKeyboard(inlineKeyboard)
       })
@@ -612,6 +619,10 @@ bot.action(/cb_klh_.*/, async (ctx) => {
       const decode = jwt.split('.')[1]
       const decodeJson = JSON.parse(Buffer.from(decode, 'base64').toString())
       const address = decodeJson.walletAddress
+
+
+
+
       ctx.editMessageText(`🧩 History
 ————————————————————
 BTC/USDT Long 20x
@@ -785,15 +796,17 @@ bot.action(/cb_oi_.*/, async (ctx) => {
       const marketPrice = data?.value?.marketPrice.toFixed(2) || '-'
       // @ts-ignore
       const openTime = new Date(data?.value?.timestamp * 1000 || 0).toLocaleString()
+      // @ts-ignore
+      const profitLossRate = data?.value?.profitLossRate || '-'
 
       // TODO
       ctx.editMessageText(`🍯 Position ${oi}
 ————————————————————
 ${product} ${direction} ${leverage}x
-Actual Margin: ${margin} NEST +14.99%
+Actual Margin: ${margin} NEST ${profitLossRate > 0 ? `+${profitLossRate}` : profitLossRate}%
 Open Price: ${orderPrice} USDT
 Market Price: ${marketPrice} USDT
-Liq Price: 1400.00 USDT
+Liq Price: xxx USDT
 Open Time: ${openTime}`, {
         parse_mode: 'Markdown',
         ...Markup.inlineKeyboard([
@@ -835,18 +848,30 @@ bot.action(/cb_close_oi_.*/, async (ctx) => {
       const address = decodeJson.walletAddress
       const page = 1
       // TODO
-      const klAddress = ''
       ctx.answerCbQuery('Close Successfully')
+      let data, length, showData
+      if (klAddress === 'all') {
+        data = await fetch(`${hostname}/nestfi/op/future/list?&status=2&chainId=${chainId}&walletAddress=${address}`, {
+          headers: {
+            'Authorization': jwt
+          }
+        }).then(res => res.json())
+        // @ts-ignore
+        const copy_data = data?.value?.filter((item: any) => item.copy === true)
+        length = copy_data.length || 0
+        showData = copy_data.slice((page - 1) * 5, page * 5)
+      } else {
+        data = await fetch(`${hostname}/nestfi/copy/follower/future/list?chainId=${chainId}&copyKolAddress=${klAddress}`, {
+          headers: {
+            'Authorization': jwt
+          }
+        }).then(res => res.json())
+        // @ts-ignore
+        length = data.value.length || 0
+        // @ts-ignore
+        showData = data.value.slice((page - 1) * 5, page * 5)
+      }
 
-      const data = await fetch(`${hostname}/nestfi/copy/follower/future/list?chainId=${chainId}&copyKolAddress=${klAddress}`, {
-        headers: {
-          'Authorization': jwt
-        }
-      }).then(res => res.json())
-      // @ts-ignore
-      const length = data.value.length || 0
-      // @ts-ignore
-      const showData = data.value.slice((page - 1) * 5, page * 5)
       let inlineKeyboard: any [] = []
       const buttons = showData.map((item: any, index: number) => (
         Markup.button.callback(`${index + 1 + (page - 1) * 5}`, `cb_oi_${item.id}`)
@@ -862,13 +887,13 @@ bot.action(/cb_close_oi_.*/, async (ctx) => {
       
 ${showData.length > 0 ? `${showData.map((item: any, index: number) => (`
 =============================
-${index + 1 + (page - 1) * 5}. BTC/USDT Long 20x
-   Actual Margin: 6418.25 NEST +14.99%
-   Open Price: 1418.25 USDT
-   Open Time: 04-15 10:18:15
+${index + 1 + (page - 1) * 5}. ${item?.product || '-'} ${item?.direction ? 'Long' : 'Short'} ${item?.leverage || '-'}x
+   Actual Margin: ${item?.margin} NEST +xxx%
+   Open Price: ${item?.orderPrice.toFixed(2)} USDT
+   Open Time: ${new Date(item?.timestamp * 1000 || 0).toLocaleString()}
 `)).join('\n')}
 👇 Click the number to manage the corresponding order.
-` : ''}`, {
+` : 'No copy trading position yet!'}`, {
         parse_mode: 'Markdown',
         ...Markup.inlineKeyboard(inlineKeyboard)
       })
