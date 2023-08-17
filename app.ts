@@ -9,12 +9,12 @@ const chainId = 97;
 const hostname = 'https://dev.nestfi.net'
 
 bot.start(async (ctx) => {
-  const user = ctx.from;
+  const from = ctx.from;
   const message_id = ctx.message.message_id;
   try {
     const code = ctx.startPayload;
 
-    const jwt = await fetch(`${process.env.UPSTASH_REDIS_REST_URL}/get/auth:${user.id}`, {
+    const jwt = await fetch(`${process.env.UPSTASH_REDIS_REST_URL}/get/auth:${from.id}`, {
       headers: {
         "Authorization": `Bearer ${process.env.UPSTASH_REDIS_REST_TOKEN}`
       }
@@ -88,7 +88,7 @@ Please select other traders on NESTFi.`, {
         },
         body: JSON.stringify({
           message_id,
-          user,
+          user: from,
         })
       })
       ctx.reply(`👛 *Link Wallet*
@@ -124,10 +124,10 @@ bot.help((ctx) => {
 });
 
 bot.command('account', async (ctx) => {
-  const user = ctx.from;
+  const from = ctx.from;
   const message_id = ctx.message.message_id;
   try {
-    const jwt = await fetch(`${process.env.UPSTASH_REDIS_REST_URL}/get/auth:${user.id}`, {
+    const jwt = await fetch(`${process.env.UPSTASH_REDIS_REST_URL}/get/auth:${from.id}`, {
       headers: {
         "Authorization": `Bearer ${process.env.UPSTASH_REDIS_REST_TOKEN}`
       }
@@ -178,8 +178,8 @@ bot.command('account', async (ctx) => {
 
 // Stop command use to delete authorization request
 bot.command('unauthorize', async (ctx) => {
-  const user = ctx.from;
-  const jwt = await fetch(`${process.env.UPSTASH_REDIS_REST_URL}/get/auth:${user.id}`, {
+  const from = ctx.from;
+  const jwt = await fetch(`${process.env.UPSTASH_REDIS_REST_URL}/get/auth:${from.id}`, {
     headers: {
       "Authorization": `Bearer ${process.env.UPSTASH_REDIS_REST_TOKEN}`
     }
@@ -204,8 +204,8 @@ bot.command('unauthorize', async (ctx) => {
 })
 
 bot.command('cancel', async (ctx) => {
-  const user = ctx.from;
-  await fetch(`${process.env.UPSTASH_REDIS_REST_URL}/del/intent:${user.id}`, {
+  const from = ctx.from;
+  await fetch(`${process.env.UPSTASH_REDIS_REST_URL}/del/intent:${from.id}`, {
     method: 'POST',
     headers: {
       "Authorization": `Bearer ${process.env.UPSTASH_REDIS_REST_TOKEN}`
@@ -216,7 +216,7 @@ bot.command('cancel', async (ctx) => {
 
 // 设置跟单参数
 bot.action(/cb_copy_setting_.*/, async (ctx) => {
-  const user = ctx.update.callback_query.from;
+  const {from} = ctx.update.callback_query;
   const kl = ctx.match[1]
   try {
     // TODO, get user balance of NEST
@@ -237,7 +237,7 @@ Your account balance is insufficient. Please deposit first to initiate lightning
       return
     } else {
       // 暂存用户的输入意图，为输入total balance, 有效期10分钟
-      await fetch(`${process.env.UPSTASH_REDIS_REST_URL}/set/intent:${user.id}?EX=600`, {
+      await fetch(`${process.env.UPSTASH_REDIS_REST_URL}/set/intent:${from.id}?EX=600`, {
         method: 'POST',
         headers: {
           "Authorization": `Bearer ${process.env.UPSTASH_REDIS_REST_TOKEN}`
@@ -279,10 +279,10 @@ ${JSON.stringify(ctx.match)}`, {
 })
 
 bot.action('cb_menu', async (ctx) => {
-  const user = ctx.update.callback_query.from;
+  const {from} = ctx.update.callback_query;
 
   try {
-    const jwt = await fetch(`${process.env.UPSTASH_REDIS_REST_URL}/get/auth:${user.id}`, {
+    const jwt = await fetch(`${process.env.UPSTASH_REDIS_REST_URL}/get/auth:${from.id}`, {
       headers: {
         "Authorization": `Bearer ${process.env.UPSTASH_REDIS_REST_TOKEN}`
       }
@@ -320,7 +320,7 @@ bot.action('cb_menu', async (ctx) => {
         ])
       })
     } else {
-      ctx.reply(`Hi ${user.username}! Please authorize me to set up a NESTFi integration.
+      ctx.reply(`Hi ${from.username}! Please authorize me to set up a NESTFi integration.
 
 *You can use command*: /start`, {
         parse_mode: 'Markdown',
@@ -332,9 +332,9 @@ bot.action('cb_menu', async (ctx) => {
 })
 
 bot.action('cb_account', async (ctx) => {
-  const user = ctx.update.callback_query.from;
+  const {from} = ctx.update.callback_query;
   try {
-    const jwt = await fetch(`${process.env.UPSTASH_REDIS_REST_URL}/get/auth:${user.id}`, {
+    const jwt = await fetch(`${process.env.UPSTASH_REDIS_REST_URL}/get/auth:${from.id}`, {
       headers: {
         "Authorization": `Bearer ${process.env.UPSTASH_REDIS_REST_TOKEN}`
       }
@@ -368,7 +368,7 @@ bot.action('cb_account', async (ctx) => {
         ])
       })
     } else {
-      ctx.editMessageText(`Hi ${user.username}! Please authorize me to set up a NESTFi integration.
+      ctx.editMessageText(`Hi ${from.username}! Please authorize me to set up a NESTFi integration.
 
 *You can use command*: /start`, {
         parse_mode: 'Markdown',
@@ -382,10 +382,10 @@ bot.action('cb_account', async (ctx) => {
 // 查看所有的跟单人员，跟页码，默认是1
 // cb_kls_p_[PAGE]
 bot.action(/cb_kls_p_.*/, async (ctx) => {
-  const page = ctx.match[1]
-  const user = ctx.update.callback_query.from;
+  // @ts-ignore
+  const {from, data: action} = ctx.update.callback_query;
   try {
-    const jwt = await fetch(`${process.env.UPSTASH_REDIS_REST_URL}/get/auth:${user.id}`, {
+    const jwt = await fetch(`${process.env.UPSTASH_REDIS_REST_URL}/get/auth:${from.id}`, {
       headers: {
         "Authorization": `Bearer ${process.env.UPSTASH_REDIS_REST_TOKEN}`
       }
@@ -408,8 +408,8 @@ These are the traders you follow, together with your investment amount.
 
 --- GET /nestfi/copy/follower/kolList?chainId=${chainId}
 ${JSON.stringify(data)}
---- ctx.match
-${JSON.stringify(ctx.match)}
+--- action, callback_query.data
+${JSON.stringify(action)}
 `, {
         parse_mode: 'Markdown',
         ...Markup.inlineKeyboard([
@@ -419,7 +419,7 @@ ${JSON.stringify(ctx.match)}
         ])
       })
     } else {
-      ctx.editMessageText(`Hi ${user.username}! Please authorize me to set up a NESTFi integration.
+      ctx.editMessageText(`Hi ${from.username}! Please authorize me to set up a NESTFi integration.
 
 *You can use command*: /start`, {
         parse_mode: 'Markdown',
@@ -434,9 +434,9 @@ ${JSON.stringify(ctx.match)}
 // cb_kl_[KL]
 bot.action(/cb_kl_.*/, async (ctx) => {
   // const kl = ctx.match[1]
-  const user = ctx.update.callback_query.from;
+  const {from} = ctx.update.callback_query;
   try {
-    const jwt = await fetch(`${process.env.UPSTASH_REDIS_REST_URL}/get/auth:${user.id}`, {
+    const jwt = await fetch(`${process.env.UPSTASH_REDIS_REST_URL}/get/auth:${from.id}`, {
       headers: {
         "Authorization": `Bearer ${process.env.UPSTASH_REDIS_REST_TOKEN}`
       }
@@ -495,11 +495,26 @@ ${JSON.stringify(ctx.match)}
 
 // 查看某个KL下面的所有当前的仓位
 // cb_ps_[KL]_[PAGE]
+// GET /copy/follower/future/list
 bot.action(/cb_ps_.*/, async (ctx) => {
   // const kl = ctx.match[1].split('_')[0]
+  const {from} = ctx.update.callback_query;
   try {
-    // const page = ctx.match[1].split('_')[1]
-    ctx.editMessageText(`👩‍💻 *Current Copy Trading Position*
+    const jwt = await fetch(`${process.env.UPSTASH_REDIS_REST_URL}/get/auth:${from.id}`, {
+      headers: {
+        "Authorization": `Bearer ${process.env.UPSTASH_REDIS_REST_TOKEN}`
+      }
+    })
+      .then(response => response.json())
+      .then((data: any) => data.result)
+
+    if (jwt) {
+      const decode = jwt.split('.')[1]
+      const decodeJson = JSON.parse(Buffer.from(decode, 'base64').toString())
+      const address = decodeJson.walletAddress
+
+      // const page = ctx.match[1].split('_')[1]
+      ctx.editMessageText(`👩‍💻 *Current Copy Trading Position*
     
 👤 Copied from Woody
 =============================
@@ -514,12 +529,15 @@ bot.action(/cb_ps_.*/, async (ctx) => {
 -- ctx.match
 ${JSON.stringify(ctx.match)}
   `, {
-      parse_mode: 'Markdown',
-      ...Markup.inlineKeyboard([
-        [Markup.button.callback('1', 'cb_oi_1'), Markup.button.callback('2', 'cb_oi_2'), Markup.button.callback('3', 'cb_oi_3'), Markup.button.callback('4', 'cb_oi_1'), Markup.button.callback('5', 'cb_oi_2')],
-        [Markup.button.callback('History', 'cb_klh_KL1_1'), Markup.button.callback('« Back', 'cb_kl_KL1')],
-      ])
-    })
+        parse_mode: 'Markdown',
+        ...Markup.inlineKeyboard([
+          [Markup.button.callback('1', 'cb_oi_1'), Markup.button.callback('2', 'cb_oi_2'), Markup.button.callback('3', 'cb_oi_3'), Markup.button.callback('4', 'cb_oi_1'), Markup.button.callback('5', 'cb_oi_2')],
+          [Markup.button.callback('History', 'cb_klh_KL1_1'), Markup.button.callback('« Back', 'cb_kl_KL1')],
+        ])
+      })
+    } else {
+      // TODO
+    }
   } catch (e) {
     ctx.answerCbQuery('Something went wrong.')
   }
@@ -528,8 +546,21 @@ ${JSON.stringify(ctx.match)}
 bot.action(/cb_klh_.*/, async (ctx) => {
   // const kl = ctx.match[1].split('_')[0]
   // const page = ctx.match[1].split('_')[1]
+  const {from} = ctx.update.callback_query;
   try {
-    ctx.editMessageText(`🧩 *History*
+    const jwt = await fetch(`${process.env.UPSTASH_REDIS_REST_URL}/get/auth:${from.id}`, {
+      headers: {
+        "Authorization": `Bearer ${process.env.UPSTASH_REDIS_REST_TOKEN}`
+      }
+    })
+      .then(response => response.json())
+      .then((data: any) => data.result)
+
+    if (jwt) {
+      const decode = jwt.split('.')[1]
+      const decodeJson = JSON.parse(Buffer.from(decode, 'base64').toString())
+      const address = decodeJson.walletAddress
+      ctx.editMessageText(`🧩 *History*
 ————————————————————
 *BTC/USDT Long 20x*
 *Actual Margin*: 6418.25 NEST +14.99%
@@ -542,20 +573,36 @@ bot.action(/cb_klh_.*/, async (ctx) => {
 -- ctx.match
 ${JSON.stringify(ctx.match)}
 `, {
-      parse_mode: 'Markdown',
-      ...Markup.inlineKeyboard([
-        [Markup.button.callback('» Next Page', `cb_klh_KL1_2`)],
-        [Markup.button.callback('« Back', 'cb_ps_KL1_1')],
-      ])
-    })
+        parse_mode: 'Markdown',
+        ...Markup.inlineKeyboard([
+          [Markup.button.callback('» Next Page', `cb_klh_KL1_2`)],
+          [Markup.button.callback('« Back', 'cb_ps_KL1_1')],
+        ])
+      })
+    } else {
+      // TODO
+    }
   } catch (e) {
     ctx.answerCbQuery('Something went wrong.')
   }
 })
 
 bot.action(/cb_r_stop_kl_.*/, async (ctx) => {
+  const {from} = ctx.update.callback_query;
   try {
-    ctx.editMessageText(`🙅 *Stop Copying*
+    const jwt = await fetch(`${process.env.UPSTASH_REDIS_REST_URL}/get/auth:${from.id}`, {
+      headers: {
+        "Authorization": `Bearer ${process.env.UPSTASH_REDIS_REST_TOKEN}`
+      }
+    })
+      .then(response => response.json())
+      .then((data: any) => data.result)
+
+    if (jwt) {
+      const decode = jwt.split('.')[1]
+      const decodeJson = JSON.parse(Buffer.from(decode, 'base64').toString())
+      const address = decodeJson.walletAddress
+      ctx.editMessageText(`🙅 *Stop Copying*
 ————————————————————
 *Total Copy Amount*: 6000 NEST
 *Open Interest*: 5000 NEST
@@ -568,28 +615,48 @@ _End copy will liquidate your position with market orders, and automatically ret
 -- ctx.match
 ${JSON.stringify(ctx.match)}
     `, {
-      parse_mode: 'Markdown',
-      ...Markup.inlineKeyboard([
-        [Markup.button.callback('Nope, I change my mind.', `cb_kl_KL1`)],
-        [Markup.button.callback('Yes, stop copying trading.', `cb_stop_kl_KL1`)],
-      ])
-    })
+        parse_mode: 'Markdown',
+        ...Markup.inlineKeyboard([
+          [Markup.button.callback('Nope, I change my mind.', `cb_kl_KL1`)],
+          [Markup.button.callback('Yes, stop copying trading.', `cb_stop_kl_KL1`)],
+        ])
+      })
+    } else {
+      // TODO
+    }
   } catch (e) {
     ctx.answerCbQuery('Something went wrong.')
   }
 })
 
 bot.action(/cb_stop_kl_.*/, async (ctx) => {
+  const {from} = ctx.update.callback_query;
   try {
-    ctx.editMessageText(`🥳 Stop Copying Successfully!
+    const jwt = await fetch(`${process.env.UPSTASH_REDIS_REST_URL}/get/auth:${from.id}`, {
+      headers: {
+        "Authorization": `Bearer ${process.env.UPSTASH_REDIS_REST_TOKEN}`
+      }
+    })
+      .then(response => response.json())
+      .then((data: any) => data.result)
+
+    if (jwt) {
+      const decode = jwt.split('.')[1]
+      const decodeJson = JSON.parse(Buffer.from(decode, 'base64').toString())
+      const address = decodeJson.walletAddress
+
+      ctx.editMessageText(`🥳 Stop Copying Successfully!
     
 -- ctx.match
 ${JSON.stringify(ctx.match)}`, {
-      parse_mode: 'Markdown',
-      ...Markup.inlineKeyboard([
-        [Markup.button.callback('« Back', 'cb_kls_p_1')],
-      ])
-    })
+        parse_mode: 'Markdown',
+        ...Markup.inlineKeyboard([
+          [Markup.button.callback('« Back', 'cb_kls_p_1')],
+        ])
+      })
+    } else {
+      // TODO
+    }
   } catch (e) {
     ctx.answerCbQuery('Something went wrong.')
   }
@@ -599,8 +666,21 @@ ${JSON.stringify(ctx.match)}`, {
 // cb_po_[ORDER_INDEX]
 bot.action(/cb_oi_.*/, async (ctx) => {
   const order_index = ctx.match[1]
+  const {from} = ctx.update.callback_query;
   try {
-    ctx.editMessageText(`🍯 *Position 1*
+    const jwt = await fetch(`${process.env.UPSTASH_REDIS_REST_URL}/get/auth:${from.id}`, {
+      headers: {
+        "Authorization": `Bearer ${process.env.UPSTASH_REDIS_REST_TOKEN}`
+      }
+    })
+      .then(response => response.json())
+      .then((data: any) => data.result)
+
+    if (jwt) {
+      const decode = jwt.split('.')[1]
+      const decodeJson = JSON.parse(Buffer.from(decode, 'base64').toString())
+      const address = decodeJson.walletAddress
+      ctx.editMessageText(`🍯 *Position 1*
 ————————————————————
 *BTC/USDT Long 20x*
 *Actual Margin*: 6418.25 NEST +14.99%
@@ -612,12 +692,15 @@ bot.action(/cb_oi_.*/, async (ctx) => {
 -- ctx.match
 ${JSON.stringify(ctx.match)}
 `, {
-      parse_mode: 'Markdown',
-      ...Markup.inlineKeyboard([
-        [Markup.button.callback('Close the Position', 'cb_close_oi_1')],
-        [Markup.button.callback('« Back', 'cb_ps_KL_1')],
-      ])
-    })
+        parse_mode: 'Markdown',
+        ...Markup.inlineKeyboard([
+          [Markup.button.callback('Close the Position', 'cb_close_oi_1')],
+          [Markup.button.callback('« Back', 'cb_ps_KL_1')],
+        ])
+      })
+    } else {
+      // TODO
+    }
   } catch (e) {
     ctx.answerCbQuery('Something went wrong.')
   }
@@ -627,9 +710,23 @@ ${JSON.stringify(ctx.match)}
 // cb_close_oi_[ORDER_INDEX]
 bot.action(/cb_close_oi_.*/, async (ctx) => {
   const order_index = ctx.match[1]
+  const {from} = ctx.update.callback_query;
   try {
-    ctx.answerCbQuery('Close Successfully')
-    ctx.editMessageText(`👩‍💻 *Current Copy Trading Position*
+    const jwt = await fetch(`${process.env.UPSTASH_REDIS_REST_URL}/get/auth:${from.id}`, {
+      headers: {
+        "Authorization": `Bearer ${process.env.UPSTASH_REDIS_REST_TOKEN}`
+      }
+    })
+      .then(response => response.json())
+      .then((data: any) => data.result)
+
+    if (jwt) {
+      const decode = jwt.split('.')[1]
+      const decodeJson = JSON.parse(Buffer.from(decode, 'base64').toString())
+      const address = decodeJson.walletAddress
+
+      ctx.answerCbQuery('Close Successfully')
+      ctx.editMessageText(`👩‍💻 *Current Copy Trading Position*
     
 👤 Copied from Woody
 =============================
@@ -644,12 +741,15 @@ bot.action(/cb_close_oi_.*/, async (ctx) => {
 -- ctx.match
 ${JSON.stringify(ctx.match)}
   `, {
-      parse_mode: 'Markdown',
-      ...Markup.inlineKeyboard([
-        [Markup.button.callback('1', 'cb_oi_1'), Markup.button.callback('2', 'cb_oi_2'), Markup.button.callback('3', 'cb_oi_3'), Markup.button.callback('4', 'cb_oi_1'), Markup.button.callback('5', 'cb_oi_2')],
-        [Markup.button.callback('History', 'cb_klh_KL1_1'), Markup.button.callback('« Back', 'cb_kl_KL1')],
-      ])
-    })
+        parse_mode: 'Markdown',
+        ...Markup.inlineKeyboard([
+          [Markup.button.callback('1', 'cb_oi_1'), Markup.button.callback('2', 'cb_oi_2'), Markup.button.callback('3', 'cb_oi_3'), Markup.button.callback('4', 'cb_oi_1'), Markup.button.callback('5', 'cb_oi_2')],
+          [Markup.button.callback('History', 'cb_klh_KL1_1'), Markup.button.callback('« Back', 'cb_kl_KL1')],
+        ])
+      })
+    } else {
+      // TODO
+    }
   } catch (e) {
     ctx.answerCbQuery('Something went wrong.')
   }
@@ -657,9 +757,9 @@ ${JSON.stringify(ctx.match)}
 
 // Handle logout button click
 bot.action('cb_unauthorize', async (ctx) => {
-  const user = ctx.update.callback_query.from;
+  const {from} = ctx.update.callback_query;
   try {
-    await fetch(`${process.env.UPSTASH_REDIS_REST_URL}/del/auth:${user.id}`, {
+    await fetch(`${process.env.UPSTASH_REDIS_REST_URL}/del/auth:${from.id}`, {
       headers: {
         "Authorization": `Bearer ${process.env.UPSTASH_REDIS_REST_TOKEN}`
       }
@@ -671,10 +771,10 @@ bot.action('cb_unauthorize', async (ctx) => {
 })
 
 bot.action('confirm_copy_setting', async (ctx) => {
-  const user = ctx.update.callback_query.from;
+  const {from} = ctx.update.callback_query;
   // 查询用户意图
   try {
-    const intent = await fetch(`${process.env.UPSTASH_REDIS_REST_URL}/get/intent:${user.id}`, {
+    const intent = await fetch(`${process.env.UPSTASH_REDIS_REST_URL}/get/intent:${from.id}`, {
       headers: {
         "Authorization": `Bearer ${process.env.UPSTASH_REDIS_REST_TOKEN}`
       }
@@ -709,9 +809,9 @@ Telegram Group: copytade@group`, {
 })
 
 bot.action('cancel_copy_setting', async (ctx) => {
-  const user = ctx.update.callback_query.from;
+  const {from} = ctx.update.callback_query;
   try {
-    await fetch(`${process.env.UPSTASH_REDIS_REST_URL}/del/intent:${user.id}`, {
+    await fetch(`${process.env.UPSTASH_REDIS_REST_URL}/del/intent:${from.id}`, {
       headers: {
         "Authorization": `Bearer ${process.env.UPSTASH_REDIS_REST_TOKEN}`
       },
@@ -728,9 +828,9 @@ bot.action('cancel_copy_setting', async (ctx) => {
 })
 
 bot.on("message", async (ctx) => {
-  const user = ctx.update.message.from;
+  const {from} = ctx.update.message;
   const input = ctx.message.text;
-  const intent = await fetch(`${process.env.UPSTASH_REDIS_REST_URL}/get/intent:${user.id}`, {
+  const intent = await fetch(`${process.env.UPSTASH_REDIS_REST_URL}/get/intent:${from.id}`, {
     headers: {
       "Authorization": `Bearer ${process.env.UPSTASH_REDIS_REST_TOKEN}`
     }
@@ -751,7 +851,7 @@ Please enter a valid amount between 200 and your account balance.`, {
           return
         }
         // 更新intent
-        await fetch(`${process.env.UPSTASH_REDIS_REST_URL}/set/intent:${user.id}?EX=600`, {
+        await fetch(`${process.env.UPSTASH_REDIS_REST_URL}/set/intent:${from.id}?EX=600`, {
           method: 'POST',
           headers: {
             "Authorization": `Bearer ${process.env.UPSTASH_REDIS_REST_TOKEN}`
@@ -794,7 +894,7 @@ Please enter a valid amount between 50 and your CopyTrading Total Amount.`, {
           })
           return
         }
-        await fetch(`${process.env.UPSTASH_REDIS_REST_URL}/set/intent:${user.id}?EX=600`, {
+        await fetch(`${process.env.UPSTASH_REDIS_REST_URL}/set/intent:${from.id}?EX=600`, {
           method: 'POST',
           headers: {
             "Authorization": `Bearer ${process.env.UPSTASH_REDIS_REST_TOKEN}`
