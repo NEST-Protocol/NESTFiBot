@@ -628,10 +628,10 @@ bot.action(/cb_ps_.*/, async (ctx) => {
 ${showData.length > 0 ? `${showData.map((item: any, index: number) => (`
 =============================
 ${index + 1 + (page - 1) * 5}. ${item?.product || '-'} ${item?.direction ? 'Long' : 'Short'} ${item?.leverage || '-'}x
-   Actual Margin: ${item?.margin} NEST +xxx%
-   Open Price: ${item?.orderPrice.toFixed(2)} USDT
+   Actual Margin: ${item?.margin?.toFixed(2)} NEST +xxx%
+   Open Price: ${item?.orderPrice?.toFixed(2)} USDT
    Open Time: ${new Date(item?.timestamp * 1000 || 0).toLocaleString()}
-`)).join('\n')}
+`))}
 👇 Click the number to manage the corresponding order.
 ` : 'No copy trading position yet!'}`, {
         parse_mode: 'Markdown',
@@ -693,13 +693,13 @@ bot.action(/cb_klh_.*/, async (ctx) => {
 ${showData?.length > 0 ? `${showData?.map((item: any, index: number) => (`
 =============================
 ${index + 1 + (page - 1) * 5}. ${item?.product || '-'} ${item?.direction ? 'Long' : 'Short'} ${item?.leverage || '-'}x
-   Actual Margin: ${item?.margin} NEST ${item?.profitLossRate > 0 ? `+${item?.profitLossRate * 100}` : item?.profitLossRate * 100}%
-   Open Price: ${item?.orderPrice?.toFixed(2)} USDT
-   Close price: ${item?.closePrice?.toFixed(2)} USDT} USDT
+   Actual Margin: ${item?.margin?.toFixed(2)} NEST ${item?.profitLossRate > 0 ? `+${(item?.profitLossRate * 100).toFixed(2)}` : (item?.profitLossRate * 100).toFixed(2)}%
+   Open Price: ${item?.openPrice?.toFixed(2)} USDT
+   Close price: ${item?.closePrice?.toFixed(2)} USDT
    Liq Price: xxx USDT
    Open Time: ${new Date(item?.timestamp * 1000 || 0).toLocaleString()}
    Close Time: xxx
-`)).join('\n')}` : 'No copy trading position yet!'}`, {
+`))}` : 'No copy trading position yet!'}`, {
         parse_mode: 'Markdown',
         ...Markup.inlineKeyboard(inlineKeyboard)
       })
