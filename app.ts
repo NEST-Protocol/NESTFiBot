@@ -72,9 +72,9 @@ Please select other traders on NESTFi.`, {
         const profit = data?.value?.profit || 0
         ctx.reply(`📊 *My Trades*
 ————————————————————
-*Copy trading assets*: ${assets} NEST
-*Profit*: ${profit} NEST
-*Unrealized PnL*: ${unRealizedPnl} NEST
+*Copy trading assets*: ${assets.toFixed(2)} NEST
+*Profit*: ${profit.toFixed(2)} NEST
+*Unrealized PnL*: ${unRealizedPnl.toFixed(2)} NEST
 *Address*: ${address}
 `, {
           parse_mode: 'Markdown',
@@ -326,9 +326,9 @@ bot.action('cb_menu', async (ctx) => {
 
       ctx.editMessageText(`📊 *My Trades*
 ————————————————————
-*Copy Trading Assets*: ${assets} NEST
-*Profit*: ${profit} NEST
-*Unrealized PnL*: ${unRealizedPnl} NEST
+*Copy Trading Assets*: ${assets.toFixed(2)} NEST
+*Profit*: ${profit.toFixed(2)} NEST
+*Unrealized PnL*: ${unRealizedPnl.toFixed(2)} NEST
 *Address*: ${address}
 `, {
         parse_mode: 'Markdown',
@@ -428,7 +428,7 @@ bot.action(/cb_kls_p_.*/, async (ctx) => {
       const showArray = data?.value.slice((page - 1) * 5, page * 5)
       for (let i = 0; i < showArray.length; i++) {
         // @ts-ignore
-        inlineKeyboard.push([Markup.button.callback(`${showArray[i]?.nickName}: ${showArray[i]?.position > 0 ? showArray[i]?.position.toFixed(2) : `Havent't Started`}`, `cb_kl_${showArray[i]?.walletAddress}`)])
+        inlineKeyboard.push([Markup.button.callback(`${showArray[i]?.nickName}: ${showArray[i]?.position > 0 ? `${showArray[i]?.position.toFixed(2)} NEST` : `Havent't Started`}`, `cb_kl_${showArray[i]?.walletAddress}`)])
       }
       if (page * 5 < length) {
         inlineKeyboard.push([Markup.button.callback('» Next Page', `cb_kls_p_${page + 1}`)])
@@ -437,11 +437,6 @@ bot.action(/cb_kls_p_.*/, async (ctx) => {
       ctx.editMessageText(`💪 *My Traders*
 ————————————————————
 These are the traders you follow, together with your investment amount.
-
---- GET /nestfi/copy/follower/kolList?chainId=${chainId}
-${JSON.stringify(data)}
---- page
-${page}
 `, {
         parse_mode: 'Markdown',
         ...Markup.inlineKeyboard(inlineKeyboard)
