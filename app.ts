@@ -335,7 +335,7 @@ Your account balance is insufficient. Please deposit first to initiate lightning
 ————————————————————
 My Account Balance: ${(availableBalance || 0).toFixed(2)} NEST${position > 0 ? `\nCopy Trading Total Amount: ${(position || 0)?.toFixed(2)} NEST` : ''}
 
-Copy ${nickName}
+You are following: ${nickName}
 Please type the amount you invest to this trader below.`, {
           parse_mode: 'Markdown',
           ...Markup.keyboard([
@@ -480,7 +480,7 @@ bot.action(/cb_kls_p_.*/, async (ctx) => {
       const showArray = data?.value.slice((page - 1) * 5, page * 5)
       for (let i = 0; i < showArray.length; i++) {
         // @ts-ignore
-        inlineKeyboard.push([Markup.button.callback(`${showArray[i]?.nickName || '-'}: ${showArray[i]?.position > 0 ? `${(showArray[i]?.position || 0).toFixed(2)} NEST` : `Havent't Started`}`, `cb_kl_${showArray[i]?.walletAddress}`)])
+        inlineKeyboard.push([Markup.button.callback(`${showArray[i]?.nickName || '-'}`, `cb_kl_${showArray[i]?.walletAddress}`)])
       }
       if (page * 5 < length) {
         inlineKeyboard.push([Markup.button.callback('» Next Page', `cb_kls_p_${page + 1}`)])
@@ -488,7 +488,7 @@ bot.action(/cb_kls_p_.*/, async (ctx) => {
       inlineKeyboard.push([Markup.button.callback('« Back', 'cb_menu')])
       ctx.editMessageText(`💪 My Traders
 ————————————————————
-These are the traders you follow, together with your investment amount.
+These are the traders you followed.
 `, {
         parse_mode: 'Markdown',
         ...Markup.inlineKeyboard(inlineKeyboard)
@@ -1054,7 +1054,7 @@ Please enter a valid amount between ${Math.max(200, position)} and your account 
         choice[2] = Math.floor(Number(input) * 0.4 / 50) * 50
         ctx.reply(`💵 Copy Trading Each Order
 ————————————————————
-Copy ${nickName}
+You are following: ${nickName}
 Please type the amount you invest to this trader for each order below.
 `, {
           parse_mode: 'Markdown',
@@ -1097,7 +1097,7 @@ Please enter a valid amount between 50 and your CopyTrading Total Amount, ${tota
 Copy Trading Total Amount: ${total} NEST 
 Copy Trading Each Order: ${input} NEST 
 
-Copy ${nickName}
+You are following: ${nickName}
 Are you sure?`, {
           parse_mode: 'Markdown',
           ...Markup.inlineKeyboard([
