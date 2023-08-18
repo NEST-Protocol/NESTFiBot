@@ -854,9 +854,9 @@ bot.action(/cb_oi_.*/, async (ctx) => {
       // @ts-ignore
       const openTime = new Date(data?.value?.timestamp * 1000 || 0).toISOString()
       // @ts-ignore
-      const profitLossRate = data?.value?.profitLossRate || '-'
+      const profitLossRate = data?.value?.profitLossRate?.toFixed(2) || '-'
       // @ts-ignore
-      const liqPrice = data?.value?.lipPrice || '-'
+      const liqPrice = data?.value?.lipPrice?.toFixed(2) || '-'
 
       ctx.editMessageText(`🍯 Position ${oi}
 ————————————————————
