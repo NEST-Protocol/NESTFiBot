@@ -478,7 +478,7 @@ bot.action(/cb_kls_p_.*/, async (ctx) => {
       const showArray = data?.value.slice((page - 1) * 5, page * 5)
       for (let i = 0; i < showArray.length; i++) {
         // @ts-ignore
-        inlineKeyboard.push([Markup.button.callback(`${showArray[i]?.nickName}: ${showArray[i]?.position > 0 ? `${(showArray[i]?.position || 0).toFixed(2)} NEST` : `Havent't Started`}`, `cb_kl_${showArray[i]?.walletAddress}`)])
+        inlineKeyboard.push([Markup.button.callback(`${showArray[i]?.nickName || '-'}: ${showArray[i]?.position > 0 ? `${(showArray[i]?.position || 0).toFixed(2)} NEST` : `Havent't Started`}`, `cb_kl_${showArray[i]?.walletAddress}`)])
       }
       if (page * 5 < length) {
         inlineKeyboard.push([Markup.button.callback('» Next Page', `cb_kls_p_${page + 1}`)])
