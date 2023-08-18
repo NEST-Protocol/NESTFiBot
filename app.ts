@@ -550,7 +550,6 @@ bot.action(/cb_kl_.*/, async (ctx) => {
       const kolProfitLoss = data?.value.kolProfitLoss || 0
       // @ts-ignore
       const kolProfitLossRate = data?.value.kolProfitLossRate || 0
-      // TODO
       // @ts-ignore
       const rewardRatio = (data?.value?.rewardRatio * 100).toFixed(2) || 0
 
@@ -945,7 +944,6 @@ bot.action(/cb_close_oi_.*/, async (ctx) => {
           inlineKeyboard.push([Markup.button.callback('» Next Page', `cb_ps_${klAddress}_${page + 1}`)])
         }
         inlineKeyboard.push([Markup.button.callback('History', `cb_klh_${klAddress}_1`), Markup.button.callback('« Back', `cb_kl_${klAddress}`)])
-        // TODO
         ctx.editMessageText(`🎯 Current Copy Trading Position
 ${showData.length > 0 ? `${showData.map((item: any, index: number) => (`
 =============================
