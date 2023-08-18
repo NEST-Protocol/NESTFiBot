@@ -698,7 +698,7 @@ ${index + 1 + (page - 1) * 5}. ${item?.product || '-'} ${item?.direction ? 'Long
    Actual Margin: ${item?.margin?.toFixed(2)} NEST ${item?.profitLossRate > 0 ? `+${item?.profitLossRate?.toFixed(2)}` : item?.profitLossRate?.toFixed(2)}%
    Open Price: ${item?.openPrice?.toFixed(2)} USDT
    Close price: ${item?.closePrice?.toFixed(2)} USDT
-   Liq Price: ${item?.lipPrice?.toFixed(2)} USDT
+   Liq Price: ${item?.lipPrice ? item?.lipPrice?.toFixed(2) : '-'} USDT
    Open: UTC${new Date(item?.openTime * 1000 || 0).toISOString().replace('T', ' ').substring(5, 19)}
    Close: UTC${new Date(item?.closeTime * 1000 || 0).toISOString().replace('T', ' ').substring(5, 19)}`)).join('')}` : '\nNo copy trading position yet!'}`, {
         parse_mode: 'Markdown',
@@ -861,7 +861,7 @@ bot.action(/cb_oi_.*/, async (ctx) => {
       // @ts-ignore
       const profitLossRate = data?.value?.profitLossRate?.toFixed(2) || '-'
       // @ts-ignore
-      const liqPrice = data?.value?.lipPrice?.toFixed(2) || '-'
+      const liqPrice = data?.value?.lipPrice ? data?.value?.lipPrice?.toFixed(2) : '-'
 
       ctx.editMessageText(`🍯 Position ${oi}
 ————————————————————
