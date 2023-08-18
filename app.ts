@@ -5,17 +5,19 @@ import {isAddress} from "ethers";
 
 const token = process.env.BOT_TOKEN!;
 const bot = new Telegraf(token);
-const chainId = 56;
-const hostname = 'https://api.nestfi.net'
+const chainId = process.env.CHAINID;
+const hostname = process.env.HOSTNAME;
+const redis_url = process.env.UPSTASH_REDIS_REST_URL
+const redis_token = process.env.UPSTASH_REDIS_REST_TOKEN
 
 bot.start(async (ctx) => {
   const from = ctx.from;
   try {
     const klAddress = ctx.startPayload;
 
-    const jwt = await fetch(`${process.env.UPSTASH_REDIS_REST_URL}/get/auth:${from.id}`, {
+    const jwt = await fetch(`${redis_url}/get/auth:${from.id}`, {
       headers: {
-        "Authorization": `Bearer ${process.env.UPSTASH_REDIS_REST_TOKEN}`
+        "Authorization": `Bearer ${redis_token}`
       }
     })
       .then(response => response.json())
@@ -129,10 +131,10 @@ Hi there, before copying trading, please link your wallet on NESTFi.
         ])
       })
       const message_id = message.message_id
-      await fetch(`${process.env.UPSTASH_REDIS_REST_URL}/set/code:${nonce}?EX=600`, {
+      await fetch(`${redis_url}/set/code:${nonce}?EX=600`, {
         method: 'POST',
         headers: {
-          "Authorization": `Bearer ${process.env.UPSTASH_REDIS_REST_TOKEN}`
+          "Authorization": `Bearer ${redis_token}`
         },
         body: JSON.stringify({
           message_id: message_id,
@@ -162,9 +164,9 @@ bot.command('account', async (ctx) => {
   const from = ctx.from;
   const message_id = ctx.message.message_id;
   try {
-    const jwt = await fetch(`${process.env.UPSTASH_REDIS_REST_URL}/get/auth:${from.id}`, {
+    const jwt = await fetch(`${redis_url}/get/auth:${from.id}`, {
       headers: {
-        "Authorization": `Bearer ${process.env.UPSTASH_REDIS_REST_TOKEN}`
+        "Authorization": `Bearer ${redis_token}`
       }
     })
       .then(response => response.json())
@@ -210,9 +212,9 @@ You can use command: /start`, {
 // Stop command use to delete authorization request
 bot.command('cancel', async (ctx) => {
   const from = ctx.from;
-  const jwt = await fetch(`${process.env.UPSTASH_REDIS_REST_URL}/get/auth:${from.id}`, {
+  const jwt = await fetch(`${redis_url}/get/auth:${from.id}`, {
     headers: {
-      "Authorization": `Bearer ${process.env.UPSTASH_REDIS_REST_TOKEN}`
+      "Authorization": `Bearer ${redis_token}`
     }
   }).then(response => response.json())
     .then((data: any) => data.result)
@@ -241,9 +243,9 @@ bot.action(/cb_copy_setting_.*/, async (ctx) => {
   const {from, data: action} = ctx.update.callback_query;
   const klAddress = action.split('_')[3]
   try {
-    const jwt = await fetch(`${process.env.UPSTASH_REDIS_REST_URL}/get/auth:${from.id}`, {
+    const jwt = await fetch(`${redis_url}/get/auth:${from.id}`, {
       headers: {
-        "Authorization": `Bearer ${process.env.UPSTASH_REDIS_REST_TOKEN}`
+        "Authorization": `Bearer ${redis_token}`
       }
     })
       .then(response => response.json())
@@ -291,10 +293,10 @@ Your account balance is insufficient. Please deposit first to initiate lightning
         })
         return
       } else {
-        await fetch(`${process.env.UPSTASH_REDIS_REST_URL}/set/intent:${from.id}?EX=600`, {
+        await fetch(`${redis_url}/set/intent:${from.id}?EX=600`, {
           method: 'POST',
           headers: {
-            "Authorization": `Bearer ${process.env.UPSTASH_REDIS_REST_TOKEN}`
+            "Authorization": `Bearer ${redis_token}`
           },
           body: JSON.stringify({
             category: 'cb_copy_setting',
@@ -341,9 +343,9 @@ bot.action('cb_menu', async (ctx) => {
   const {from} = ctx.update.callback_query;
 
   try {
-    const jwt = await fetch(`${process.env.UPSTASH_REDIS_REST_URL}/get/auth:${from.id}`, {
+    const jwt = await fetch(`${redis_url}/get/auth:${from.id}`, {
       headers: {
-        "Authorization": `Bearer ${process.env.UPSTASH_REDIS_REST_TOKEN}`
+        "Authorization": `Bearer ${redis_token}`
       }
     })
       .then(response => response.json())
@@ -389,9 +391,9 @@ You can use command: /start`, {
 bot.action('cb_account', async (ctx) => {
   const {from} = ctx.update.callback_query;
   try {
-    const jwt = await fetch(`${process.env.UPSTASH_REDIS_REST_URL}/get/auth:${from.id}`, {
+    const jwt = await fetch(`${redis_url}/get/auth:${from.id}`, {
       headers: {
-        "Authorization": `Bearer ${process.env.UPSTASH_REDIS_REST_TOKEN}`
+        "Authorization": `Bearer ${redis_token}`
       }
     })
       .then(response => response.json())
@@ -438,9 +440,9 @@ bot.action(/cb_kls_p_.*/, async (ctx) => {
   const {from, data: action} = ctx.update.callback_query;
   const page = Number(action.split('_')[3])
   try {
-    const jwt = await fetch(`${process.env.UPSTASH_REDIS_REST_URL}/get/auth:${from.id}`, {
+    const jwt = await fetch(`${redis_url}/get/auth:${from.id}`, {
       headers: {
-        "Authorization": `Bearer ${process.env.UPSTASH_REDIS_REST_TOKEN}`
+        "Authorization": `Bearer ${redis_token}`
       }
     })
       .then(response => response.json())
@@ -492,9 +494,9 @@ bot.action(/cb_kl_.*/, async (ctx) => {
   const {from, data: action} = ctx.update.callback_query;
   const klAddress = action.split('_')[2]
   try {
-    const jwt = await fetch(`${process.env.UPSTASH_REDIS_REST_URL}/get/auth:${from.id}`, {
+    const jwt = await fetch(`${redis_url}/get/auth:${from.id}`, {
       headers: {
-        "Authorization": `Bearer ${process.env.UPSTASH_REDIS_REST_TOKEN}`
+        "Authorization": `Bearer ${redis_token}`
       }
     })
       .then(response => response.json())
@@ -545,9 +547,9 @@ bot.action(/cb_ps_.*/, async (ctx) => {
   const klAddress = action.split('_')[2]
   const page = Number(action.split('_')[3])
   try {
-    const jwt = await fetch(`${process.env.UPSTASH_REDIS_REST_URL}/get/auth:${from.id}`, {
+    const jwt = await fetch(`${redis_url}/get/auth:${from.id}`, {
       headers: {
-        "Authorization": `Bearer ${process.env.UPSTASH_REDIS_REST_TOKEN}`
+        "Authorization": `Bearer ${redis_token}`
       }
     })
       .then(response => response.json())
@@ -614,9 +616,9 @@ bot.action(/cb_klh_.*/, async (ctx) => {
   const klAddress = action.split('_')[2]
   const page = Number(action.split('_')[3])
   try {
-    const jwt = await fetch(`${process.env.UPSTASH_REDIS_REST_URL}/get/auth:${from.id}`, {
+    const jwt = await fetch(`${redis_url}/get/auth:${from.id}`, {
       headers: {
-        "Authorization": `Bearer ${process.env.UPSTASH_REDIS_REST_TOKEN}`
+        "Authorization": `Bearer ${redis_token}`
       }
     })
       .then(response => response.json())
@@ -677,9 +679,9 @@ bot.action(/cb_r_stop_kl_.*/, async (ctx) => {
   const {from, data: action} = ctx.update.callback_query;
   const klAddress = action.split('_')[4]
   try {
-    const jwt = await fetch(`${process.env.UPSTASH_REDIS_REST_URL}/get/auth:${from.id}`, {
+    const jwt = await fetch(`${redis_url}/get/auth:${from.id}`, {
       headers: {
-        "Authorization": `Bearer ${process.env.UPSTASH_REDIS_REST_TOKEN}`
+        "Authorization": `Bearer ${redis_token}`
       }
     })
       .then(response => response.json())
@@ -730,9 +732,9 @@ bot.action(/cb_stop_kl_.*/, async (ctx) => {
   const {from, data: action} = ctx.update.callback_query;
   const klAddress = action.split('_')[3]
   try {
-    const jwt = await fetch(`${process.env.UPSTASH_REDIS_REST_URL}/get/auth:${from.id}`, {
+    const jwt = await fetch(`${redis_url}/get/auth:${from.id}`, {
       headers: {
-        "Authorization": `Bearer ${process.env.UPSTASH_REDIS_REST_TOKEN}`
+        "Authorization": `Bearer ${redis_token}`
       }
     })
       .then(response => response.json())
@@ -780,9 +782,9 @@ bot.action(/cb_oi_.*/, async (ctx) => {
   const oi = action.split('_')[2]
   const klAddress = action.split('_')[3]
   try {
-    const jwt = await fetch(`${process.env.UPSTASH_REDIS_REST_URL}/get/auth:${from.id}`, {
+    const jwt = await fetch(`${redis_url}/get/auth:${from.id}`, {
       headers: {
-        "Authorization": `Bearer ${process.env.UPSTASH_REDIS_REST_TOKEN}`
+        "Authorization": `Bearer ${redis_token}`
       }
     })
       .then(response => response.json())
@@ -834,9 +836,9 @@ bot.action(/cb_close_oi_.*/, async (ctx) => {
   const oi = action.split('_')[3]
   const klAddress = action.split('_')[4]
   try {
-    const jwt = await fetch(`${process.env.UPSTASH_REDIS_REST_URL}/get/auth:${from.id}`, {
+    const jwt = await fetch(`${redis_url}/get/auth:${from.id}`, {
       headers: {
-        "Authorization": `Bearer ${process.env.UPSTASH_REDIS_REST_TOKEN}`
+        "Authorization": `Bearer ${redis_token}`
       }
     })
       .then(response => response.json())
@@ -883,9 +885,9 @@ You can use command: /start`, {
 bot.action('cb_unauthorize', async (ctx) => {
   const {from} = ctx.update.callback_query;
   try {
-    await fetch(`${process.env.UPSTASH_REDIS_REST_URL}/del/auth:${from.id}`, {
+    await fetch(`${redis_url}/del/auth:${from.id}`, {
       headers: {
-        "Authorization": `Bearer ${process.env.UPSTASH_REDIS_REST_TOKEN}`
+        "Authorization": `Bearer ${redis_token}`
       }
     })
     ctx.editMessageText('👩‍💻 You have successfully deauthorized the NESTFi Copy Trading bot on NESTFi.', Markup.inlineKeyboard([]))
@@ -897,9 +899,9 @@ bot.action('cb_unauthorize', async (ctx) => {
 bot.action('confirm_copy_setting', async (ctx) => {
   const {from} = ctx.update.callback_query;
   try {
-    const intent = await fetch(`${process.env.UPSTASH_REDIS_REST_URL}/get/intent:${from.id}`, {
+    const intent = await fetch(`${redis_url}/get/intent:${from.id}`, {
       headers: {
-        "Authorization": `Bearer ${process.env.UPSTASH_REDIS_REST_TOKEN}`
+        "Authorization": `Bearer ${redis_token}`
       }
     })
       .then(response => response.json())
@@ -908,9 +910,9 @@ bot.action('confirm_copy_setting', async (ctx) => {
     if (intent) {
       const data = JSON.parse(intent)
       if (data?.category === 'cb_copy_setting') {
-        const jwt = await fetch(`${process.env.UPSTASH_REDIS_REST_URL}/get/auth:${from.id}`, {
+        const jwt = await fetch(`${redis_url}/get/auth:${from.id}`, {
           headers: {
-            "Authorization": `Bearer ${process.env.UPSTASH_REDIS_REST_TOKEN}`
+            "Authorization": `Bearer ${redis_token}`
           }
         })
           .then(response => response.json())
@@ -976,9 +978,9 @@ You can use command: /start`, {
 bot.action('cancel_copy_setting', async (ctx) => {
   const {from} = ctx.update.callback_query;
   try {
-    await fetch(`${process.env.UPSTASH_REDIS_REST_URL}/del/intent:${from.id}`, {
+    await fetch(`${redis_url}/del/intent:${from.id}`, {
       headers: {
-        "Authorization": `Bearer ${process.env.UPSTASH_REDIS_REST_TOKEN}`
+        "Authorization": `Bearer ${redis_token}`
       },
     });
     ctx.editMessageText(`🙅‍️ Alright, your copy trading request has been cancelled successfully!`, {
@@ -996,9 +998,9 @@ bot.on("message", async (ctx) => {
   const {from} = ctx.update.message;
   // @ts-ignore
   const input = ctx.message.text;
-  const intent = await fetch(`${process.env.UPSTASH_REDIS_REST_URL}/get/intent:${from.id}`, {
+  const intent = await fetch(`${redis_url}/get/intent:${from.id}`, {
     headers: {
-      "Authorization": `Bearer ${process.env.UPSTASH_REDIS_REST_TOKEN}`
+      "Authorization": `Bearer ${redis_token}`
     }
   })
     .then(response => response.json())
@@ -1016,10 +1018,10 @@ Please enter a valid amount between ${Math.max(200, position)} and your account 
           return
         }
         // 更新intent
-        await fetch(`${process.env.UPSTASH_REDIS_REST_URL}/set/intent:${from.id}?EX=600`, {
+        await fetch(`${redis_url}/set/intent:${from.id}?EX=600`, {
           method: 'POST',
           headers: {
-            "Authorization": `Bearer ${process.env.UPSTASH_REDIS_REST_TOKEN}`
+            "Authorization": `Bearer ${redis_token}`
           },
           body: JSON.stringify({
             category: 'cb_copy_setting',
@@ -1058,10 +1060,10 @@ Please enter a valid amount between 50 and your CopyTrading Total Amount, ${tota
           })
           return
         }
-        await fetch(`${process.env.UPSTASH_REDIS_REST_URL}/set/intent:${from.id}?EX=600`, {
+        await fetch(`${redis_url}/set/intent:${from.id}?EX=600`, {
           method: 'POST',
           headers: {
-            "Authorization": `Bearer ${process.env.UPSTASH_REDIS_REST_TOKEN}`
+            "Authorization": `Bearer ${redis_token}`
           },
           body: JSON.stringify({
             category: 'cb_copy_setting',
