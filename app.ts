@@ -261,13 +261,14 @@ bot.action(/cb_copy_setting_.*/, async (ctx) => {
       }).then(res => res.json())
         // @ts-ignore
         .then(data => data?.value?.availableBalance || 0)
-      const positionInfo = await fetch(`${hostname}/nestfi/copy/follower/kolList?chainId=${chainId}`, {
+      const positionInfo = await fetch(`${hostname}/nestfi/copy/follower/future/info?chainId=${chainId}&copyKolAddress=${klAddress}`, {
         headers: {
           'Authorization': jwt
         }
-      }).then(res => res.json())
+      }).then((res) => res.json())
         // @ts-ignore
-        .then(data => data?.value?.filter((item: any) => item?.walletAddress.toLowerCase() === klAddress.toLowerCase()))
+        .then(data => data?.value)
+
       const klInfo = await fetch(`${hostname}/nestfi/copy/kol/info?chainId=${chainId}&walletAddress=${klAddress}`, {
         headers: {
           'Authorization': jwt
@@ -276,7 +277,7 @@ bot.action(/cb_copy_setting_.*/, async (ctx) => {
         // @ts-ignore
         .then(data => data.value)
 
-      const position = positionInfo?.[0]?.position || 0
+      const position = positionInfo?.totalCopyAmount || 0
       const nickName = klInfo?.nickName || '-'
       const groupId = klInfo?.groupId || '-'
 
