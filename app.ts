@@ -71,8 +71,8 @@ bot.start(async (ctx) => {
               [Markup.button.callback('Yes, copy now!', `cb_copy_setting_${klAddress}`)],
             ]))
           } else {
-            ctx.reply(`You had followed this Trader!`, Markup.inlineKeyboard([
-              [Markup.button.callback('Setting', `cb_copy_setting_${klAddress}`)],
+            ctx.reply(`You have already followed this trader. All positions from this trader will be automatically executed for you.`, Markup.inlineKeyboard([
+              [Markup.button.callback('Settings', `cb_copy_setting_${klAddress}`)],
               [Markup.button.callback('« Back', 'cb_menu')],
             ]))
           }
@@ -918,7 +918,7 @@ bot.action(/cb_close_oi_.*/, async (ctx) => {
         .then(data => data?.value || false)
 
       if (request) {
-        ctx.editMessageText('🥳 Close Order Successfully!', {
+        ctx.editMessageText('🥳 Close Position Successfully!', {
           parse_mode: 'Markdown',
           ...Markup.inlineKeyboard([
             [Markup.button.callback('« Back' , `cb_ps_${klAddress}_1`)]
