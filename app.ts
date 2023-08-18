@@ -208,7 +208,7 @@ You can use command: /start`, {
 })
 
 // Stop command use to delete authorization request
-bot.command('unauthorize', async (ctx) => {
+bot.command('cancel', async (ctx) => {
   const from = ctx.from;
   const jwt = await fetch(`${process.env.UPSTASH_REDIS_REST_URL}/get/auth:${from.id}`, {
     headers: {
@@ -233,23 +233,6 @@ Address: \`${address}\`
   } else {
     ctx.reply('👩‍💻 You have not authorized any wallet yet.')
   }
-})
-
-bot.command('cancel', async (ctx) => {
-  const from = ctx.from;
-  await fetch(`${process.env.UPSTASH_REDIS_REST_URL}/del/intent:${from.id}`, {
-    method: 'POST',
-    headers: {
-      "Authorization": `Bearer ${process.env.UPSTASH_REDIS_REST_TOKEN}`
-    },
-  })
-  ctx.reply('Cancel the current operation successfully! /help', {
-    parse_mode: 'Markdown',
-    ...Markup.inlineKeyboard([
-      [Markup.button.callback('« Back', 'cb_menu')],
-    ]),
-    ...Markup.removeKeyboard()
-  })
 })
 
 // cb_copy_setting_[KL]
@@ -339,7 +322,6 @@ Please type the amount you invest to this trader below.`, {
           parse_mode: 'Markdown',
           ...Markup.keyboard([
             choice.filter((i) => i >= 200).map((i: number) => String(i)),
-            ['/cancel'],
           ]).oneTime().resize()
         })
       }
@@ -1059,7 +1041,6 @@ Please type the amount you invest to this trader for each order below.
           parse_mode: 'Markdown',
           ...Markup.keyboard([
             choice.filter((i) => i >= 50).map(i => String(i)),
-            ['/cancel'],
           ]).oneTime().resize()
         })
       } else if (single === 0) {
