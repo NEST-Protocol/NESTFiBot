@@ -5,10 +5,10 @@ import {isAddress} from "ethers";
 
 const token = process.env.BOT_TOKEN!;
 const bot = new Telegraf(token);
-const chainId = process.env.CHAINID;
-const hostname = process.env.HOSTNAME;
-const redis_url = process.env.UPSTASH_REDIS_REST_URL
-const redis_token = process.env.UPSTASH_REDIS_REST_TOKEN
+const chainId = process.env.CHAIN_ID;
+const hostname = process.env.HOST_NAME;
+const redis_url = process.env.UPSTASH_REDIS_REST_URL;
+const redis_token = process.env.UPSTASH_REDIS_REST_TOKEN;
 
 bot.start(async (ctx) => {
   const from = ctx.from;
