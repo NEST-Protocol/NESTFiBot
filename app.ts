@@ -907,8 +907,10 @@ bot.action(/cb_close_oi_.*/, async (ctx) => {
       const address = decodeJson.walletAddress
       const page = 1
       const request = await fetch(`${hostname}/nestfi/op/future/close?id=${oi}`, {
+        method: 'POST',
         headers: {
-          'Authorization': jwt
+          'Authorization': jwt,
+          'token': `${Math.ceil(Date.now() / 1000)}`,
         }
       }).then(res => res.json())
         // @ts-ignore
