@@ -325,6 +325,7 @@ Please type the amount you invest to this trader below.`, {
           parse_mode: 'Markdown',
           ...Markup.keyboard([
             choice.filter((i) => i >= 200).map((i: number) => String(i)),
+            ['« Back'],
           ]).oneTime().resize()
         })
       }
@@ -1009,6 +1010,17 @@ bot.on("message", async (ctx) => {
   if (intent) {
     const data = JSON.parse(intent)
     if (data.category === 'cb_copy_setting') {
+      if (input === '« Back') {
+        await fetch(`${redis_url}/del/intent:${from.id}`, {
+          headers: {
+            "Authorization": `Bearer ${redis_token}`
+          }
+        })
+        ctx.reply(`🙅‍ Alright, your copy trading request has been cancelled successfully!`, {
+          parse_mode: 'Markdown',
+        })
+        return
+      }
       let {kl, total, single, availableBalance, position, nickName} = data.value
       if (total === 0) {
         if (Number(input) < Math.max(200, position) || Number(input) > availableBalance + position) {
@@ -1044,6 +1056,7 @@ Please type the amount you invest to this trader for each order below.
           parse_mode: 'Markdown',
           ...Markup.keyboard([
             choice.filter((i) => i >= 50).map(i => String(i)),
+            ['« Back'],
           ]).oneTime().resize()
         })
       } else if (single === 0) {
@@ -1057,6 +1070,7 @@ Please enter a valid amount between 50 and your CopyTrading Total Amount, ${tota
             parse_mode: 'Markdown',
             ...Markup.keyboard([
               choice.filter((i) => i >= 50).map(i => String(i)),
+              ['« Back'],
             ])
           })
           return
