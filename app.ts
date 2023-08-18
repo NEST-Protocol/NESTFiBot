@@ -918,43 +918,11 @@ bot.action(/cb_close_oi_.*/, async (ctx) => {
 
       if (request) {
         ctx.answerCbQuery('Close Successfully')
-        let url;
-        if (klAddress === "all") {
-          url = `${hostname}/nestfi/copy/follower/future/list?chainId=${chainId}`
-        } else {
-          url = `${hostname}/nestfi/copy/follower/future/list?chainId=${chainId}&copyKolAddress=${klAddress}`
-        }
-        const data = await fetch(url, {
-          headers: {
-            'Authorization': jwt
-          }
-        }).then(res => res.json())
-        // @ts-ignore
-        const length = data?.value?.length || 0
-        // @ts-ignore
-        const showData = data?.value?.slice((page - 1) * 5, page * 5)
-        let inlineKeyboard: any [] = []
-        const buttons = showData.map((item: any, index: number) => (
-          Markup.button.callback(`${index + 1 + (page - 1) * 5}`, `cb_oi_${item.id}_${klAddress}`)
-        ))
-        if (buttons.length > 0) {
-          inlineKeyboard.push(buttons)
-        }
-        if (page * 5 < length) {
-          inlineKeyboard.push([Markup.button.callback('» Next Page', `cb_ps_${klAddress}_${page + 1}`)])
-        }
-        inlineKeyboard.push([Markup.button.callback('History', `cb_klh_${klAddress}_1`), Markup.button.callback('« Back', `cb_kl_${klAddress}`)])
-        ctx.editMessageText(`🎯 Current Copy Trading Position
-${showData.length > 0 ? `${showData.map((item: any, index: number) => (`
-=============================
-${index + 1 + (page - 1) * 5}. ${item?.product || '-'} ${item?.direction ? 'Long' : 'Short'} ${item?.leverage || '-'}x
-   Actual Margin: ${item?.margin} NEST ${item?.profitLossRate > 0 ? `+${item?.profitLossRate}` : item?.profitLossRate}%
-   Open Price: ${item?.orderPrice.toFixed(2)} USDT
-   Open Time: ${new Date(item?.timestamp * 1000 || 0).toLocaleString()}`)).join('')}
-👇 Click the number to manage the corresponding order.
-` : '\nNo copy trading position yet!'}`, {
+        ctx.editMessageText('🥳 Close Order Successfully!', {
           parse_mode: 'Markdown',
-          ...Markup.inlineKeyboard(inlineKeyboard)
+          ...Markup.inlineKeyboard([
+            [Markup.button.callback('« Back' , `cb_ps_${klAddress}_1`)]
+          ])
         })
       } else {
         ctx.answerCbQuery('Something went wrong.')
