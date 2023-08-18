@@ -154,8 +154,7 @@ bot.help((ctx) => {
 /account - Welcome to NESTFi
 /unauthorize - Cancel my authorization
 /cancel - Cancel the current Operation 
-/help - How to use?
-`, {
+/help - How to use?`, {
     parse_mode: 'Markdown'
   })
 });
@@ -392,8 +391,7 @@ bot.action('cb_menu', async (ctx) => {
 Copy Trading Assets: ${assets.toFixed(2)} NEST
 Profit: ${profit.toFixed(2)} NEST
 Unrealized PnL: ${unRealizedPnl.toFixed(2)} NEST
-Address: ${address}
-`, {
+Address: ${address}`, {
         parse_mode: 'Markdown',
         ...Markup.inlineKeyboard([
           [Markup.button.callback('My Account', 'cb_account')],
@@ -632,7 +630,7 @@ ${showData.length > 0 ? `${showData.map((item: any, index: number) => (`
 ${index + 1 + (page - 1) * 5}. ${item?.product || '-'} ${item?.direction ? 'Long' : 'Short'} ${item?.leverage || '-'}x
    Actual Margin: ${item?.margin?.toFixed(2)} NEST ${item?.profitLossRate > 0 ? `+${item?.profitLossRate?.toFixed(2)}` : item?.profitLossRate?.toFixed(2)}%
    Open Price: ${item?.orderPrice?.toFixed(2)} USDT
-   Open Time: ${new Date(item?.timestamp * 1000 || 0).toLocaleString()}`)).join('')}
+   Open Time: ${new Date(item?.timestamp * 1000 || 0).toISOString()}`)).join('')}
 👇 Click the number to manage the corresponding order.` : '\nNo copy trading position yet!'}`, {
         parse_mode: 'Markdown',
         ...Markup.inlineKeyboard(inlineKeyboard)
@@ -696,8 +694,8 @@ ${index + 1 + (page - 1) * 5}. ${item?.product || '-'} ${item?.direction ? 'Long
    Open Price: ${item?.openPrice?.toFixed(2)} USDT
    Close price: ${item?.closePrice?.toFixed(2)} USDT
    Liq Price: ${item?.lipPrice?.toFixed(2)} USDT
-   Open Time: ${new Date(item?.openTime * 1000 || 0).toLocaleString()}
-   Close Time: ${new Date(item?.closeTime * 1000 || 0).toLocaleString()}`)).join('')}` : '\nNo copy trading position yet!'}`, {
+   Open Time: ${new Date(item?.openTime * 1000 || 0).toISOString()}
+   Close Time: ${new Date(item?.closeTime * 1000 || 0).toISOString()}`)).join('')}` : '\nNo copy trading position yet!'}`, {
         parse_mode: 'Markdown',
         ...Markup.inlineKeyboard(inlineKeyboard)
       })
@@ -854,7 +852,7 @@ bot.action(/cb_oi_.*/, async (ctx) => {
       // @ts-ignore
       const marketPrice = data?.value?.marketPrice.toFixed(2) || '-'
       // @ts-ignore
-      const openTime = new Date(data?.value?.timestamp * 1000 || 0).toLocaleString()
+      const openTime = new Date(data?.value?.timestamp * 1000 || 0).toISOString()
       // @ts-ignore
       const profitLossRate = data?.value?.profitLossRate || '-'
       // @ts-ignore
