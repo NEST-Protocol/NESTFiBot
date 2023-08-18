@@ -630,7 +630,7 @@ ${showData.length > 0 ? `${showData.map((item: any, index: number) => (`
 ${index + 1 + (page - 1) * 5}. ${item?.product || '-'} ${item?.direction ? 'Long' : 'Short'} ${item?.leverage || '-'}x
    Actual Margin: ${item?.margin?.toFixed(2)} NEST ${item?.profitLossRate > 0 ? `+${item?.profitLossRate?.toFixed(2)}` : item?.profitLossRate?.toFixed(2)}%
    Open Price: ${item?.orderPrice?.toFixed(2)} USDT
-   Open Time: ${new Date(item?.timestamp * 1000 || 0).toISOString()}`)).join('')}
+   Open Time(UTC): ${new Date(item?.timestamp * 1000 || 0).toISOString().replace('T', ' ').substring(0, 19)}`)).join('')}
 👇 Click the number to manage the corresponding order.` : '\nNo copy trading position yet!'}`, {
         parse_mode: 'Markdown',
         ...Markup.inlineKeyboard(inlineKeyboard)
@@ -694,8 +694,8 @@ ${index + 1 + (page - 1) * 5}. ${item?.product || '-'} ${item?.direction ? 'Long
    Open Price: ${item?.openPrice?.toFixed(2)} USDT
    Close price: ${item?.closePrice?.toFixed(2)} USDT
    Liq Price: ${item?.lipPrice?.toFixed(2)} USDT
-   Open Time: ${new Date(item?.openTime * 1000 || 0).toISOString()}
-   Close Time: ${new Date(item?.closeTime * 1000 || 0).toISOString()}`)).join('')}` : '\nNo copy trading position yet!'}`, {
+   Open Time(UTC): ${new Date(item?.openTime * 1000 || 0).toISOString().replace('T', ' ').substring(0, 19)}
+   Close Time(UTC): ${new Date(item?.closeTime * 1000 || 0).toISOString().replace('T', ' ').substring(0, 19)}`)).join('')}` : '\nNo copy trading position yet!'}`, {
         parse_mode: 'Markdown',
         ...Markup.inlineKeyboard(inlineKeyboard)
       })
@@ -852,7 +852,7 @@ bot.action(/cb_oi_.*/, async (ctx) => {
       // @ts-ignore
       const marketPrice = data?.value?.marketPrice.toFixed(2) || '-'
       // @ts-ignore
-      const openTime = new Date(data?.value?.timestamp * 1000 || 0).toISOString()
+      const openTime = new Date(data?.value?.timestamp * 1000 || 0).toISOString().replace('T', ' ').substring(0, 19)
       // @ts-ignore
       const profitLossRate = data?.value?.profitLossRate?.toFixed(2) || '-'
       // @ts-ignore
@@ -865,7 +865,7 @@ Actual Margin: ${margin} NEST ${profitLossRate > 0 ? `+${profitLossRate}` : prof
 Open Price: ${orderPrice} USDT
 Market Price: ${marketPrice} USDT
 Liq Price: ${liqPrice} USDT
-Open Time: ${openTime}`, {
+Open Time(UTC): ${openTime}`, {
         parse_mode: 'Markdown',
         ...Markup.inlineKeyboard([
           [Markup.button.callback('Close the Position', `cb_close_oi_${oi}_${klAddress}`)],
