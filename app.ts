@@ -5,8 +5,8 @@ import {isAddress} from "ethers";
 
 const token = process.env.BOT_TOKEN!;
 const bot = new Telegraf(token);
-const chainId = 97;
-const hostname = 'https://dev.nestfi.net'
+const chainId = 56;
+const hostname = 'https://api.nestfi.net'
 
 bot.start(async (ctx) => {
   const from = ctx.from;
