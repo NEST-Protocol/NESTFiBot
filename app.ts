@@ -288,9 +288,16 @@ bot.action(/cb_copy_setting_.*/, async (ctx) => {
       }).then(res => res.json())
         // @ts-ignore
         .then(data => data?.value?.filter((item: any) => item?.walletAddress.toLowerCase() === klAddress.toLowerCase()))
+      const klInfo = await fetch(`https://dev.nestfi.net/nestfi/copy/kol/info?chainId=97&walletAddress=0xDa23cc497BE691044F2944734EDa6d4f55bC41BA`, {
+        headers: {
+          'Authorization': jwt
+        }
+      }).then(res => res.json())
+        // @ts-ignore
+        .then(data => data.value)
 
       const position = positionInfo?.[0]?.position || 0
-      const nickName = positionInfo?.[0]?.nickName || '-'
+      const nickName = klInfo.nickName || '-'
 
       const balance = availableBalance + position
       if (balance < 200) {
