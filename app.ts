@@ -868,7 +868,7 @@ Liq Price: ${liqPrice} USDT
 Open Time: ${openTime}`, {
         parse_mode: 'Markdown',
         ...Markup.inlineKeyboard([
-          [Markup.button.callback('Close the Position', `cb_close_oi_${oi}`)],
+          [Markup.button.callback('Close the Position', `cb_close_oi_${oi}_${klAddress}`)],
           [Markup.button.callback('« Back', `cb_ps_${klAddress}_1`)],
         ])
       })
