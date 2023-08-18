@@ -93,17 +93,13 @@ Please select other traders on NESTFi.`, {
             'Authorization': jwt
           }
         }).then((res) => res.json())
-        // @ts-ignore
-        const assets = data?.value?.assets || 0
-        // @ts-ignore
-        const unRealizedPnl = data?.value?.unRealizedPnl || 0
-        // @ts-ignore
-        const profit = data?.value?.profit || 0
+          // @ts-ignore
+          .then(res => res.value)
         ctx.reply(`📊 My Trades
 ————————————————————
-Copy Trading Total Amount: ${assets.toFixed(2)} NEST
-Profit: ${profit.toFixed(2)} NEST
-Unrealized PnL: ${unRealizedPnl.toFixed(2)} NEST
+Copy Trading Total Amount: ${(data?.assets || 0).toFixed(2)} NEST
+Profit: ${(data?.profit || 0).toFixed(2)} NEST
+Unrealized PnL: ${(data?.unRealizedPnl || 0).toFixed(2)} NEST
 Address: ${address}
 `, {
           parse_mode: 'Markdown',
@@ -183,17 +179,13 @@ bot.command('account', async (ctx) => {
           'Authorization': jwt
         }
       }).then((res) => res.json())
-      // @ts-ignore
-      const assets = data?.value?.assets || 0
-      // @ts-ignore
-      const unRealizedPnl = data?.value?.unRealizedPnl || 0
-      // @ts-ignore
-      const profit = data?.value?.profit || 0
+        // @ts-ignore
+        .then(res => res?.value)
       ctx.reply(`📊 My Trades
 ————————————————————
-Copy Trading Total Amount: ${assets.toFixed(2)} NEST
-Profit: ${profit.toFixed(2)} NEST
-Unrealized PnL: ${unRealizedPnl.toFixed(2)} NEST
+Copy Trading Total Amount: ${(data?.assets || 0).toFixed(2)} NEST
+Profit: ${(data?.profit || 0).toFixed(2)} NEST
+Unrealized PnL: ${(data?.unRealizedPnl || 0).toFixed(2)} NEST
 Address: ${address}
 `, {
         parse_mode: 'Markdown',
@@ -340,7 +332,7 @@ Your account balance is insufficient. Please deposit first to initiate lightning
         choice[2] = Math.floor(balance / 50) * 50;
         ctx.reply(`💵 Copy Trading Total Amount
 ————————————————————
-My Account Balance: ${availableBalance?.toFixed(2) || 0} NEST${position > 0 ? `\nCopy Trading Total Amount: ${position?.toFixed(2) || 0} NEST` : ''}
+My Account Balance: ${(availableBalance || 0).toFixed(2)} NEST${position > 0 ? `\nCopy Trading Total Amount: ${(position || 0)?.toFixed(2)} NEST` : ''}
 
 Copy ${nickName}
 Please type the amount you invest to this trader below.`, {
@@ -383,18 +375,14 @@ bot.action('cb_menu', async (ctx) => {
           'Authorization': jwt
         }
       }).then((res) => res.json())
-      // @ts-ignore
-      const assets = data?.value?.assets || 0
-      // @ts-ignore
-      const unRealizedPnl = data?.value?.unRealizedPnl || 0
-      // @ts-ignore
-      const profit = data?.value?.profit || 0
+        // @ts-ignore
+        .then(res => res?.value)
 
       ctx.editMessageText(`📊 My Trades
 ————————————————————
-Copy Trading Total Amount: ${assets.toFixed(2)} NEST
-Profit: ${profit.toFixed(2)} NEST
-Unrealized PnL: ${unRealizedPnl.toFixed(2)} NEST
+Copy Trading Total Amount: ${(data?.assets || 0).toFixed(2)} NEST
+Profit: ${(data?.profit || 0).toFixed(2)} NEST
+Unrealized PnL: ${(data?.unRealizedPnl || 0).toFixed(2)} NEST
 Address: ${address}`, {
         parse_mode: 'Markdown',
         ...Markup.inlineKeyboard([
@@ -435,14 +423,12 @@ bot.action('cb_account', async (ctx) => {
           'Authorization': jwt
         }
       }).then(res => res.json())
-      // @ts-ignore
-      const copyBalance = data?.value?.copyBalance?.toFixed(2) || 0
-      // @ts-ignore
-      const availableBalance = data?.value?.availableBalance?.toFixed(2) || 0
+        // @ts-ignore
+        .then(res => res?.value)
       ctx.editMessageText(`💳 My Account
 ————————————————————
-Account Balance: ${availableBalance} NEST
-Copy Trading Total Amount: ${copyBalance} NEST
+Account Balance: ${(data?.availableBalance || 0).toFixed(2)} NEST
+Copy Trading Total Amount: ${(data?.copyBalance || 0).toFixed(2)} NEST
       `, {
         parse_mode: "Markdown",
         ...Markup.inlineKeyboard([
@@ -492,7 +478,7 @@ bot.action(/cb_kls_p_.*/, async (ctx) => {
       const showArray = data?.value.slice((page - 1) * 5, page * 5)
       for (let i = 0; i < showArray.length; i++) {
         // @ts-ignore
-        inlineKeyboard.push([Markup.button.callback(`${showArray[i]?.nickName}: ${showArray[i]?.position > 0 ? `${showArray[i]?.position.toFixed(2)} NEST` : `Havent't Started`}`, `cb_kl_${showArray[i]?.walletAddress}`)])
+        inlineKeyboard.push([Markup.button.callback(`${showArray[i]?.nickName}: ${showArray[i]?.position > 0 ? `${(showArray[i]?.position || 0).toFixed(2)} NEST` : `Havent't Started`}`, `cb_kl_${showArray[i]?.walletAddress}`)])
       }
       if (page * 5 < length) {
         inlineKeyboard.push([Markup.button.callback('» Next Page', `cb_kls_p_${page + 1}`)])
@@ -540,30 +526,16 @@ bot.action(/cb_kl_.*/, async (ctx) => {
           'Authorization': jwt
         }
       }).then(res => res.json())
-      // @ts-ignore
-      const currentFollowers = data?.value?.currentFollowers || 0
-      // @ts-ignore
-      const aum = data?.value?.followersAssets?.toFixed(2) || 0
-      // @ts-ignore
-      const nickName = data?.value?.nickName || '-'
-      // @ts-ignore
-      const followerProfitLoss = data?.value?.followerProfitLoss || 0
-      // @ts-ignore
-      const kolProfitLoss = data?.value.kolProfitLoss || 0
-      // @ts-ignore
-      const kolProfitLossRate = data?.value.kolProfitLossRate || 0
-      // @ts-ignore
-      const rewardRatio = (data?.value?.rewardRatio * 100).toFixed(2) || 0
-
-      // @ts-ignore
-      ctx.editMessageText(`👤 ${nickName}
+        // @ts-ignore
+        .then(res => res?.value)
+      ctx.editMessageText(`👤 ${data?.nickName || '-'}
 ————————————————————
-Profit sharing: ${rewardRatio}%
-Followers: ${currentFollowers}
-AUM: ${aum} NEST
-7D ROI: ${kolProfitLossRate.toFixed(2)}%
-7D Earnings: ${kolProfitLoss.toFixed(2)} NEST
-7D Followers PnL: ${followerProfitLoss.toFixed(2)} NEST`, {
+Profit sharing: ${((data?.rewardRatio || 0) * 100).toFixed(2)}%
+Followers: ${data?.currentFollowers || 0}
+AUM: ${(data?.followersAssets || 0).toFixed(2)} NEST
+7D ROI: ${(data.kolProfitLossRate || 0).toFixed(2)}%
+7D Earnings: ${(data.kolProfitLoss || 0).toFixed(2)} NEST
+7D Followers PnL: ${(data?.followerProfitLoss || 0).toFixed(2)} NEST`, {
         parse_mode: 'Markdown',
         ...Markup.inlineKeyboard([
           [Markup.button.callback('View Copy Trading', `cb_ps_${klAddress}_1`)],
@@ -632,9 +604,9 @@ bot.action(/cb_ps_.*/, async (ctx) => {
 ${showData.length > 0 ? `${showData.map((item: any, index: number) => (`
 =============================
 ${index + 1 + (page - 1) * 5}. ${item?.product || '-'} ${item?.direction ? 'Long' : 'Short'} ${item?.leverage || '-'}x
-   Actual Margin: ${item?.margin?.toFixed(2)} NEST ${item?.profitLossRate > 0 ? `+${item?.profitLossRate?.toFixed(2)}` : item?.profitLossRate?.toFixed(2)}%
-   Open Price: ${item?.orderPrice?.toFixed(2)} USDT
-   Open: UTC${new Date(item?.timestamp * 1000 || 0).toISOString().replace('T', ' ').substring(5, 19)}`)).join('')}
+   Actual Margin: ${(item?.margin || 0).toFixed(2)} NEST ${item?.profitLossRate > 0 ? `+${item?.profitLossRate?.toFixed(2)}` : item?.profitLossRate?.toFixed(2)}%
+   Open Price: ${(item?.orderPrice || 0).toFixed(2)} USDT
+   Open: UTC ${new Date(item?.timestamp * 1000 || 0).toISOString().replace('T', ' ').substring(5, 19)}`)).join('')}
 
 👇 Click the number to manage the corresponding order.` : '\nNo copy trading position yet!'}`, {
         parse_mode: 'Markdown',
@@ -695,12 +667,12 @@ bot.action(/cb_klh_.*/, async (ctx) => {
 ${showData?.length > 0 ? `${showData?.map((item: any, index: number) => (`
 =============================
 ${index + 1 + (page - 1) * 5}. ${item?.product || '-'} ${item?.direction ? 'Long' : 'Short'} ${item?.leverage || '-'}x
-   Actual Margin: ${item?.margin?.toFixed(2)} NEST ${item?.profitLossRate > 0 ? `+${item?.profitLossRate?.toFixed(2)}` : item?.profitLossRate?.toFixed(2)}%
-   Open Price: ${item?.openPrice?.toFixed(2)} USDT
-   Close price: ${item?.closePrice?.toFixed(2)} USDT
+   Actual Margin: ${(item?.margin || 0).toFixed(2)} NEST ${item?.profitLossRate > 0 ? `+${item?.profitLossRate?.toFixed(2)}` : item?.profitLossRate?.toFixed(2)}%
+   Open Price: ${(item?.openPrice || 0).toFixed(2)} USDT
+   Close price: ${(item?.closePrice || 0).toFixed(2)} USDT
    Liq Price: ${item?.lipPrice ? item?.lipPrice?.toFixed(2) : '-'} USDT
-   Open: UTC${new Date(item?.openTime * 1000 || 0).toISOString().replace('T', ' ').substring(5, 19)}
-   Close: UTC${new Date(item?.closeTime * 1000 || 0).toISOString().replace('T', ' ').substring(5, 19)}`)).join('')}` : '\nNo copy trading position yet!'}`, {
+   Open: UTC ${new Date(item?.openTime * 1000 || 0).toISOString().replace('T', ' ').substring(5, 19)}
+   Close: UTC ${new Date(item?.closeTime * 1000 || 0).toISOString().replace('T', ' ').substring(5, 19)}`)).join('')}` : '\nNo copy trading position yet!'}`, {
         parse_mode: 'Markdown',
         ...Markup.inlineKeyboard(inlineKeyboard)
       })
@@ -744,9 +716,9 @@ bot.action(/cb_r_stop_kl_.*/, async (ctx) => {
 
       ctx.editMessageText(`🙅 Stop Copying
 ————————————————————
-Total Copy Amount: ${request ? request?.totalCopyAmount?.toFixed(2) : '-'} NEST
-Open Interest: ${request ? request?.openInterest?.toFixed(2) : '-'} NEST
-Total Profit: ${request ? request?.totalProfit?.toFixed(2) : '-'} NEST
+Total Copy Amount: ${(request?.totalCopyAmount || 0).toFixed(2)} NEST
+Open Interest: ${(request?.openInterest || 0).toFixed(2)} NEST
+Total Profit: ${(request?.totalProfit || 0)?.toFixed(2)} NEST
 
 _End copy will liquidate your position with market orders, and automatically return the assets to your Account after deducting the profits sharing._
 
@@ -843,34 +815,17 @@ bot.action(/cb_oi_.*/, async (ctx) => {
           'Authorization': jwt,
         }
       }).then(res => res.json())
-
-      // @ts-ignore
-      const product = data?.value?.product || '-'
-      // @ts-ignore
-      const direction = data?.value?.direction ? 'Long' : 'Short'
-      // @ts-ignore
-      const leverage = data?.value?.leverage || '-'
-      // @ts-ignore
-      const margin = data?.value?.margin.toFixed(2) || '0'
-      // @ts-ignore
-      const orderPrice = data?.value?.orderPrice.toFixed(2) || '-'
-      // @ts-ignore
-      const marketPrice = data?.value?.marketPrice.toFixed(2) || '-'
-      // @ts-ignore
-      const openTime = new Date(data?.value?.timestamp * 1000 || 0).toISOString().replace('T', ' ').substring(5, 19)
-      // @ts-ignore
-      const profitLossRate = data?.value?.profitLossRate?.toFixed(2) || '-'
-      // @ts-ignore
-      const liqPrice = data?.value?.lipPrice ? data?.value?.lipPrice?.toFixed(2) : '-'
+        // @ts-ignore
+        .then(res => res?.value)
 
       ctx.editMessageText(`🍯 Position ${oi}
 ————————————————————
-${product} ${direction} ${leverage}x
-Actual Margin: ${margin} NEST ${profitLossRate > 0 ? `+${profitLossRate}` : profitLossRate}%
-Open Price: ${orderPrice} USDT
-Market Price: ${marketPrice} USDT
-Liq Price: ${liqPrice} USDT
-Open: UTC${openTime}`, {
+${data?.product || '-'} ${data?.direction ? 'Long' : 'Short'} ${data?.leverage || '-'}x
+Actual Margin: ${(data?.margin || 0).toFixed(2)} NEST ${data?.profitLossRate > 0 ? `+${data?.profitLossRate.toFixed(2)}` : data?.profitLossRate.toFixed(2)}%
+Open Price: ${(data?.orderPrice || 0).toFixed(2)} USDT
+Market Price: ${(data?.marketPrice || 0).toFixed(2)} USDT
+Liq Price: ${data?.lipPrice ? data?.lipPrice?.toFixed(2) : '-'} USDT
+Open: UTC ${new Date(data?.timestamp * 1000 || 0).toISOString().replace('T', ' ').substring(5, 19)}`, {
         parse_mode: 'Markdown',
         ...Markup.inlineKeyboard([
           [Markup.button.callback('Close the Position', `cb_close_oi_${oi}_${klAddress}`)],
@@ -1065,7 +1020,6 @@ bot.on("message", async (ctx) => {
   })
     .then(response => response.json())
     .then((data: any) => data.result)
-  // 如果有意图，匹配是否符合规则
   if (intent) {
     const data = JSON.parse(intent)
     if (data.category === 'cb_copy_setting') {
