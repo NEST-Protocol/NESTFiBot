@@ -114,7 +114,7 @@ Address: ${address}
     } else {
       if (klAddress && isAddress(klAddress)) {
         ctx.reply(`👩‍💻 Once you've linked your wallet, click "Copy Now" to continue with the copy trading.`, Markup.inlineKeyboard([
-          [Markup.button.callback(`Copy Now`, `https://t.me/nestfi.org?start=${klAddress}`)],
+          [Markup.button.url(`Copy Now`, `https://t.me/nestfi.org?start=${klAddress}`)],
         ]))
       }
       const nonce = Math.random().toString(36).substring(2, 18);
