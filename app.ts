@@ -617,7 +617,7 @@ bot.action(/cb_ps_.*/, async (ctx) => {
       const showData = data?.value?.slice((page - 1) * 5, page * 5)
       let inlineKeyboard: any [] = []
       const buttons = showData.map((item: any, index: number) => (
-        Markup.button.callback(`${index + 1 + (page - 1) * 5}`, `cb_oi_${item.id}`)
+        Markup.button.callback(`${index + 1 + (page - 1) * 5}`, `cb_oi_${item.id}_${klAddress}`)
       ))
       if (buttons.length > 0) {
         inlineKeyboard.push(buttons)
@@ -935,7 +935,7 @@ bot.action(/cb_close_oi_.*/, async (ctx) => {
         const showData = data?.value?.slice((page - 1) * 5, page * 5)
         let inlineKeyboard: any [] = []
         const buttons = showData.map((item: any, index: number) => (
-          Markup.button.callback(`${index + 1 + (page - 1) * 5}`, `cb_oi_${item.id}`)
+          Markup.button.callback(`${index + 1 + (page - 1) * 5}`, `cb_oi_${item.id}_${klAddress}`)
         ))
         if (buttons.length > 0) {
           inlineKeyboard.push(buttons)
