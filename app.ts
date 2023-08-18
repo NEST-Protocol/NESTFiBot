@@ -616,7 +616,7 @@ bot.action(/cb_ps_.*/, async (ctx) => {
       // @ts-ignore
       const length = data?.value?.length || 0
       // @ts-ignore
-      const showData = data?.value?.slice((page - 1) * 5, page * 5)
+      const showData = data?.value?.sort((a, b) => b?.timestamp - a?.timestamp).slice((page - 1) * 5, page * 5)
       let inlineKeyboard: any [] = []
       const buttons = showData.map((item: any, index: number) => (
         Markup.button.callback(`${index + 1 + (page - 1) * 5}`, `cb_oi_${item.id}_${klAddress}`)
@@ -634,7 +634,9 @@ ${showData.length > 0 ? `${showData.map((item: any, index: number) => (`
 ${index + 1 + (page - 1) * 5}. ${item?.product || '-'} ${item?.direction ? 'Long' : 'Short'} ${item?.leverage || '-'}x
    Actual Margin: ${item?.margin?.toFixed(2)} NEST ${item?.profitLossRate > 0 ? `+${item?.profitLossRate?.toFixed(2)}` : item?.profitLossRate?.toFixed(2)}%
    Open Price: ${item?.orderPrice?.toFixed(2)} USDT
-   Open: UTC${new Date(item?.timestamp * 1000 || 0).toISOString().replace('T', ' ').substring(5, 19)}`)).join('')}\n👇 Click the number to manage the corresponding order.` : '\nNo copy trading position yet!'}`, {
+   Open: UTC${new Date(item?.timestamp * 1000 || 0).toISOString().replace('T', ' ').substring(5, 19)}`)).join('')}
+
+👇 Click the number to manage the corresponding order.` : '\nNo copy trading position yet!'}`, {
         parse_mode: 'Markdown',
         ...Markup.inlineKeyboard(inlineKeyboard)
       })
@@ -683,7 +685,7 @@ bot.action(/cb_klh_.*/, async (ctx) => {
       // @ts-ignore
       const length = data?.value?.length || 0
       // @ts-ignore
-      const showData = data?.value?.slice((page - 1) * 5, page * 5)
+      const showData = data?.value?.sort((a, b) => b.closeTime - a.closeTime)?.slice((page - 1) * 5, page * 5)
       let inlineKeyboard: any [] = []
       if (page * 5 < length) {
         inlineKeyboard.push([Markup.button.callback('» Next Page', `cb_klh_${klAddress}_${page + 1}`)])
