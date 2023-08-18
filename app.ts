@@ -288,7 +288,7 @@ bot.action(/cb_copy_setting_.*/, async (ctx) => {
       }).then(res => res.json())
         // @ts-ignore
         .then(data => data?.value?.filter((item: any) => item?.walletAddress.toLowerCase() === klAddress.toLowerCase()))
-      const klInfo = await fetch(`https://dev.nestfi.net/nestfi/copy/kol/info?chainId=97&walletAddress=0xDa23cc497BE691044F2944734EDa6d4f55bC41BA`, {
+      const klInfo = await fetch(`${hostname}/nestfi/copy/kol/info?chainId=${chainId}&walletAddress=${klAddress}`, {
         headers: {
           'Authorization': jwt
         }
@@ -731,7 +731,7 @@ bot.action(/cb_r_stop_kl_.*/, async (ctx) => {
       const decode = jwt.split('.')[1]
       const decodeJson = JSON.parse(Buffer.from(decode, 'base64').toString())
       const address = decodeJson.walletAddress
-      const request = await fetch(`https://dev.nestfi.net/nestfi/copy/follower/future/info?chainId=97&copyKolAddress=0x029972c516c4f248c5b066da07dbac955bbb5e7f`, {
+      const request = await fetch(`${hostname}/nestfi/copy/follower/future/info?chainId=${chainId}&copyKolAddress=${klAddress}`, {
         headers: {
           'Authorization': jwt
         }
