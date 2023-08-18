@@ -100,7 +100,7 @@ Please select other traders on NESTFi.`, {
 Copy Trading Total Amount: ${(data?.assets || 0).toFixed(2)} NEST
 Profit: ${(data?.profit || 0).toFixed(2)} NEST
 Unrealized PnL: ${(data?.unRealizedPnl || 0).toFixed(2)} NEST
-Address: ${address}
+Address: \`${address}\`
 `, {
           parse_mode: 'Markdown',
           ...Markup.inlineKeyboard([
@@ -186,7 +186,7 @@ bot.command('account', async (ctx) => {
 Copy Trading Total Amount: ${(data?.assets || 0).toFixed(2)} NEST
 Profit: ${(data?.profit || 0).toFixed(2)} NEST
 Unrealized PnL: ${(data?.unRealizedPnl || 0).toFixed(2)} NEST
-Address: ${address}
+Address: \`${address}\`
 `, {
         parse_mode: 'Markdown',
         ...Markup.inlineKeyboard([
@@ -223,7 +223,8 @@ bot.command('unauthorize', async (ctx) => {
     const address = decodeJson.walletAddress
     ctx.reply(`You are about to cancel your NESTFi authorization in this bot. Is that correct?
     
-Address: ${address}`, {
+Address: \`${address}\`
+`, {
       parse_mode: 'Markdown',
       ...Markup.inlineKeyboard([
         [Markup.button.callback('Yes, deauthorize now.', 'cb_unauthorize')],
@@ -383,7 +384,8 @@ bot.action('cb_menu', async (ctx) => {
 Copy Trading Total Amount: ${(data?.assets || 0).toFixed(2)} NEST
 Profit: ${(data?.profit || 0).toFixed(2)} NEST
 Unrealized PnL: ${(data?.unRealizedPnl || 0).toFixed(2)} NEST
-Address: ${address}`, {
+Address: \`${address}\`
+`, {
         parse_mode: 'Markdown',
         ...Markup.inlineKeyboard([
           [Markup.button.callback('My Account', 'cb_account')],
