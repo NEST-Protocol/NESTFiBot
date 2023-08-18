@@ -528,9 +528,9 @@ bot.action(/cb_kl_.*/, async (ctx) => {
       }).then(res => res.json())
         // @ts-ignore
         .then(res => res?.value)
+      // Profit sharing: ${((data?.rewardRatio || 0) * 100).toFixed(2)}%
       ctx.editMessageText(`👤 ${data?.nickName || '-'}
 ————————————————————
-Profit sharing: ${((data?.rewardRatio || 0) * 100).toFixed(2)}%
 Followers: ${data?.currentFollowers || 0}
 AUM: ${(data?.followersAssets || 0).toFixed(2)} NEST
 7D ROI: ${(data.kolProfitLossRate || 0).toFixed(2)}%
