@@ -634,7 +634,7 @@ ${showData.length > 0 ? `${showData.map((item: any, index: number) => (`
 ${index + 1 + (page - 1) * 5}. ${item?.product || '-'} ${item?.direction ? 'Long' : 'Short'} ${item?.leverage || '-'}x
    Actual Margin: ${item?.margin?.toFixed(2)} NEST ${item?.profitLossRate > 0 ? `+${item?.profitLossRate?.toFixed(2)}` : item?.profitLossRate?.toFixed(2)}%
    Open Price: ${item?.orderPrice?.toFixed(2)} USDT
-   Open Time(UTC): ${new Date(item?.timestamp * 1000 || 0).toISOString().replace('T', ' ').substring(5, 19)}`)).join('')}\n👇 Click the number to manage the corresponding order.` : '\nNo copy trading position yet!'}`, {
+   Open: UTC${new Date(item?.timestamp * 1000 || 0).toISOString().replace('T', ' ').substring(5, 19)}`)).join('')}\n👇 Click the number to manage the corresponding order.` : '\nNo copy trading position yet!'}`, {
         parse_mode: 'Markdown',
         ...Markup.inlineKeyboard(inlineKeyboard)
       })
@@ -697,8 +697,8 @@ ${index + 1 + (page - 1) * 5}. ${item?.product || '-'} ${item?.direction ? 'Long
    Open Price: ${item?.openPrice?.toFixed(2)} USDT
    Close price: ${item?.closePrice?.toFixed(2)} USDT
    Liq Price: ${item?.lipPrice?.toFixed(2)} USDT
-   Open Time(UTC): ${new Date(item?.openTime * 1000 || 0).toISOString().replace('T', ' ').substring(5, 19)}
-   Close Time(UTC): ${new Date(item?.closeTime * 1000 || 0).toISOString().replace('T', ' ').substring(5, 19)}`)).join('')}` : '\nNo copy trading position yet!'}`, {
+   Open: UTC${new Date(item?.openTime * 1000 || 0).toISOString().replace('T', ' ').substring(5, 19)}
+   Close: UTC${new Date(item?.closeTime * 1000 || 0).toISOString().replace('T', ' ').substring(5, 19)}`)).join('')}` : '\nNo copy trading position yet!'}`, {
         parse_mode: 'Markdown',
         ...Markup.inlineKeyboard(inlineKeyboard)
       })
@@ -868,7 +868,7 @@ Actual Margin: ${margin} NEST ${profitLossRate > 0 ? `+${profitLossRate}` : prof
 Open Price: ${orderPrice} USDT
 Market Price: ${marketPrice} USDT
 Liq Price: ${liqPrice} USDT
-Open Time(UTC): ${openTime}`, {
+Open: UTC${openTime}`, {
         parse_mode: 'Markdown',
         ...Markup.inlineKeyboard([
           [Markup.button.callback('Close the Position', `cb_close_oi_${oi}_${klAddress}`)],
