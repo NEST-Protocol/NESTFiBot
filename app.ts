@@ -10,7 +10,6 @@ const hostname = 'https://dev.nestfi.net'
 
 bot.start(async (ctx) => {
   const from = ctx.from;
-  const message_id = ctx.message.message_id;
   try {
     const klAddress = ctx.startPayload;
 
@@ -118,17 +117,7 @@ Address: ${address}
         ]))
       }
       const nonce = Math.random().toString(36).substring(2, 18);
-      await fetch(`${process.env.UPSTASH_REDIS_REST_URL}/set/code:${nonce}?EX=600`, {
-        method: 'POST',
-        headers: {
-          "Authorization": `Bearer ${process.env.UPSTASH_REDIS_REST_TOKEN}`
-        },
-        body: JSON.stringify({
-          message_id,
-          user: from,
-        })
-      })
-      ctx.reply(`👛 Link Wallet
+      const message = await ctx.reply(`👛 Link Wallet
 ————————————————————
 Hi there, before copying trading, please link your wallet on NESTFi.
 
@@ -138,6 +127,18 @@ Hi there, before copying trading, please link your wallet on NESTFi.
           [Markup.button.url('PC ➜ Link My Wallet', `https://connect.nestfi.org/${nonce}`)],
           [Markup.button.url('Mobile ➜ Link My Wallet', `https://metamask.app.link/dapp/connect.nestfi.org/${nonce}`)],
         ])
+      })
+      console.log(message)
+      const message_id = message.message_id
+      await fetch(`${process.env.UPSTASH_REDIS_REST_URL}/set/code:${nonce}?EX=600`, {
+        method: 'POST',
+        headers: {
+          "Authorization": `Bearer ${process.env.UPSTASH_REDIS_REST_TOKEN}`
+        },
+        body: JSON.stringify({
+          message_id: message_id,
+          user: from,
+        })
       })
     }
   } catch (e) {
@@ -306,7 +307,7 @@ bot.action(/cb_copy_setting_.*/, async (ctx) => {
 Your account balance is insufficient. Please deposit first to initiate lightning trading on NESTFi.`, {
           parse_mode: 'Markdown',
           ...Markup.inlineKeyboard([
-            [Markup.button.url('Deposit', 'https://nestfi.org/')],
+            [Markup.button.url('Deposit', 'https://nestfi.org/#')],
             [Markup.button.callback('Completed, go on!', 'cb_copy_setting_KL1')],
           ])
         })
