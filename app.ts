@@ -689,8 +689,8 @@ ${index + 1 + (page - 1) * 5}. ${item?.product || '-'} ${item?.direction ? 'Long
    Open Price: ${item?.openPrice?.toFixed(2)} USDT
    Close price: ${item?.closePrice?.toFixed(2)} USDT
    Liq Price: xxx USDT
-   Open Time: ${new Date(item?.timestamp * 1000 || 0).toLocaleString()}
-   Close Time: xxx`)).join('')}` : '\nNo copy trading position yet!'}`, {
+   Open Time: ${new Date(item?.openTime * 1000 || 0).toLocaleString()}
+   Close Time: ${new Date(item?.closeTime * 1000 || 0).toLocaleString()}`)).join('')}` : '\nNo copy trading position yet!'}`, {
         parse_mode: 'Markdown',
         ...Markup.inlineKeyboard(inlineKeyboard)
       })
@@ -725,11 +725,19 @@ bot.action(/cb_r_stop_kl_.*/, async (ctx) => {
       const decodeJson = JSON.parse(Buffer.from(decode, 'base64').toString())
       const address = decodeJson.walletAddress
       // TODO 查询我在某个KL下面的所有订单汇总信息
+      const request = await fetch(`https://dev.nestfi.net/nestfi/copy/follower/future/info?chainId=97&copyKolAddress=0x029972c516c4f248c5b066da07dbac955bbb5e7f`, {
+        headers: {
+          'Authorization': jwt
+        }
+      }).then((res) => res.json())
+        // @ts-ignore
+        .then(data => data?.value)
+
       ctx.editMessageText(`🙅 Stop Copying
 ————————————————————
-Total Copy Amount: 6000 NEST
-Open Interest: 5000 NEST
-Total Profit: 6900 NEST
+Total Copy Amount: ${request ? request?.totalCopyAmount?.toFixed(2) : '-'} NEST
+Open Interest: ${request ? request?.openInterest?.toFixed(2) : '-'} NEST
+Total Profit: ${request ? request?.totalProfit?.toFixed(2) : '-'} NEST
 
 _End copy will liquidate your position with market orders, and automatically return the assets to your Account after deducting the profits sharing._
 
