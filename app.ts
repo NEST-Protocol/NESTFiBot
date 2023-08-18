@@ -149,11 +149,10 @@ Hi there, before copying trading, please link your wallet on NESTFi.
 bot.help((ctx) => {
   ctx.reply(`🌏 For further information, please access nestfi.org
 
-
 Control me by sending these commands:
 
 /account - View my account
-/Cancel - Cancel link wallet
+/cancel - Cancel link wallet
 /help - Commands`, {
     parse_mode: 'Markdown'
   })
