@@ -632,10 +632,8 @@ ${showData.length > 0 ? `${showData.map((item: any, index: number) => (`
 ${index + 1 + (page - 1) * 5}. ${item?.product || '-'} ${item?.direction ? 'Long' : 'Short'} ${item?.leverage || '-'}x
    Actual Margin: ${item?.margin?.toFixed(2)} NEST ${item?.profitLossRate > 0 ? `+${item?.profitLossRate?.toFixed(2)}` : item?.profitLossRate?.toFixed(2)}%
    Open Price: ${item?.orderPrice?.toFixed(2)} USDT
-   Open Time: ${new Date(item?.timestamp * 1000 || 0).toLocaleString()}
-`)).join('')}
-👇 Click the number to manage the corresponding order.
-` : '\nNo copy trading position yet!'}`, {
+   Open Time: ${new Date(item?.timestamp * 1000 || 0).toLocaleString()}`)).join('')}
+👇 Click the number to manage the corresponding order.` : '\nNo copy trading position yet!'}`, {
         parse_mode: 'Markdown',
         ...Markup.inlineKeyboard(inlineKeyboard)
       })
@@ -950,8 +948,7 @@ ${showData.length > 0 ? `${showData.map((item: any, index: number) => (`
 ${index + 1 + (page - 1) * 5}. ${item?.product || '-'} ${item?.direction ? 'Long' : 'Short'} ${item?.leverage || '-'}x
    Actual Margin: ${item?.margin} NEST ${item?.profitLossRate > 0 ? `+${item?.profitLossRate}` : item?.profitLossRate}%
    Open Price: ${item?.orderPrice.toFixed(2)} USDT
-   Open Time: ${new Date(item?.timestamp * 1000 || 0).toLocaleString()}
-`)).join('')}
+   Open Time: ${new Date(item?.timestamp * 1000 || 0).toLocaleString()}`)).join('')}
 👇 Click the number to manage the corresponding order.
 ` : '\nNo copy trading position yet!'}`, {
           parse_mode: 'Markdown',
