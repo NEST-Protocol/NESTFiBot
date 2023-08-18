@@ -1054,7 +1054,6 @@ Please enter a valid amount between 50 and your CopyTrading Total Amount, ${tota
             parse_mode: 'Markdown',
             ...Markup.keyboard([
               choice.filter((i) => i >= 50).map(i => String(i)),
-              ['/cancel'],
             ])
           })
           return
