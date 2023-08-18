@@ -101,7 +101,7 @@ Please select other traders on NESTFi.`, {
         const profit = data?.value?.profit || 0
         ctx.reply(`📊 My Trades
 ————————————————————
-Copy Trading Assets: ${assets.toFixed(2)} NEST
+Copy Trading Total Amount: ${assets.toFixed(2)} NEST
 Profit: ${profit.toFixed(2)} NEST
 Unrealized PnL: ${unRealizedPnl.toFixed(2)} NEST
 Address: ${address}
@@ -191,7 +191,7 @@ bot.command('account', async (ctx) => {
       const profit = data?.value?.profit || 0
       ctx.reply(`📊 My Trades
 ————————————————————
-Copy Trading Assets: ${assets.toFixed(2)} NEST
+Copy Trading Total Amount: ${assets.toFixed(2)} NEST
 Profit: ${profit.toFixed(2)} NEST
 Unrealized PnL: ${unRealizedPnl.toFixed(2)} NEST
 Address: ${address}
@@ -392,7 +392,7 @@ bot.action('cb_menu', async (ctx) => {
 
       ctx.editMessageText(`📊 My Trades
 ————————————————————
-Copy Trading Assets: ${assets.toFixed(2)} NEST
+Copy Trading Total Amount: ${assets.toFixed(2)} NEST
 Profit: ${profit.toFixed(2)} NEST
 Unrealized PnL: ${unRealizedPnl.toFixed(2)} NEST
 Address: ${address}`, {
@@ -441,8 +441,8 @@ bot.action('cb_account', async (ctx) => {
       const availableBalance = data?.value?.availableBalance?.toFixed(2) || 0
       ctx.editMessageText(`💳 My Account
 ————————————————————
-My Account Balance: ${availableBalance} NEST
-My Copy Trading Amount: ${copyBalance} NEST
+Account Balance: ${availableBalance} NEST
+Copy Trading Total Amount: ${copyBalance} NEST
       `, {
         parse_mode: "Markdown",
         ...Markup.inlineKeyboard([
