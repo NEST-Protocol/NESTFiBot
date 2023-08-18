@@ -297,7 +297,8 @@ bot.action(/cb_copy_setting_.*/, async (ctx) => {
         .then(data => data.value)
 
       const position = positionInfo?.[0]?.position || 0
-      const nickName = klInfo.nickName || '-'
+      const nickName = klInfo?.nickName || '-'
+      const groupId = klInfo?.groupId || '-'
 
       const balance = availableBalance + position
       if (balance < 200) {
@@ -326,6 +327,7 @@ Your account balance is insufficient. Please deposit first to initiate lightning
               availableBalance: availableBalance,
               position: position,
               nickName: nickName,
+              groupId: groupId,
             }
           })
         })
@@ -695,7 +697,7 @@ ${index + 1 + (page - 1) * 5}. ${item?.product || '-'} ${item?.direction ? 'Long
    Actual Margin: ${item?.margin?.toFixed(2)} NEST ${item?.profitLossRate > 0 ? `+${(item?.profitLossRate * 100).toFixed(2)}` : (item?.profitLossRate * 100).toFixed(2)}%
    Open Price: ${item?.openPrice?.toFixed(2)} USDT
    Close price: ${item?.closePrice?.toFixed(2)} USDT
-   Liq Price: xxx USDT
+   Liq Price: ${item?.lipPrice?.toFixed(2)} USDT
    Open Time: ${new Date(item?.openTime * 1000 || 0).toLocaleString()}
    Close Time: ${new Date(item?.closeTime * 1000 || 0).toLocaleString()}`)).join('')}` : '\nNo copy trading position yet!'}`, {
         parse_mode: 'Markdown',
@@ -857,6 +859,8 @@ bot.action(/cb_oi_.*/, async (ctx) => {
       const openTime = new Date(data?.value?.timestamp * 1000 || 0).toLocaleString()
       // @ts-ignore
       const profitLossRate = data?.value?.profitLossRate || '-'
+      // @ts-ignore
+      const liqPrice = data?.value?.lipPrice || '-'
 
       ctx.editMessageText(`🍯 Position ${oi}
 ————————————————————
@@ -864,7 +868,7 @@ ${product} ${direction} ${leverage}x
 Actual Margin: ${margin} NEST ${profitLossRate > 0 ? `+${profitLossRate}` : profitLossRate}%
 Open Price: ${orderPrice} USDT
 Market Price: ${marketPrice} USDT
-Liq Price: xxx USDT
+Liq Price: ${liqPrice} USDT
 Open Time: ${openTime}`, {
         parse_mode: 'Markdown',
         ...Markup.inlineKeyboard([
@@ -1011,7 +1015,7 @@ bot.action('confirm_copy_setting', async (ctx) => {
           const address = decodeJson.walletAddress
 
           // @ts-ignore
-          const {kl, total, single, nickName, availableBalance, position} = data.value
+          const {kl, total, single, nickName, availableBalance, position, groupId} = data.value
           const request = await fetch(`${hostname}/nestfi/copy/follower/setting`, {
             method: 'POST',
             headers: {
@@ -1036,7 +1040,7 @@ bot.action('confirm_copy_setting', async (ctx) => {
 ————————————————————
 More latest orders from ${nickName} will be posted in the group.
 
-Telegram Group: TBD`, {
+Telegram Group: ${groupId}`, {
               parse_mode: 'Markdown',
               ...Markup.inlineKeyboard([
                 [Markup.button.callback('« Back', 'cb_menu')],
