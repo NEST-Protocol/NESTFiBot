@@ -72,6 +72,7 @@ bot.start(async (ctx) => {
             ]))
           } else {
             ctx.reply(`You had followed this Trader!`, Markup.inlineKeyboard([
+              [Markup.button.callback('Setting', `cb_copy_setting_${klAddress}`)],
               [Markup.button.callback('« Back', 'cb_menu')],
             ]))
           }
