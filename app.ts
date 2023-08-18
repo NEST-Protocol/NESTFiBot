@@ -917,7 +917,6 @@ bot.action(/cb_close_oi_.*/, async (ctx) => {
         .then(data => data?.value || false)
 
       if (request) {
-        ctx.answerCbQuery('Close Successfully')
         ctx.editMessageText('🥳 Close Order Successfully!', {
           parse_mode: 'Markdown',
           ...Markup.inlineKeyboard([
