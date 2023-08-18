@@ -1011,9 +1011,9 @@ bot.on("message", async (ctx) => {
     if (data.category === 'cb_copy_setting') {
       let {kl, total, single, availableBalance, position, nickName} = data.value
       if (total === 0) {
-        if (Number(input) < Math.max(200, position) || Number(input) > availableBalance) {
+        if (Number(input) < Math.max(200, position) || Number(input) > availableBalance + position) {
           ctx.reply(`💢 Invalid Amount
-Please enter a valid amount between ${Math.max(200, position)} and your account balance, ${availableBalance}`, {
+Please enter a valid amount between ${Math.max(200, position)} and ${availableBalance + position}`, {
             parse_mode: 'Markdown',
           })
           return
