@@ -66,12 +66,15 @@ bot.start(async (ctx) => {
                 followingValue: 0
               })
             })
+            ctx.reply(`Would you like to copy Trader 👤 ${nickName}'s positions immediately?`, Markup.inlineKeyboard([
+              [Markup.button.callback('Nope, I change my mind.', 'cb_menu')],
+              [Markup.button.callback('Yes, copy now!', `cb_copy_setting_${klAddress}`)],
+            ]))
+          } else {
+            ctx.reply(`You had followed this Trader!`, Markup.inlineKeyboard([
+              [Markup.button.callback('« Back', 'cb_menu')],
+            ]))
           }
-
-          ctx.reply(`Would you like to copy Trader 👤 ${nickName}'s positions immediately?`, Markup.inlineKeyboard([
-            [Markup.button.callback('Nope, I change my mind.', 'cb_menu')],
-            [Markup.button.callback('Yes, copy now!', `cb_copy_setting_${klAddress}`)],
-          ]))
         } else {
           ctx.reply(`💢 Invalid Trader
 ———————————————
@@ -128,7 +131,6 @@ Hi there, before copying trading, please link your wallet on NESTFi.
           [Markup.button.url('Mobile ➜ Link My Wallet', `https://metamask.app.link/dapp/connect.nestfi.org/${nonce}`)],
         ])
       })
-      console.log(message)
       const message_id = message.message_id
       await fetch(`${process.env.UPSTASH_REDIS_REST_URL}/set/code:${nonce}?EX=600`, {
         method: 'POST',
