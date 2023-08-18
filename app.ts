@@ -550,6 +550,7 @@ bot.action(/cb_kl_.*/, async (ctx) => {
       const kolProfitLoss = data?.value.kolProfitLoss || 0
       // @ts-ignore
       const kolProfitLossRate = data?.value.kolProfitLossRate || 0
+      // TODO
       // @ts-ignore
       const rewardRatio = (data?.value?.rewardRatio * 100).toFixed(2) || 0
 
@@ -630,7 +631,7 @@ bot.action(/cb_ps_.*/, async (ctx) => {
 ${showData.length > 0 ? `${showData.map((item: any, index: number) => (`
 =============================
 ${index + 1 + (page - 1) * 5}. ${item?.product || '-'} ${item?.direction ? 'Long' : 'Short'} ${item?.leverage || '-'}x
-   Actual Margin: ${item?.margin?.toFixed(2)} NEST +xxx%
+   Actual Margin: ${item?.margin?.toFixed(2)} NEST ${item?.profitLossRate > 0 ? `+${item?.profitLossRate?.toFixed(2)}` : item?.profitLossRate?.toFixed(2)}%
    Open Price: ${item?.orderPrice?.toFixed(2)} USDT
    Open Time: ${new Date(item?.timestamp * 1000 || 0).toLocaleString()}
 `))}
@@ -694,7 +695,7 @@ bot.action(/cb_klh_.*/, async (ctx) => {
 ${showData?.length > 0 ? `${showData?.map((item: any, index: number) => (`
 =============================
 ${index + 1 + (page - 1) * 5}. ${item?.product || '-'} ${item?.direction ? 'Long' : 'Short'} ${item?.leverage || '-'}x
-   Actual Margin: ${item?.margin?.toFixed(2)} NEST ${item?.profitLossRate > 0 ? `+${(item?.profitLossRate * 100).toFixed(2)}` : (item?.profitLossRate * 100).toFixed(2)}%
+   Actual Margin: ${item?.margin?.toFixed(2)} NEST ${item?.profitLossRate > 0 ? `+${item?.profitLossRate?.toFixed(2)}` : item?.profitLossRate?.toFixed(2)}%
    Open Price: ${item?.openPrice?.toFixed(2)} USDT
    Close price: ${item?.closePrice?.toFixed(2)} USDT
    Liq Price: ${item?.lipPrice?.toFixed(2)} USDT
@@ -949,7 +950,7 @@ bot.action(/cb_close_oi_.*/, async (ctx) => {
 ${showData.length > 0 ? `${showData.map((item: any, index: number) => (`
 =============================
 ${index + 1 + (page - 1) * 5}. ${item?.product || '-'} ${item?.direction ? 'Long' : 'Short'} ${item?.leverage || '-'}x
-   Actual Margin: ${item?.margin} NEST +xxx%
+   Actual Margin: ${item?.margin} NEST ${item?.profitLossRate > 0 ? `+${item?.profitLossRate}` : item?.profitLossRate}%
    Open Price: ${item?.orderPrice.toFixed(2)} USDT
    Open Time: ${new Date(item?.timestamp * 1000 || 0).toLocaleString()}
 `)).join('')}
