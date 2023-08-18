@@ -1068,9 +1068,9 @@ bot.on("message", async (ctx) => {
     if (data.category === 'cb_copy_setting') {
       let {kl, total, single, availableBalance, position, nickName} = data.value
       if (total === 0) {
-        if ((Number(input) + position) < 200 || Number(input) > availableBalance) {
+        if (Number(input) < Math.max(200, position) || Number(input) > availableBalance) {
           ctx.reply(`💢 Invalid Amount
-Please enter a valid amount between 200 and your account balance.`, {
+Please enter a valid amount between ${Math.max(200, position)} and your account balance, ${availableBalance}`, {
             parse_mode: 'Markdown',
           })
           return
@@ -1111,7 +1111,7 @@ Please type the amount you invest to this trader for each order below.
           choice[1] = Math.floor(total * 0.2 / 50) * 50
           choice[2] = Math.floor(total * 0.4 / 50) * 50
           ctx.reply(`💢 Invalid Amount
-Please enter a valid amount between 50 and your CopyTrading Total Amount.`, {
+Please enter a valid amount between 50 and your CopyTrading Total Amount, ${total}`, {
             parse_mode: 'Markdown',
             ...Markup.keyboard([
               choice.filter((i) => i >= 50).map(i => String(i)),
