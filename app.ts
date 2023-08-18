@@ -41,7 +41,7 @@ bot.start(async (ctx) => {
             }
           }).then(res => res.json())
           // @ts-ignore
-          const nickname = data?.value?.nickname || 'No name'
+          const nickName = data?.value?.nickName || 'No name'
           const isFollowed = await fetch(`${hostname}/nestfi/copy/follower/kolList?chainId=${chainId}`, {
             headers: {
               'Authorization': jwt
@@ -69,7 +69,7 @@ bot.start(async (ctx) => {
             })
           }
 
-          ctx.reply(`Would you like to copy Trader 👤 ${nickname}'s positions immediately?`, Markup.inlineKeyboard([
+          ctx.reply(`Would you like to copy Trader 👤 ${nickName}'s positions immediately?`, Markup.inlineKeyboard([
             [Markup.button.callback('Nope, I change my mind.', 'cb_menu')],
             [Markup.button.callback('Yes, copy now!', `cb_copy_setting_${klAddress}`)],
           ]))
@@ -724,7 +724,6 @@ bot.action(/cb_r_stop_kl_.*/, async (ctx) => {
       const decode = jwt.split('.')[1]
       const decodeJson = JSON.parse(Buffer.from(decode, 'base64').toString())
       const address = decodeJson.walletAddress
-      // TODO 查询我在某个KL下面的所有订单汇总信息
       const request = await fetch(`https://dev.nestfi.net/nestfi/copy/follower/future/info?chainId=97&copyKolAddress=0x029972c516c4f248c5b066da07dbac955bbb5e7f`, {
         headers: {
           'Authorization': jwt
@@ -842,7 +841,7 @@ bot.action(/cb_oi_.*/, async (ctx) => {
       // @ts-ignore
       const leverage = data?.value?.leverage || '-'
       // @ts-ignore
-      const margin = data?.value?.margin.toFixed(2) || '-'
+      const margin = data?.value?.margin.toFixed(2) || '0'
       // @ts-ignore
       const orderPrice = data?.value?.orderPrice.toFixed(2) || '-'
       // @ts-ignore
@@ -852,7 +851,6 @@ bot.action(/cb_oi_.*/, async (ctx) => {
       // @ts-ignore
       const profitLossRate = data?.value?.profitLossRate || '-'
 
-      // TODO
       ctx.editMessageText(`🍯 Position ${oi}
 ————————————————————
 ${product} ${direction} ${leverage}x
@@ -935,6 +933,7 @@ bot.action(/cb_close_oi_.*/, async (ctx) => {
           inlineKeyboard.push([Markup.button.callback('» Next Page', `cb_ps_${klAddress}_${page + 1}`)])
         }
         inlineKeyboard.push([Markup.button.callback('History', `cb_klh_${klAddress}_1`), Markup.button.callback('« Back', `cb_kl_${klAddress}`)])
+        // TODO
         ctx.editMessageText(`🎯 Current Copy Trading Position
 ${showData.length > 0 ? `${showData.map((item: any, index: number) => (`
 =============================
