@@ -289,7 +289,7 @@ Your account balance is insufficient. Please deposit first to initiate lightning
           parse_mode: 'Markdown',
           ...Markup.inlineKeyboard([
             [Markup.button.url('Deposit', 'https://nestfi.org/#')],
-            [Markup.button.callback('Completed, go on!', 'cb_copy_setting_KL1')],
+            [Markup.button.callback('Completed, go on!', `cb_copy_setting_${klAddress}`)],
           ])
         })
         return
