@@ -281,8 +281,7 @@ bot.action(/cb_copy_setting_.*/, async (ctx) => {
       const nickName = klInfo?.nickName || '-'
       const groupId = klInfo?.groupId || '-'
 
-      const balance = availableBalance + position
-      if (balance < 200) {
+      if (availableBalance + position < 200) {
         ctx.reply(`💔 Insufficient Balance
 ———————————————
 Your account balance is insufficient. Please deposit first to initiate lightning trading on NESTFi.`, {
@@ -313,15 +312,16 @@ Your account balance is insufficient. Please deposit first to initiate lightning
           })
         })
         let choice = [0, 0, 0];
-        choice[0] = Math.floor(balance * 0.5 / 50) * 50;
-        choice[1] = Math.floor(balance * 0.75 / 50) * 50;
-        choice[2] = Math.floor(balance / 50) * 50;
-        ctx.reply(`💵 Copy Trading Total Amount
+        choice[0] = Math.floor(availableBalance * 0.5 / 50) * 50;
+        choice[1] = Math.floor(availableBalance * 0.75 / 50) * 50;
+        choice[2] = Math.floor(availableBalance / 50) * 50;
+        ctx.reply(`💵 Add Copy Trading Amount
 ————————————————————
-My Account Balance: ${(availableBalance || 0).toFixed(2)} NEST${position > 0 ? `\nCopy Trading Total Amount: ${(position || 0)?.toFixed(2)} NEST` : ''}
+My Account Balance: ${(availableBalance || 0).toFixed(2)} NEST
+Copy Trading Total Amount: ${(position || 0)?.toFixed(2)} NEST
 
 You are following: ${nickName}
-Please type the amount you invest to this trader below.`, {
+Please add the amount you invest to this trader below.`, {
           parse_mode: 'Markdown',
           ...Markup.keyboard([
             choice.filter((i) => i >= 200).map((i: number) => String(i)),
@@ -1023,14 +1023,15 @@ bot.on("message", async (ctx) => {
       }
       let {kl, total, single, availableBalance, position, nickName} = data.value
       if (total === 0) {
-        if (Number(input) < Math.max(200, position) || Number(input) > availableBalance + position) {
+        const add = Number(input)
+        if (add < 200 || add > availableBalance) {
           ctx.reply(`💢 Invalid Amount
-Please enter a valid amount between ${Math.max(200, position)} and ${availableBalance + position}`, {
+Please enter a valid amount between 200 and ${availableBalance}`, {
             parse_mode: 'Markdown',
           })
           return
         }
-        // 更新intent
+        // update intent
         await fetch(`${redis_url}/set/intent:${from.id}?EX=600`, {
           method: 'POST',
           headers: {
@@ -1040,14 +1041,14 @@ Please enter a valid amount between ${Math.max(200, position)} and ${availableBa
             category: 'cb_copy_setting',
             value: {
               ...data.value,
-              total: Number(input),
+              total: add + position,
             }
           })
         })
         let choice = [0, 0, 0]
-        choice[0] = Math.floor(Number(input) * 0.1 / 50) * 50
-        choice[1] = Math.floor(Number(input) * 0.2 / 50) * 50
-        choice[2] = Math.floor(Number(input) * 0.4 / 50) * 50
+        choice[0] = Math.floor((add + position) * 0.1 / 50) * 50
+        choice[1] = Math.floor((add + position) * 0.2 / 50) * 50
+        choice[2] = Math.floor((add + position) * 0.4 / 50) * 50
         ctx.reply(`💵 Copy Trading Each Order
 ————————————————————
 You are following: ${nickName}
