@@ -974,9 +974,8 @@ bot.action('confirm_copy_setting', async (ctx) => {
               nickName: nickName,
               groupId: groupId
             }), {
-              parse_mode: 'Markdown',
               ...Markup.inlineKeyboard([
-                [Markup.button.callback('« Back', 'cb_menu')],
+                [Markup.button.callback(t('« Back', lang), 'cb_menu')],
               ])
             })
           } else {
