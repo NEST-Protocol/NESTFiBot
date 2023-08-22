@@ -5,8 +5,12 @@
   useDotenv: true,
 
   package: {
+    patterns: [
+      "app.js",
+      "locales/**",
+    ],
     individually: true,
-    excludeDevDependencies: true,
+    excludeDevDependencies: false,
   },
 
   provider: {
