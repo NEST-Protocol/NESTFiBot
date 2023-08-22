@@ -12,7 +12,7 @@ const redis_url = process.env.UPSTASH_REDIS_REST_URL;
 const redis_token = process.env.UPSTASH_REDIS_REST_TOKEN;
 
 i18n.configure({
-  locales: ['en', 'ja', 'bn', 'id', 'tr', 'vi', 'ko', 'ru'],
+  locales: ['en', 'es', 'ja', 'ko', 'pt', 'ru', 'tr', 'vi'],
   defaultLocale: 'en',
   directory: "./locales",
   register: global
