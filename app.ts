@@ -199,10 +199,10 @@ bot.command('account', async (ctx) => {
       }).then((res) => res.json())
         // @ts-ignore
         .then(res => res?.value)
-      ctx.reply(t(`📊 My Trades\n————————————————————\nCopy Trading Total Amount: {{total}} NEST\nProfit: {{profit}} NEST\nUnrealized PnL: {{unRealizedPnl}} NEST\nAddress: \`{{address}}\``, lang, {
+      ctx.reply(t(`📊 My Trades\n————————————————————\nCopy Trading Total Amount: {{total}} NEST\nProfit: {{profit}} NEST\nUnrealized PnL: {{unrealizedPnl}} NEST\nAddress: \`{{address}}\``, lang, {
         total: (data?.assets || 0).toFixed(2),
         profit: (data?.profit || 0).toFixed(2),
-        unRealizedPnl: (data?.unRealizedPnl || 0).toFixed(2),
+        unrealizedPnl: (data?.unRealizedPnl || 0).toFixed(2),
         address: address
       }), {
         parse_mode: 'Markdown',
@@ -379,10 +379,10 @@ bot.action('cb_menu', async (ctx) => {
         // @ts-ignore
         .then(res => res?.value)
 
-      ctx.editMessageText(t(`📊 My Trades\n————————————————————\nCopy Trading Total Amount: {{total}} NEST\nProfit: {{profit}} NEST\nUnrealized PnL: {{unRealizedPnl}} NEST\nAddress: \`{{address}}\``, lang, {
+      ctx.editMessageText(t(`📊 My Trades\n————————————————————\nCopy Trading Total Amount: {{total}} NEST\nProfit: {{profit}} NEST\nUnrealized PnL: {{unrealizedPnl}} NEST\nAddress: \`{{address}}\``, lang, {
         total: (data?.assets || 0).toFixed(2),
         profit: (data?.profit || 0).toFixed(2),
-        unRealizedPnl: (data?.unRealizedPnl || 0).toFixed(2),
+        unrealizedPnl: (data?.unRealizedPnl || 0).toFixed(2),
         address: address,
       }), {
         parse_mode: 'Markdown',
