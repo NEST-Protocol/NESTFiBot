@@ -119,6 +119,7 @@ bot.start(async (ctx) => {
           unrealizedPnl: (data?.unRealizedPnl || 0).toFixed(2),
           address: address,
         }), {
+          parse_mode: "Markdown",
           ...Markup.inlineKeyboard([
             [Markup.button.callback(t(`My Account`, lang), 'cb_account')],
             [Markup.button.callback(t(`My Traders`, lang), 'cb_kls_p_1')],
@@ -201,6 +202,7 @@ bot.command('account', async (ctx) => {
         unrealizedPnl: (data?.unRealizedPnl || 0).toFixed(2),
         address: address
       }), {
+        parse_mode: "Markdown",
         ...Markup.inlineKeyboard([
           [Markup.button.callback(t(`My Account`, lang), 'cb_account')],
           [Markup.button.callback(t(`My Traders`, lang), 'cb_kls_p_1')],
@@ -373,6 +375,7 @@ bot.action('cb_menu', async (ctx) => {
         unrealizedPnl: (data?.unRealizedPnl || 0).toFixed(2),
         address: address,
       }), {
+        parse_mode: "Markdown",
         ...Markup.inlineKeyboard([
           [Markup.button.callback(t(`My Account`, lang), 'cb_account')],
           [Markup.button.callback(t(`My Traders`, lang), 'cb_kls_p_1')],
