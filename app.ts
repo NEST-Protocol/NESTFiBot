@@ -3,6 +3,7 @@ import {Markup, Telegraf} from "telegraf";
 import fetch from "node-fetch";
 import {isAddress} from "ethers";
 import i18n from "i18n";
+import "./locales";
 
 const token = process.env.BOT_TOKEN!;
 const bot = new Telegraf(token);
