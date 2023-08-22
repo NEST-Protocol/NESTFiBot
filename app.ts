@@ -98,10 +98,7 @@ bot.start(async (ctx) => {
             ]))
           }
         } else {
-          ctx.reply(t(`💢 Invalid Trader
-———————————————
-Peter Mason is not on the NESTFi traders list.
-Please select other traders on NESTFi.`, lang), {
+          ctx.reply(t(`💢 Invalid Trader\n———————————————\nPeter Mason is not on the NESTFi traders list.\nPlease select other traders on NESTFi.`, lang), {
             parse_mode: 'Markdown',
             ...Markup.inlineKeyboard([
               [Markup.button.url(t(`Access NESTFi Website`, lang), 'https://nestfi.org/')]
@@ -116,13 +113,7 @@ Please select other traders on NESTFi.`, lang), {
         }).then((res) => res.json())
           // @ts-ignore
           .then(res => res.value)
-        ctx.reply(t(`📊 My Trades
-————————————————————
-Copy Trading Total Amount: {{total}} NEST
-Profit: {{profit}} NEST
-Unrealized PnL: {{unrealizedPnl}} NEST
-Address: \`{{address}}\`
-`, lang, {
+        ctx.reply(t(`📊 My Trades\n————————————————————\nCopy Trading Total Amount: {{total}} NEST\nProfit: {{profit}} NEST\nUnrealized PnL: {{unrealizedPnl}} NEST\nAddress: \`{{address}}\``, lang, {
           total: (data?.assets || 0).toFixed(2),
           profit: (data?.profit || 0).toFixed(2),
           unrealizedPnl: (data?.unRealizedPnl || 0).toFixed(2),
@@ -143,11 +134,7 @@ Address: \`{{address}}\`
         ]))
       }
       const nonce = Math.random().toString(36).substring(2, 18);
-      const message = await ctx.reply(t(`👛 Link Wallet
-————————————————————
-Hi there, before copying trading, please link your wallet on NESTFi.
-
-👇Note: The link is valid for 10 minutes.`, lang), {
+      const message = await ctx.reply(t(`👛 Link Wallet\n————————————————————\nHi there, before copying trading, please link your wallet on NESTFi.\n\n👇Note: The link is valid for 10 minutes.`, lang), {
         parse_mode: 'Markdown',
         ...Markup.inlineKeyboard([
           [Markup.button.url(t(`PC ➜ Link My Wallet`, lang), `https://connect.nestfi.org/${nonce}`)],
@@ -179,13 +166,7 @@ bot.help((ctx) => {
   if (chat.id < 0 || from.is_bot) {
     return
   }
-  ctx.reply(t(`🌏 For further information, please access nestfi.org
-
-Control me by sending these commands:
-
-/account - View my account
-/cancel - Cancel link wallet
-/help - Commands`, lang), {
+  ctx.reply(t(`🌏 For further information, please access nestfi.org\n\nControl me by sending these commands:\n\n/account - View my account\n/cancel - Cancel link wallet\n/help - Commands`, lang), {
     parse_mode: 'Markdown'
   })
 });
@@ -218,13 +199,7 @@ bot.command('account', async (ctx) => {
       }).then((res) => res.json())
         // @ts-ignore
         .then(res => res?.value)
-      ctx.reply(t(`📊 My Trades
-————————————————————
-Copy Trading Total Amount: {{total}} NEST
-Profit: {{profit}} NEST
-Unrealized PnL: {{unRealizedPnl}} NEST
-Address: \`{{address}}\`
-`, lang, {
+      ctx.reply(t(`📊 My Trades\n————————————————————\nCopy Trading Total Amount: {{total}} NEST\nProfit: {{profit}} NEST\nUnrealized PnL: {{unRealizedPnl}} NEST\nAddress: \`{{address}}\``, lang, {
         total: (data?.assets || 0).toFixed(2),
         profit: (data?.profit || 0).toFixed(2),
         unRealizedPnl: (data?.unRealizedPnl || 0).toFixed(2),
@@ -238,9 +213,7 @@ Address: \`{{address}}\`
         ])
       })
     } else {
-      ctx.reply(t(`Hi here! Please authorize me to set up a NESTFi integration. 
-      
-You can use command: /start`, lang), {
+      ctx.reply(t(`Hi here! Please authorize me to set up a NESTFi integration.\n\nYou can use command: /start`, lang), {
         parse_mode: 'Markdown',
       })
     }
@@ -269,10 +242,7 @@ bot.command('cancel', async (ctx) => {
     const decode = jwt.split('.')[1]
     const decodeJson = JSON.parse(Buffer.from(decode, 'base64').toString())
     const address = decodeJson.walletAddress
-    ctx.reply(t(`You are about to cancel your NESTFi authorization in this bot. Is that correct?
-    
-Address: \`{{address}}\`
-`, lang, {
+    ctx.reply(t(`You are about to cancel your NESTFi authorization in this bot. Is that correct?\n\nAddress: \`{{address}}\``, lang, {
       address: address
     }), {
       parse_mode: 'Markdown',
@@ -333,9 +303,7 @@ bot.action(/cb_copy_setting_.*/, async (ctx) => {
       const groupId = klInfo?.groupId || '-'
 
       if (availableBalance + position < 200) {
-        ctx.reply(t(`💔 Insufficient Balance
-———————————————
-Your account balance is insufficient. Please deposit first to initiate lightning trading on NESTFi.`, lang), {
+        ctx.reply(t(`💔 Insufficient Balance\n———————————————\nYour account balance is insufficient. Please deposit first to initiate lightning trading on NESTFi.`, lang), {
           parse_mode: 'Markdown',
           ...Markup.inlineKeyboard([
             [Markup.button.url(t(`Deposit`, lang), 'https://nestfi.org/#')],
@@ -366,13 +334,7 @@ Your account balance is insufficient. Please deposit first to initiate lightning
         choice[0] = Math.floor(availableBalance * 0.5 / 50) * 50;
         choice[1] = Math.floor(availableBalance * 0.75 / 50) * 50;
         choice[2] = Math.floor(availableBalance / 50) * 50;
-        ctx.reply(t(`💵 Add Copy Trading Amount
-————————————————————
-My Account Balance: {{balance}} NEST
-Copy Trading Total Amount: {{total}} NEST
-
-You are following: {{nickName}}
-Please add the amount you invest to this trader below.`, lang, {
+        ctx.reply(t(`💵 Add Copy Trading Amount\n————————————————————\nMy Account Balance: {{balance}} NEST\nCopy Trading Total Amount: {{total}} NEST\n\nYou are following: {{nickName}}\nPlease add the amount you invest to this trader below.`, lang, {
           balance: (availableBalance || 0).toFixed(2),
           total: (position || 0)?.toFixed(2),
           nickName: nickName,
@@ -385,9 +347,7 @@ Please add the amount you invest to this trader below.`, lang, {
         })
       }
     } else {
-      ctx.reply(t(`Hi here! Please authorize me to set up a NESTFi integration. 
-      
-You can use command: /start`, lang), {
+      ctx.reply(t(`Hi here! Please authorize me to set up a NESTFi integration.\n\nYou can use command: /start`, lang), {
         parse_mode: 'Markdown',
       })
     }
@@ -419,13 +379,7 @@ bot.action('cb_menu', async (ctx) => {
         // @ts-ignore
         .then(res => res?.value)
 
-      ctx.editMessageText(t(`📊 My Trades
-————————————————————
-Copy Trading Total Amount: {{total}} NEST
-Profit: {{profit}} NEST
-Unrealized PnL: {{unRealizedPnl}} NEST
-Address: \`{{address}}\`
-`, lang, {
+      ctx.editMessageText(t(`📊 My Trades\n————————————————————\nCopy Trading Total Amount: {{total}} NEST\nProfit: {{profit}} NEST\nUnrealized PnL: {{unRealizedPnl}} NEST\nAddress: \`{{address}}\``, lang, {
         total: (data?.assets || 0).toFixed(2),
         profit: (data?.profit || 0).toFixed(2),
         unRealizedPnl: (data?.unRealizedPnl || 0).toFixed(2),
@@ -439,9 +393,7 @@ Address: \`{{address}}\`
         ])
       })
     } else {
-      ctx.reply(t(`Hi {{username}}! Please authorize me to set up a NESTFi integration.
-
-You can use command: /start`, lang, {
+      ctx.reply(t(`Hi {{username}}! Please authorize me to set up a NESTFi integration.\n\nYou can use command: /start`, lang, {
         username: from.username
       }), {
         parse_mode: 'Markdown',
@@ -475,10 +427,7 @@ bot.action('cb_account', async (ctx) => {
       }).then(res => res.json())
         // @ts-ignore
         .then(res => res?.value)
-      ctx.editMessageText(t(`💳 My Account
-————————————————————
-Account Balance: {{availableBalance}} NEST
-Copy Trading Total Amount: {{copyBalance}} NEST`, lang, {
+      ctx.editMessageText(t(`💳 My Account\n————————————————————\nAccount Balance: {{availableBalance}} NEST\nCopy Trading Total Amount: {{copyBalance}} NEST`, lang, {
         availableBalance: (data?.availableBalance || 0).toFixed(2),
         copyBalance: (data?.copyBalance || 0).toFixed(2),
       }), {
@@ -490,9 +439,7 @@ Copy Trading Total Amount: {{copyBalance}} NEST`, lang, {
         ])
       })
     } else {
-      ctx.editMessageText(t(`Hi {{username}}! Please authorize me to set up a NESTFi integration.
-
-You can use command: /start`, lang, {
+      ctx.editMessageText(t(`Hi {{username}}! Please authorize me to set up a NESTFi integration.\n\nYou can use command: /start`, lang, {
         username: from.username
       }), {
         parse_mode: 'Markdown',
@@ -539,16 +486,12 @@ bot.action(/cb_kls_p_.*/, async (ctx) => {
         inlineKeyboard.push([Markup.button.callback(t(`» Next Page`, lang), `cb_kls_p_${page + 1}`)])
       }
       inlineKeyboard.push([Markup.button.callback(t(`« Back`, lang), 'cb_menu')])
-      ctx.editMessageText(t(`💪 My Traders
-————————————————————
-These are the traders you followed.`, lang), {
+      ctx.editMessageText(t(`💪 My Traders\n————————————————————\nThese are the traders you followed.`, lang), {
         parse_mode: 'Markdown',
         ...Markup.inlineKeyboard(inlineKeyboard)
       })
     } else {
-      ctx.editMessageText(t(`Hi {{username}}! Please authorize me to set up a NESTFi integration.
-
-You can use command: /start`, lang, {
+      ctx.editMessageText(t(`Hi {{username}}! Please authorize me to set up a NESTFi integration.\n\nYou can use command: /start`, lang, {
         username: from.username
       }), {
         parse_mode: 'Markdown',
@@ -586,13 +529,7 @@ bot.action(/cb_kl_.*/, async (ctx) => {
         // @ts-ignore
         .then(res => res?.value)
       // Profit sharing: ${((data?.rewardRatio || 0) * 100).toFixed(2)}%
-      ctx.editMessageText(t(`👤 {{nickName}}
-————————————————————
-Followers: {{currentFollowers}}
-AUM: {{followersAssets}} NEST
-7D ROI: {{kolProfitLossRate}}%
-7D Earnings: {{kolProfitLoss}} NEST
-7D Followers PnL: {{followerProfitLoss}} NEST`, lang, {
+      ctx.editMessageText(t(`👤 {{nickName}}\n————————————————————\nFollowers: {{currentFollowers}}\nAUM: {{followersAssets}} NEST\n7D ROI: {{kolProfitLossRate}}%\n7D Earnings: {{kolProfitLoss}} NEST\n7D Followers PnL: {{followerProfitLoss}} NEST`, lang, {
         nickName: data?.nickName || '-',
         currentFollowers: data?.currentFollowers || 0,
         followersAssets: (data?.followersAssets || 0).toFixed(2),
@@ -608,9 +545,7 @@ AUM: {{followersAssets}} NEST
         ])
       })
     } else {
-      ctx.editMessageText(t(`Hi {{username}}! Please authorize me to set up a NESTFi integration.
-
-You can use command: /start`, lang, {
+      ctx.editMessageText(t(`Hi {{username}}! Please authorize me to set up a NESTFi integration.\n\nYou can use command: /start`, lang, {
         username: from.username
       }), {
         parse_mode: 'Markdown',
@@ -680,9 +615,7 @@ ${index + 1 + (page - 1) * 5}. ${item?.product || '-'} ${item?.direction ? 'Long
         ...Markup.inlineKeyboard(inlineKeyboard)
       })
     } else {
-      ctx.editMessageText(t(`Hi {{username}}! Please authorize me to set up a NESTFi integration.
-
-You can use command: /start`, lang, {
+      ctx.editMessageText(t(`Hi {{username}}! Please authorize me to set up a NESTFi integration.\n\nYou can use command: /start`, lang, {
         username: from.username
       }), {
         parse_mode: 'Markdown',
@@ -747,9 +680,7 @@ ${index + 1 + (page - 1) * 5}. ${item?.product || '-'} ${item?.direction ? 'Long
         ...Markup.inlineKeyboard(inlineKeyboard)
       })
     } else {
-      ctx.editMessageText(t(`Hi {{username}}! Please authorize me to set up a NESTFi integration.
-
-You can use command: /start`, lang, {
+      ctx.editMessageText(t(`Hi {{username}}! Please authorize me to set up a NESTFi integration.\n\nYou can use command: /start`, lang, {
         username: from.username
       }), {
         parse_mode: 'Markdown',
@@ -787,15 +718,7 @@ bot.action(/cb_r_stop_kl_.*/, async (ctx) => {
         // @ts-ignore
         .then(data => data?.value)
 
-      ctx.editMessageText(t(`🙅 Stop Copying
-————————————————————
-Total Copy Amount: {{total}} NEST
-Open Interest: {{openInterest}} NEST
-Total Profit: {{totalProfit}} NEST
-
-_End copy will liquidate your position with market orders, and automatically return the assets to your Account after deducting the profits sharing._
-
-❓Are you sure to stop copying?`, lang, {
+      ctx.editMessageText(t(`🙅 Stop Copying\n————————————————————\nTotal Copy Amount: {{total}} NEST\nOpen Interest: {{openInterest}} NEST\nTotal Profit: {{totalProfit}} NEST\n\n_End copy will liquidate your position with market orders, and automatically return the assets to your Account after deducting the profits sharing._\n❓Are you sure to stop copying?`, lang, {
           total: (request?.totalCopyAmount || 0).toFixed(2),
           openInterest: (request?.openInterest || 0).toFixed(2),
           totalProfit: (request?.totalProfit || 0).toFixed(2),
@@ -808,9 +731,7 @@ _End copy will liquidate your position with market orders, and automatically ret
         ])
       })
     } else {
-      ctx.editMessageText(t(`Hi {{username}}! Please authorize me to set up a NESTFi integration.
-
-You can use command: /start`, lang, {
+      ctx.editMessageText(t(`Hi {{username}}! Please authorize me to set up a NESTFi integration.\n\nYou can use command: /start`, lang, {
         username: from.username
       }), {
         parse_mode: 'Markdown',
@@ -860,9 +781,7 @@ bot.action(/cb_stop_kl_.*/, async (ctx) => {
         ctx.answerCbQuery(t(`Something went wrong.`, lang))
       }
     } else {
-      ctx.editMessageText(t(`Hi {{username}}! Please authorize me to set up a NESTFi integration.
-
-You can use command: /start`, lang, {
+      ctx.editMessageText(t(`Hi {{username}}! Please authorize me to set up a NESTFi integration.\n\nYou can use command: /start`, lang, {
         username: from.username
       }), {
         parse_mode: 'Markdown',
@@ -902,14 +821,7 @@ bot.action(/cb_oi_.*/, async (ctx) => {
         // @ts-ignore
         .then(res => res?.value)
 
-      ctx.editMessageText(t(`🍯 Position {{oi}}
-————————————————————
-{{product}} {{direction}} {{leverage}}x
-Actual Margin: ${(data?.margin || 0).toFixed(2)} NEST ${data?.profitLossRate > 0 ? `+${data?.profitLossRate.toFixed(2)}` : data?.profitLossRate.toFixed(2)}%
-Open Price: ${(data?.orderPrice || 0).toFixed(2)} USDT
-Market Price: ${(data?.marketPrice || 0).toFixed(2)} USDT
-Liq Price: ${data?.lipPrice ? data?.lipPrice?.toFixed(2) : '-'} USDT
-Open: UTC ${new Date(data?.timestamp * 1000 || 0).toISOString().replace('T', ' ').substring(5, 19)}`, lang, {
+      ctx.editMessageText(t(`🍯 Position {{oi}}\n————————————————————\n{{product}} {{direction}} {{leverage}}x\nActual Margin: ${(data?.margin || 0).toFixed(2)} NEST ${data?.profitLossRate > 0 ? `+${data?.profitLossRate.toFixed(2)}` : data?.profitLossRate.toFixed(2)}%\nOpen Price: ${(data?.orderPrice || 0).toFixed(2)} USDTMarket Price: ${(data?.marketPrice || 0).toFixed(2)} USDT\nLiq Price: ${data?.lipPrice ? data?.lipPrice?.toFixed(2) : '-'} USDT\nOpen: UTC ${new Date(data?.timestamp * 1000 || 0).toISOString().replace('T', ' ').substring(5, 19)}`, lang, {
         oi: oi,
         product: data?.product || '-',
         direction: data?.direction ? 'Long' : 'Short',
@@ -923,9 +835,7 @@ Open: UTC ${new Date(data?.timestamp * 1000 || 0).toISOString().replace('T', ' '
         ])
       })
     } else {
-      ctx.editMessageText(t(`Hi {{username}}! Please authorize me to set up a NESTFi integration.
-
-You can use command: /start`, lang, {
+      ctx.editMessageText(t(`Hi {{username}}! Please authorize me to set up a NESTFi integration.\n\nYou can use command: /start`, lang, {
         username: from.username
       }), {
         parse_mode: 'Markdown',
@@ -978,9 +888,7 @@ bot.action(/cb_close_oi_.*/, async (ctx) => {
         ctx.answerCbQuery(t(`Something went wrong.`, lang))
       }
     } else {
-      ctx.editMessageText(t(`Hi {{username}}! Please authorize me to set up a NESTFi integration.
-
-You can use command: /start`, lang, {
+      ctx.editMessageText(t(`Hi {{username}}! Please authorize me to set up a NESTFi integration.\n\nYou can use command: /start`, lang, {
         username: from.username
       }), {
         parse_mode: 'Markdown',
@@ -1056,11 +964,7 @@ bot.action('confirm_copy_setting', async (ctx) => {
             .then(data => data?.value || false)
 
           if (request) {
-            ctx.editMessageText(t(`🥳 Successfully Copy Trading
-————————————————————
-More latest orders from {{nickName}} will be posted in the group.
-
-Telegram Group: {{groupId}}`, lang, {
+            ctx.editMessageText(t(`🥳 Successfully Copy Trading\n————————————————————\nMore latest orders from {{nickName}} will be posted in the group.\n\nTelegram Group: {{groupId}}`, lang, {
               nickName: nickName,
               groupId: groupId
             }), {
@@ -1073,9 +977,7 @@ Telegram Group: {{groupId}}`, lang, {
             ctx.answerCbQuery(t(`Something went wrong.`, lang))
           }
         } else {
-          ctx.editMessageText(t(`Hi {{username}}! Please authorize me to set up a NESTFi integration.
-
-You can use command: /start`, lang, {
+          ctx.editMessageText(t(`Hi {{username}}! Please authorize me to set up a NESTFi integration.\n\nYou can use command: /start`, lang, {
             username: from.username
           }), {
             parse_mode: 'Markdown',
@@ -1145,8 +1047,7 @@ bot.on("message", async (ctx) => {
       if (total === 0) {
         const add = Number(input)
         if (add < 200 || add > availableBalance) {
-          ctx.reply(t(`💢 Invalid Amount
-Please enter a valid amount between 200 and {{availableBalance}}`, lang, {
+          ctx.reply(t(`💢 Invalid Amount\nPlease enter a valid amount between 200 and {{availableBalance}}`, lang, {
             availableBalance: availableBalance
           }), {
             parse_mode: 'Markdown',
@@ -1171,10 +1072,7 @@ Please enter a valid amount between 200 and {{availableBalance}}`, lang, {
         choice[0] = Math.floor((add + position) * 0.1 / 50) * 50
         choice[1] = Math.floor((add + position) * 0.2 / 50) * 50
         choice[2] = Math.floor((add + position) * 0.4 / 50) * 50
-        ctx.reply(t(`💵 Copy Trading Each Order
-————————————————————
-You are following: {{nickName}}
-Please type the amount you invest to this trader for each order below.`, lang, {
+        ctx.reply(t(`💵 Copy Trading Each Order\n————————————————————\nYou are following: {{nickName}}\nPlease type the amount you invest to this trader for each order below.`, lang, {
           nickName: nickName
         }), {
           parse_mode: 'Markdown',
@@ -1189,8 +1087,7 @@ Please type the amount you invest to this trader for each order below.`, lang, {
           choice[0] = Math.floor(total * 0.1 / 50) * 50
           choice[1] = Math.floor(total * 0.2 / 50) * 50
           choice[2] = Math.floor(total * 0.4 / 50) * 50
-          ctx.reply(t(`💢 Invalid Amount
-Please enter a valid amount between 50 and your CopyTrading Total Amount, {{total}}`, lang, {
+          ctx.reply(t(`💢 Invalid Amount\nPlease enter a valid amount between 50 and your CopyTrading Total Amount, {{total}}`, lang, {
             total: total
           }), {
             parse_mode: 'Markdown',
@@ -1213,13 +1110,7 @@ Please enter a valid amount between 50 and your CopyTrading Total Amount, {{tota
               }
             })
           })
-          ctx.reply(t(`👩‍💻 Confirm
-————————————————————
-Copy Trading Total Amount: {{total}} NEST 
-Copy Trading Each Order: {{input}} NEST 
-
-You are following: {{nickName}}
-Are you sure?`, lang, {
+          ctx.reply(t(`👩‍💻 Confirm\n————————————————————\nCopy Trading Total Amount: {{total}} NEST \nCopy Trading Each Order: {{input}} NEST \n\nYou are following: {{nickName}}\nAre you sure?`, lang, {
             total: total,
             input: input,
             nickName: nickName,
