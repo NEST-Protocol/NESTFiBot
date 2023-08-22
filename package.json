@@ -8,12 +8,15 @@
     "serverless": "serverless",
     "release": "serverless deploy",
     "purge": "serverless remove",
-    "set-webhook": "telegraf -m setWebhook"
+    "set-webhook": "telegraf -m setWebhook",
+    "upload": "localazy upload",
+    "download": "localazy download"
   },
   "dependencies": {
     "@upstash/redis": "^1.22.0",
     "dotenv": "^16.3.1",
     "ethers": "^6.7.0",
+    "i18n": "^0.15.1",
     "node-fetch": "^3.3.2",
     "openai": "^3.3.0",
     "redis": "^4.6.7",
@@ -21,6 +24,7 @@
     "telegraf": "^4.11.2"
   },
   "devDependencies": {
+    "@types/i18n": "^0.13.6",
     "serverless": "^3.28.1",
     "serverless-dotenv-plugin": "^4.0.2",
     "serverless-plugin-typescript": "^2.1.4",
