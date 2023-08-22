@@ -821,12 +821,17 @@ bot.action(/cb_oi_.*/, async (ctx) => {
         // @ts-ignore
         .then(res => res?.value)
 
-      ctx.editMessageText(t(`🍯 Position {{oi}}\n————————————————————\n{{product}} {{direction}} {{leverage}}x\nActual Margin: ${(data?.margin || 0).toFixed(2)} NEST ${data?.profitLossRate > 0 ? `+${data?.profitLossRate.toFixed(2)}` : data?.profitLossRate.toFixed(2)}%\nOpen Price: ${(data?.orderPrice || 0).toFixed(2)} USDTMarket Price: ${(data?.marketPrice || 0).toFixed(2)} USDT\nLiq Price: ${data?.lipPrice ? data?.lipPrice?.toFixed(2) : '-'} USDT\nOpen: UTC ${new Date(data?.timestamp * 1000 || 0).toISOString().replace('T', ' ').substring(5, 19)}`, lang, {
+      ctx.editMessageText(t(`🍯 Position {{oi}}\n————————————————————\n{{product}} {{direction}} {{leverage}}x\nActual Margin: {{margin}} NEST {{profitLossRate}}%\nOpen Price: {{orderPrice}} USDTMarket Price: {{marketPrice}} USDT\nLiq Price: {{lipPrice}} USDT\nOpen: UTC {{open}}`, lang, {
         oi: oi,
         product: data?.product || '-',
         direction: data?.direction ? 'Long' : 'Short',
         leverage: data?.leverage || '-',
-
+        margin: (data?.margin || 0).toFixed(2),
+        profitLossRate: data?.profitLossRate > 0 ? `+${data?.profitLossRate.toFixed(2)}` : data?.profitLossRate.toFixed(2),
+        orderPrice: (data?.orderPrice || 0).toFixed(2),
+        marketPrice: (data?.marketPrice || 0).toFixed(2),
+        lipPrice: data?.lipPrice ? data?.lipPrice?.toFixed(2) : '-',
+        open: new Date(data?.timestamp * 1000 || 0).toISOString().replace('T', ' ').substring(5, 19)
       }), {
         parse_mode: 'Markdown',
         ...Markup.inlineKeyboard([
