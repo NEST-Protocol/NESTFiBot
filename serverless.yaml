@@ -10,7 +10,7 @@
       "locales/**",
     ],
     individually: true,
-    excludeDevDependencies: false,
+    excludeDevDependencies: true,
   },
 
   provider: {
