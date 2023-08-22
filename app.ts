@@ -1074,36 +1074,35 @@ Please enter a valid amount between 50 and your CopyTrading Total Amount, ${tota
               ['« Back'],
             ])
           })
-          return
-        }
-        await fetch(`${redis_url}/set/intent:${from.id}?EX=600`, {
-          method: 'POST',
-          headers: {
-            "Authorization": `Bearer ${redis_token}`
-          },
-          body: JSON.stringify({
-            category: 'cb_copy_setting',
-            value: {
-              ...data.value,
-              single: Number(input),
-            }
+        } else {
+          await fetch(`${redis_url}/set/intent:${from.id}?EX=600`, {
+            method: 'POST',
+            headers: {
+              "Authorization": `Bearer ${redis_token}`
+            },
+            body: JSON.stringify({
+              category: 'cb_copy_setting',
+              value: {
+                ...data.value,
+                single: Number(input),
+              }
+            })
           })
-        })
-        ctx.reply(`👩‍💻 Confirm
+          ctx.reply(`👩‍💻 Confirm
 ————————————————————
 Copy Trading Total Amount: ${total} NEST 
 Copy Trading Each Order: ${input} NEST 
 
 You are following: ${nickName}
 Are you sure?`, {
-          parse_mode: 'Markdown',
-          ...Markup.inlineKeyboard([
-            [Markup.button.callback('Yes, I’m sure.', 'confirm_copy_setting')],
-            [Markup.button.callback('Nope, I change my mind.', 'cancel_copy_setting')]
-          ])
-        })
+            parse_mode: 'Markdown',
+            ...Markup.inlineKeyboard([
+              [Markup.button.callback('Yes, I’m sure.', 'confirm_copy_setting')],
+              [Markup.button.callback('Nope, I change my mind.', 'cancel_copy_setting')]
+            ])
+          })
+        }
       }
-      return
     }
   }
 })

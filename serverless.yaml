@@ -11,6 +11,7 @@
 
   provider: {
     name: "aws",
+    deploymentMethod: "direct",
     runtime: "nodejs16.x",
     region: "ap-northeast-1",
   },
