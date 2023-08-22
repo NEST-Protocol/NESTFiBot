@@ -88,13 +88,13 @@ bot.start(async (ctx) => {
             ctx.reply(t(`Would you like to copy Trader 👤 {{nickName}}'s positions immediately?`, lang, {
               nickName: nickName
             }), Markup.inlineKeyboard([
-              [Markup.button.callback(t('Nope, I change my mind.', lang), 'cb_menu')],
-              [Markup.button.callback(t('Yes, copy now!', lang), `cb_copy_setting_${klAddress}`)],
+              [Markup.button.callback(t(`Nope, I change my mind.`, lang), 'cb_menu')],
+              [Markup.button.callback(t(`Yes, copy now!`, lang), `cb_copy_setting_${klAddress}`)],
             ]))
           } else {
             ctx.reply(t(`You have already followed this trader. All positions from this trader will be automatically executed for you.`, lang), Markup.inlineKeyboard([
-              [Markup.button.callback(t('Settings', lang), `cb_copy_setting_${klAddress}`)],
-              [Markup.button.callback(t('« Back', lang), 'cb_menu')],
+              [Markup.button.callback(t(`Settings`, lang), `cb_copy_setting_${klAddress}`)],
+              [Markup.button.callback(t(`« Back`, lang), 'cb_menu')],
             ]))
           }
         } else {
@@ -104,7 +104,7 @@ Peter Mason is not on the NESTFi traders list.
 Please select other traders on NESTFi.`, lang), {
             parse_mode: 'Markdown',
             ...Markup.inlineKeyboard([
-              [Markup.button.url(t('Access NESTFi Website', lang), 'https://nestfi.org/')]
+              [Markup.button.url(t(`Access NESTFi Website`, lang), 'https://nestfi.org/')]
             ])
           })
         }
@@ -130,9 +130,9 @@ Address: \`{{address}}\`
         }), {
           parse_mode: 'Markdown',
           ...Markup.inlineKeyboard([
-            [Markup.button.callback(t('My Account', lang), 'cb_account')],
-            [Markup.button.callback(t('My Traders', lang), 'cb_kls_p_1')],
-            [Markup.button.callback(t('My Copy Trading', lang), 'cb_ps_all_1')],
+            [Markup.button.callback(t(`My Account`, lang), 'cb_account')],
+            [Markup.button.callback(t(`My Traders`, lang), 'cb_kls_p_1')],
+            [Markup.button.callback(t(`My Copy Trading`, lang), 'cb_ps_all_1')],
           ])
         })
       }
@@ -150,8 +150,8 @@ Hi there, before copying trading, please link your wallet on NESTFi.
 👇Note: The link is valid for 10 minutes.`, lang), {
         parse_mode: 'Markdown',
         ...Markup.inlineKeyboard([
-          [Markup.button.url(t('PC ➜ Link My Wallet', lang), `https://connect.nestfi.org/${nonce}`)],
-          [Markup.button.url(t('Mobile ➜ Link My Wallet', lang), `https://metamask.app.link/dapp/connect.nestfi.org/${nonce}`)],
+          [Markup.button.url(t(`PC ➜ Link My Wallet`, lang), `https://connect.nestfi.org/${nonce}`)],
+          [Markup.button.url(t(`Mobile ➜ Link My Wallet`, lang), `https://metamask.app.link/dapp/connect.nestfi.org/${nonce}`)],
         ])
       })
       const message_id = message.message_id
@@ -232,9 +232,9 @@ Address: \`{{address}}\`
       }), {
         parse_mode: 'Markdown',
         ...Markup.inlineKeyboard([
-          [Markup.button.callback(t('My Account', lang), 'cb_account')],
-          [Markup.button.callback(t('My Traders', lang), 'cb_kls_p_1')],
-          [Markup.button.callback(t('My Copy Trading', lang), 'cb_ps_all_1')],
+          [Markup.button.callback(t(`My Account`, lang), 'cb_account')],
+          [Markup.button.callback(t(`My Traders`, lang), 'cb_kls_p_1')],
+          [Markup.button.callback(t(`My Copy Trading`, lang), 'cb_ps_all_1')],
         ])
       })
     } else {
@@ -277,12 +277,12 @@ Address: \`{{address}}\`
     }), {
       parse_mode: 'Markdown',
       ...Markup.inlineKeyboard([
-        [Markup.button.callback(t('Yes, deauthorize now.', lang), 'cb_unauthorize')],
-        [Markup.button.callback(t('Nope, I change my mind.', lang), 'cb_menu')],
+        [Markup.button.callback(t(`Yes, deauthorize now.`, lang), 'cb_unauthorize')],
+        [Markup.button.callback(t(`Nope, I change my mind.`, lang), 'cb_menu')],
       ])
     })
   } else {
-    ctx.reply(t('👩‍💻 You have not authorized any wallet yet.', lang))
+    ctx.reply(t(`👩‍💻 You have not authorized any wallet yet.`, lang))
   }
 })
 
@@ -338,8 +338,8 @@ bot.action(/cb_copy_setting_.*/, async (ctx) => {
 Your account balance is insufficient. Please deposit first to initiate lightning trading on NESTFi.`, lang), {
           parse_mode: 'Markdown',
           ...Markup.inlineKeyboard([
-            [Markup.button.url(t('Deposit', lang), 'https://nestfi.org/#')],
-            [Markup.button.callback(t('Completed, go on!', lang), `cb_copy_setting_${klAddress}`)],
+            [Markup.button.url(t(`Deposit`, lang), 'https://nestfi.org/#')],
+            [Markup.button.callback(t(`Completed, go on!`, lang), `cb_copy_setting_${klAddress}`)],
           ])
         })
         return
@@ -380,7 +380,7 @@ Please add the amount you invest to this trader below.`, lang, {
           parse_mode: 'Markdown',
           ...Markup.keyboard([
             choice.filter((i) => i >= 200).map((i: number) => String(i)),
-            [t('« Back', lang)],
+            [t(`« Back`, lang)],
           ]).oneTime().resize()
         })
       }
@@ -392,7 +392,7 @@ You can use command: /start`, lang), {
       })
     }
   } catch (e) {
-    ctx.answerCbQuery(t('Something went wrong.', lang))
+    ctx.answerCbQuery(t(`Something went wrong.`, lang))
   }
 })
 
@@ -425,7 +425,7 @@ Copy Trading Total Amount: {{total}} NEST
 Profit: {{profit}} NEST
 Unrealized PnL: {{unRealizedPnl}} NEST
 Address: \`{{address}}\`
-`,lang, {
+`, lang, {
         total: (data?.assets || 0).toFixed(2),
         profit: (data?.profit || 0).toFixed(2),
         unRealizedPnl: (data?.unRealizedPnl || 0).toFixed(2),
@@ -433,9 +433,9 @@ Address: \`{{address}}\`
       }), {
         parse_mode: 'Markdown',
         ...Markup.inlineKeyboard([
-          [Markup.button.callback(t('My Account', lang), 'cb_account')],
-          [Markup.button.callback(t('My Traders', lang), 'cb_kls_p_1')],
-          [Markup.button.callback(t('My Copy Trading', lang), 'cb_ps_all_1')],
+          [Markup.button.callback(t(`My Account`, lang), 'cb_account')],
+          [Markup.button.callback(t(`My Traders`, lang), 'cb_kls_p_1')],
+          [Markup.button.callback(t(`My Copy Trading`, lang), 'cb_ps_all_1')],
         ])
       })
     } else {
@@ -448,7 +448,7 @@ You can use command: /start`, lang, {
       })
     }
   } catch (e) {
-    ctx.answerCbQuery(t('Something went wrong.', lang))
+    ctx.answerCbQuery(t(`Something went wrong.`, lang))
   }
 })
 
@@ -484,9 +484,9 @@ Copy Trading Total Amount: {{copyBalance}} NEST`, lang, {
       }), {
         parse_mode: "Markdown",
         ...Markup.inlineKeyboard([
-          [Markup.button.url(t('Deposit', lang), 'https://nestfi.org/')],
-          [Markup.button.url(t('Withdraw', lang), 'https://nestfi.org/')],
-          [Markup.button.callback(t('« Back', lang), 'cb_menu')],
+          [Markup.button.url(t(`Deposit`, lang), 'https://nestfi.org/')],
+          [Markup.button.url(t(`Withdraw`, lang), 'https://nestfi.org/')],
+          [Markup.button.callback(t(`« Back`, lang), 'cb_menu')],
         ])
       })
     } else {
@@ -536,9 +536,9 @@ bot.action(/cb_kls_p_.*/, async (ctx) => {
         inlineKeyboard.push([Markup.button.callback(`${showArray[i]?.nickName || '-'}`, `cb_kl_${showArray[i]?.walletAddress}`)])
       }
       if (page * 5 < length) {
-        inlineKeyboard.push([Markup.button.callback(t('» Next Page', lang), `cb_kls_p_${page + 1}`)])
+        inlineKeyboard.push([Markup.button.callback(t(`» Next Page`, lang), `cb_kls_p_${page + 1}`)])
       }
-      inlineKeyboard.push([Markup.button.callback(t('« Back', lang), 'cb_menu')])
+      inlineKeyboard.push([Markup.button.callback(t(`« Back`, lang), 'cb_menu')])
       ctx.editMessageText(t(`💪 My Traders
 ————————————————————
 These are the traders you followed.`, lang), {
@@ -555,7 +555,7 @@ You can use command: /start`, lang, {
       })
     }
   } catch (e) {
-    ctx.answerCbQuery(t('Something went wrong.', lang))
+    ctx.answerCbQuery(t(`Something went wrong.`, lang))
   }
 })
 
@@ -602,9 +602,9 @@ AUM: {{followersAssets}} NEST
       }), {
         parse_mode: 'Markdown',
         ...Markup.inlineKeyboard([
-          [Markup.button.callback(t('View Copy Trading', lang), `cb_ps_${klAddress}_1`)],
-          [Markup.button.callback(t('Stop Copying', lang), `cb_r_stop_kl_${klAddress}`), Markup.button.callback('Settings', `cb_copy_setting_${klAddress}`)],
-          [Markup.button.callback(t('« Back', lang), 'cb_kls_p_1')]
+          [Markup.button.callback(t(`View Copy Trading`, lang), `cb_ps_${klAddress}_1`)],
+          [Markup.button.callback(t(`Stop Copying`, lang), `cb_r_stop_kl_${klAddress}`), Markup.button.callback('Settings', `cb_copy_setting_${klAddress}`)],
+          [Markup.button.callback(t(`« Back`, lang), 'cb_kls_p_1')]
         ])
       })
     } else {
@@ -617,7 +617,7 @@ You can use command: /start`, lang, {
       })
     }
   } catch (e) {
-    ctx.answerCbQuery(t('Something went wrong.', lang))
+    ctx.answerCbQuery(t(`Something went wrong.`, lang))
   }
 })
 
@@ -664,18 +664,18 @@ bot.action(/cb_ps_.*/, async (ctx) => {
         inlineKeyboard.push(buttons)
       }
       if (page * 5 < length) {
-        inlineKeyboard.push([Markup.button.callback(t('» Next Page', lang), `cb_ps_${klAddress}_${page + 1}`)])
+        inlineKeyboard.push([Markup.button.callback(t(`» Next Page`, lang), `cb_ps_${klAddress}_${page + 1}`)])
       }
-      inlineKeyboard.push([Markup.button.callback(t('History', lang), `cb_klh_${klAddress}_1`), Markup.button.callback('« Back', klAddress === 'all' ? 'cb_menu' : `cb_kl_${klAddress}`)])
-      ctx.editMessageText(`🎯 ${t('Current Copy Trading Position', lang)}
+      inlineKeyboard.push([Markup.button.callback(t(`History`, lang), `cb_klh_${klAddress}_1`), Markup.button.callback('« Back', klAddress === 'all' ? 'cb_menu' : `cb_kl_${klAddress}`)])
+      ctx.editMessageText(`🎯 ${(t(`Current Copy Trading Position`, lang))}
 ${showData.length > 0 ? `${showData.map((item: any, index: number) => (`
 =============================
 ${index + 1 + (page - 1) * 5}. ${item?.product || '-'} ${item?.direction ? 'Long' : 'Short'} ${item?.leverage || '-'}x
-   ${t('Actual Margin', lang)}: ${(item?.margin || 0).toFixed(2)} NEST ${item?.profitLossRate > 0 ? `+${item?.profitLossRate?.toFixed(2)}` : item?.profitLossRate?.toFixed(2)}%
-   ${t('Open Price', lang)}: ${(item?.orderPrice || 0).toFixed(2)} USDT
-   ${t('Open: UTC', lang)} ${new Date(item?.timestamp * 1000 || 0).toISOString().replace('T', ' ').substring(5, 19)}`)).join('')}
+   ${(t(`Actual Margin`, lang))}: ${(item?.margin || 0).toFixed(2)} NEST ${item?.profitLossRate > 0 ? `+${item?.profitLossRate?.toFixed(2)}` : item?.profitLossRate?.toFixed(2)}%
+   ${(t(`Open Price`, lang))}: ${(item?.orderPrice || 0).toFixed(2)} USDT
+   ${(t(`Open: UTC`, lang))} ${new Date(item?.timestamp * 1000 || 0).toISOString().replace('T', ' ').substring(5, 19)}`)).join('')}
 
-👇 ${t('Click the number to manage the corresponding order.', lang)}` : `\n${t('No copy trading position yet!', lang)}`}`, {
+👇 ${(t(`Click the number to manage the corresponding order.`, lang))}` : `\n${(t(`No copy trading position yet!`, lang))}`}`, {
         parse_mode: 'Markdown',
         ...Markup.inlineKeyboard(inlineKeyboard)
       })
@@ -689,7 +689,7 @@ You can use command: /start`, lang, {
       })
     }
   } catch (e) {
-    ctx.answerCbQuery(t('Something went wrong.', lang))
+    ctx.answerCbQuery(t(`Something went wrong.`, lang))
   }
 })
 
@@ -730,19 +730,19 @@ bot.action(/cb_klh_.*/, async (ctx) => {
       const showData = data?.value?.sort((a, b) => b.closeTime - a.closeTime)?.slice((page - 1) * 5, page * 5)
       let inlineKeyboard: any [] = []
       if (page * 5 < length) {
-        inlineKeyboard.push([Markup.button.callback(t('» Next Page', lang), `cb_klh_${klAddress}_${page + 1}`)])
+        inlineKeyboard.push([Markup.button.callback(t(`» Next Page`, lang), `cb_klh_${klAddress}_${page + 1}`)])
       }
-      inlineKeyboard.push([Markup.button.callback(t('« Back', lang), `cb_ps_${klAddress}_1`)])
+      inlineKeyboard.push([Markup.button.callback(t(`« Back`, lang), `cb_ps_${klAddress}_1`)])
       ctx.editMessageText(`🧩 ${t(`History`, lang)}
 ${showData?.length > 0 ? `${showData?.map((item: any, index: number) => (`
 =============================
 ${index + 1 + (page - 1) * 5}. ${item?.product || '-'} ${item?.direction ? 'Long' : 'Short'} ${item?.leverage || '-'}x
-   ${t('Actual Margin', lang)}: ${(item?.margin || 0).toFixed(2)} NEST ${item?.profitLossRate > 0 ? `+${item?.profitLossRate?.toFixed(2)}` : item?.profitLossRate?.toFixed(2)}%
-   ${t('Open Price', lang)}: ${(item?.openPrice || 0).toFixed(2)} USDT
+   ${t(`Actual Margin`, lang)}: ${(item?.margin || 0).toFixed(2)} NEST ${item?.profitLossRate > 0 ? `+${item?.profitLossRate?.toFixed(2)}` : item?.profitLossRate?.toFixed(2)}%
+   ${t(`Open Price`, lang)}: ${(item?.openPrice || 0).toFixed(2)} USDT
    ${t(`Close price`, lang)}: ${(item?.closePrice || 0).toFixed(2)} USDT
-   ${t('Liq Price', lang)}: ${item?.lipPrice ? item?.lipPrice?.toFixed(2) : '-'} USDT
-   ${t('Open: UTC', lang)} ${new Date(item?.openTime * 1000 || 0).toISOString().replace('T', ' ').substring(5, 19)}
-   ${t('Close: UTC', lang)} ${new Date(item?.closeTime * 1000 || 0).toISOString().replace('T', ' ').substring(5, 19)}`)).join('')}` : `\n${t('No copy trading position yet!', lang)}`}`, {
+   ${t(`Liq Price`, lang)}: ${item?.lipPrice ? item?.lipPrice?.toFixed(2) : '-'} USDT
+   ${t(`Open: UTC`, lang)} ${new Date(item?.openTime * 1000 || 0).toISOString().replace('T', ' ').substring(5, 19)}
+   ${t(`Close: UTC`, lang)} ${new Date(item?.closeTime * 1000 || 0).toISOString().replace('T', ' ').substring(5, 19)}`)).join('')}` : `\n${t(`No copy trading position yet!`, lang)}`}`, {
         parse_mode: 'Markdown',
         ...Markup.inlineKeyboard(inlineKeyboard)
       })
@@ -756,7 +756,7 @@ You can use command: /start`, lang, {
       })
     }
   } catch (e) {
-    ctx.answerCbQuery(t('Something went wrong.', lang))
+    ctx.answerCbQuery(t(`Something went wrong.`, lang))
   }
 })
 
@@ -796,15 +796,15 @@ Total Profit: {{totalProfit}} NEST
 _End copy will liquidate your position with market orders, and automatically return the assets to your Account after deducting the profits sharing._
 
 ❓Are you sure to stop copying?`, lang, {
-        total: (request?.totalCopyAmount || 0).toFixed(2),
-        openInterest: (request?.openInterest || 0).toFixed(2),
-        totalProfit: (request?.totalProfit || 0).toFixed(2),
-      }
+          total: (request?.totalCopyAmount || 0).toFixed(2),
+          openInterest: (request?.openInterest || 0).toFixed(2),
+          totalProfit: (request?.totalProfit || 0).toFixed(2),
+        }
       ), {
         parse_mode: 'Markdown',
         ...Markup.inlineKeyboard([
-          [Markup.button.callback(t('Nope, I change my mind.', lang), `cb_kl_${klAddress}`)],
-          [Markup.button.callback(t('Yes, stop copying trading.', lang), `cb_stop_kl_${klAddress}`)],
+          [Markup.button.callback(t(`Nope, I change my mind.`, lang), `cb_kl_${klAddress}`)],
+          [Markup.button.callback(t(`Yes, stop copying trading.`, lang), `cb_stop_kl_${klAddress}`)],
         ])
       })
     } else {
@@ -817,7 +817,7 @@ You can use command: /start`, lang, {
       })
     }
   } catch (e) {
-    ctx.answerCbQuery(t('Something went wrong.', lang))
+    ctx.answerCbQuery(t(`Something went wrong.`, lang))
   }
 })
 
@@ -853,11 +853,11 @@ bot.action(/cb_stop_kl_.*/, async (ctx) => {
         ctx.editMessageText(t(`🥳 Stop Copying Successfully!`, lang), {
           parse_mode: 'Markdown',
           ...Markup.inlineKeyboard([
-            [Markup.button.callback(t('« Back', lang), 'cb_kls_p_1')],
+            [Markup.button.callback(t(`« Back`, lang), 'cb_kls_p_1')],
           ])
         })
       } else {
-        ctx.answerCbQuery(t('Something went wrong.', lang))
+        ctx.answerCbQuery(t(`Something went wrong.`, lang))
       }
     } else {
       ctx.editMessageText(t(`Hi {{username}}! Please authorize me to set up a NESTFi integration.
@@ -869,7 +869,7 @@ You can use command: /start`, lang, {
       })
     }
   } catch (e) {
-    ctx.answerCbQuery(t('Something went wrong.', lang))
+    ctx.answerCbQuery(t(`Something went wrong.`, lang))
   }
 })
 
@@ -902,18 +902,24 @@ bot.action(/cb_oi_.*/, async (ctx) => {
         // @ts-ignore
         .then(res => res?.value)
 
-      ctx.editMessageText(`🍯 ${t(`Position`, lang)} ${oi}
+      ctx.editMessageText(t(`🍯 Position {{oi}}
 ————————————————————
-${data?.product || '-'} ${data?.direction ? 'Long' : 'Short'} ${data?.leverage || '-'}x
-${t('Actual Margin', lang)}: ${(data?.margin || 0).toFixed(2)} NEST ${data?.profitLossRate > 0 ? `+${data?.profitLossRate.toFixed(2)}` : data?.profitLossRate.toFixed(2)}%
-${t('Open Price', lang)}: ${(data?.orderPrice || 0).toFixed(2)} USDT
-${t('Market Price', lang)}: ${(data?.marketPrice || 0).toFixed(2)} USDT
-${t('Liq Price', lang)}: ${data?.lipPrice ? data?.lipPrice?.toFixed(2) : '-'} USDT
-${t('Open: UTC', lang)} ${new Date(data?.timestamp * 1000 || 0).toISOString().replace('T', ' ').substring(5, 19)}`, {
+{{product}} {{direction}} {{leverage}}x
+Actual Margin: ${(data?.margin || 0).toFixed(2)} NEST ${data?.profitLossRate > 0 ? `+${data?.profitLossRate.toFixed(2)}` : data?.profitLossRate.toFixed(2)}%
+Open Price: ${(data?.orderPrice || 0).toFixed(2)} USDT
+Market Price: ${(data?.marketPrice || 0).toFixed(2)} USDT
+Liq Price: ${data?.lipPrice ? data?.lipPrice?.toFixed(2) : '-'} USDT
+Open: UTC ${new Date(data?.timestamp * 1000 || 0).toISOString().replace('T', ' ').substring(5, 19)}`, lang, {
+        oi: oi,
+        product: data?.product || '-',
+        direction: data?.direction ? 'Long' : 'Short',
+        leverage: data?.leverage || '-',
+
+      }), {
         parse_mode: 'Markdown',
         ...Markup.inlineKeyboard([
-          [Markup.button.callback(t('Close the Position', lang), `cb_close_oi_${oi}_${klAddress}`)],
-          [Markup.button.callback(t('« Back', lang), `cb_ps_${klAddress}_1`)],
+          [Markup.button.callback(t(`Close the Position`, lang), `cb_close_oi_${oi}_${klAddress}`)],
+          [Markup.button.callback(t(`« Back`, lang), `cb_ps_${klAddress}_1`)],
         ])
       })
     } else {
@@ -926,7 +932,7 @@ You can use command: /start`, lang, {
       })
     }
   } catch (e) {
-    ctx.answerCbQuery(t('Something went wrong.', lang))
+    ctx.answerCbQuery(t(`Something went wrong.`, lang))
   }
 })
 
@@ -962,14 +968,14 @@ bot.action(/cb_close_oi_.*/, async (ctx) => {
         .then(data => data?.value || false)
 
       if (request) {
-        ctx.editMessageText(t('🥳 Close Position Successfully!', lang), {
+        ctx.editMessageText(t(`🥳 Close Position Successfully!`, lang), {
           parse_mode: 'Markdown',
           ...Markup.inlineKeyboard([
-            [Markup.button.callback(t('« Back', lang), `cb_ps_${klAddress}_1`)]
+            [Markup.button.callback(t(`« Back`, lang), `cb_ps_${klAddress}_1`)]
           ])
         })
       } else {
-        ctx.answerCbQuery(t('Something went wrong.', lang))
+        ctx.answerCbQuery(t(`Something went wrong.`, lang))
       }
     } else {
       ctx.editMessageText(t(`Hi {{username}}! Please authorize me to set up a NESTFi integration.
@@ -981,7 +987,7 @@ You can use command: /start`, lang, {
       })
     }
   } catch (e) {
-    ctx.answerCbQuery(t('Something went wrong.', lang))
+    ctx.answerCbQuery(t(`Something went wrong.`, lang))
   }
 })
 
@@ -995,9 +1001,9 @@ bot.action('cb_unauthorize', async (ctx) => {
         "Authorization": `Bearer ${redis_token}`
       }
     })
-    ctx.editMessageText(t('👩‍💻 You have successfully deauthorized the NESTFi Copy Trading bot on NESTFi.', lang), Markup.inlineKeyboard([]))
+    ctx.editMessageText(t(`👩‍💻 You have successfully deauthorized the NESTFi Copy Trading bot on NESTFi.`, lang), Markup.inlineKeyboard([]))
   } catch (e) {
-    ctx.answerCbQuery(t('Something went wrong.', lang))
+    ctx.answerCbQuery(t(`Something went wrong.`, lang))
   }
 })
 
@@ -1064,7 +1070,7 @@ Telegram Group: {{groupId}}`, lang, {
               ])
             })
           } else {
-            ctx.answerCbQuery(t('Something went wrong.', lang))
+            ctx.answerCbQuery(t(`Something went wrong.`, lang))
           }
         } else {
           ctx.editMessageText(t(`Hi {{username}}! Please authorize me to set up a NESTFi integration.
@@ -1076,13 +1082,13 @@ You can use command: /start`, lang, {
           })
         }
       } else {
-        ctx.editMessageText(t('Sorry, we have not found your copy trading request', lang), {
+        ctx.editMessageText(t(`Sorry, we have not found your copy trading request`, lang), {
           ...Markup.inlineKeyboard([]),
         })
       }
     }
   } catch (e) {
-    ctx.answerCbQuery(t('Something went wrong.', lang))
+    ctx.answerCbQuery(t(`Something went wrong.`, lang))
   }
 })
 
@@ -1098,11 +1104,11 @@ bot.action('cancel_copy_setting', async (ctx) => {
     ctx.editMessageText(t(`🙅‍️ Alright, your copy trading request has been cancelled successfully!`, lang), {
       parse_mode: 'Markdown',
       ...Markup.inlineKeyboard([
-        [Markup.button.callback(t('« Back', lang), 'cb_menu')],
+        [Markup.button.callback(t(`« Back`, lang), 'cb_menu')],
       ]),
     })
   } catch (e) {
-    ctx.answerCbQuery(t('Something went wrong.', lang))
+    ctx.answerCbQuery(t(`Something went wrong.`, lang))
   }
 })
 
@@ -1184,7 +1190,7 @@ Please type the amount you invest to this trader for each order below.`, lang, {
           choice[1] = Math.floor(total * 0.2 / 50) * 50
           choice[2] = Math.floor(total * 0.4 / 50) * 50
           ctx.reply(t(`💢 Invalid Amount
-Please enter a valid amount between 50 and your CopyTrading Total Amount, {{total}}`, lang , {
+Please enter a valid amount between 50 and your CopyTrading Total Amount, {{total}}`, lang, {
             total: total
           }), {
             parse_mode: 'Markdown',
@@ -1220,8 +1226,8 @@ Are you sure?`, lang, {
           }), {
             parse_mode: 'Markdown',
             ...Markup.inlineKeyboard([
-              [Markup.button.callback(t('Yes, I’m sure.', lang), 'confirm_copy_setting')],
-              [Markup.button.callback(t('Nope, I change my mind.', lang), 'cancel_copy_setting')]
+              [Markup.button.callback(t(`Yes, I’m sure.`, lang), 'confirm_copy_setting')],
+              [Markup.button.callback(t(`Nope, I change my mind.`, lang), 'cancel_copy_setting')]
             ])
           })
         }
