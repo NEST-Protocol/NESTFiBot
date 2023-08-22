@@ -12,6 +12,10 @@ const redis_token = process.env.UPSTASH_REDIS_REST_TOKEN;
 
 bot.start(async (ctx) => {
   const from = ctx.from;
+  const chatId = ctx.chat.id;
+  if (from.is_bot || chatId < 0) {
+    return
+  }
   try {
     const klAddress = ctx.startPayload;
 
@@ -149,6 +153,11 @@ Hi there, before copying trading, please link your wallet on NESTFi.
 });
 
 bot.help((ctx) => {
+  const from = ctx.from;
+  const chat = ctx.chat;
+  if (chat.id < 0 || from.is_bot) {
+    return
+  }
   ctx.reply(`🌏 For further information, please access nestfi.org
 
 Control me by sending these commands:
@@ -162,6 +171,10 @@ Control me by sending these commands:
 
 bot.command('account', async (ctx) => {
   const from = ctx.from;
+  const chat = ctx.chat;
+  if (chat.id < 0 || from.is_bot) {
+    return
+  }
   const message_id = ctx.message.message_id;
   try {
     const jwt = await fetch(`${redis_url}/get/auth:${from.id}`, {
@@ -212,6 +225,10 @@ You can use command: /start`, {
 // Stop command use to delete authorization request
 bot.command('cancel', async (ctx) => {
   const from = ctx.from;
+  const chat = ctx.chat;
+  if (chat.id < 0 || from.is_bot) {
+    return
+  }
   const jwt = await fetch(`${redis_url}/get/auth:${from.id}`, {
     headers: {
       "Authorization": `Bearer ${redis_token}`
@@ -997,7 +1014,10 @@ bot.action('cancel_copy_setting', async (ctx) => {
 })
 
 bot.on("message", async (ctx) => {
-  const {from} = ctx.update.message;
+  const {from, chat} = ctx.update.message;
+  if (chat.id < 0 || from.is_bot) {
+    return
+  }
   // @ts-ignore
   const input = ctx.message.text;
   const intent = await fetch(`${redis_url}/get/intent:${from.id}`, {

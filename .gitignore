@@ -2,3 +2,4 @@
 /.serverless/
 /.idea/
 /node_modules/
+/localazy.json
