@@ -99,7 +99,7 @@ bot.start(async (ctx) => {
             ]))
           }
         } else {
-          ctx.reply(t(`💢 Invalid Trader\n———————————————\nPeter Mason is not on the NESTFi traders list.\nPlease select other traders on NESTFi.`, lang), {
+          ctx.reply(t(`💢 Invalid Trader\n————————————————————\nPeter Mason is not on the NESTFi traders list.\nPlease select other traders on NESTFi.`, lang), {
             parse_mode: 'Markdown',
             ...Markup.inlineKeyboard([
               [Markup.button.url(t(`Access NESTFi Website`, lang), 'https://nestfi.org/')]
@@ -304,7 +304,7 @@ bot.action(/cb_copy_setting_.*/, async (ctx) => {
       const groupId = klInfo?.groupId || '-'
 
       if (availableBalance + position < 200) {
-        ctx.reply(t(`💔 Insufficient Balance\n———————————————\nYour account balance is insufficient. Please deposit first to initiate lightning trading on NESTFi.`, lang), {
+        ctx.reply(t(`💔 Insufficient Balance\n————————————————————\nYour account balance is insufficient. Please deposit first to initiate lightning trading on NESTFi.`, lang), {
           parse_mode: 'Markdown',
           ...Markup.inlineKeyboard([
             [Markup.button.url(t(`Deposit`, lang), 'https://nestfi.org/#')],
