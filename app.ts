@@ -130,7 +130,7 @@ bot.start(async (ctx) => {
     } else {
       if (klAddress && isAddress(klAddress)) {
         ctx.reply(t(`👩‍💻 Once you've linked your wallet, click "Copy Now" to continue with the copy trading.`, lang), Markup.inlineKeyboard([
-          [Markup.button.url(t(`Copy Now`, lang), `https://t.me/nestfi.org?start=${klAddress}`)],
+          [Markup.button.url(t(`Copy Now`, lang), `https://t.me/NESTFiBot?start=${klAddress}`)],
         ]))
       }
       const nonce = Math.random().toString(36).substring(2, 18);
