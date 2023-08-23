@@ -510,7 +510,7 @@ bot.action(/cb_kl_.*/, async (ctx) => {
       }).then(res => res.json())
         // @ts-ignore
         .then(res => res?.value)
-      ctx.editMessageText(t(`👤 {{nickName}}\\n————————————————————\\nFollowers: {{currentFollowers}}\\nAUM: {{followersAssets}} NEST\\n7D ROI: {{kolProfitLossRate}}%\\n7D Earnings: {{kolProfitLoss}} NEST`, lang, {
+      ctx.editMessageText(t(`👤 {{nickName}}\n————————————————————\nFollowers: {{currentFollowers}}\nAUM: {{followersAssets}} NEST\n7D ROI: {{kolProfitLossRate}}%\n7D Earnings: {{kolProfitLoss}} NEST`, lang, {
         nickName: data?.nickName || '-',
         currentFollowers: data?.currentFollowers || 0,
         followersAssets: (data?.followersAssets || 0).toFixed(2),
