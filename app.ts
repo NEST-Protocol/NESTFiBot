@@ -511,13 +511,12 @@ bot.action(/cb_kl_.*/, async (ctx) => {
         // @ts-ignore
         .then(res => res?.value)
       // Profit sharing: ${((data?.rewardRatio || 0) * 100).toFixed(2)}%
-      ctx.editMessageText(t(`👤 {{nickName}}\n————————————————————\nFollowers: {{currentFollowers}}\nAUM: {{followersAssets}} NEST\n7D ROI: {{kolProfitLossRate}}%\n7D Earnings: {{kolProfitLoss}} NEST\n7D Followers PnL: {{followerProfitLoss}} NEST`, lang, {
+      ctx.editMessageText(t(`👤 {{nickName}}\\n————————————————————\\nFollowers: {{currentFollowers}}\\nAUM: {{followersAssets}} NEST\\n7D ROI: {{kolProfitLossRate}}%\\n7D Earnings: {{kolProfitLoss}} NEST`, lang, {
         nickName: data?.nickName || '-',
         currentFollowers: data?.currentFollowers || 0,
         followersAssets: (data?.followersAssets || 0).toFixed(2),
         kolProfitLossRate: (data.kolProfitLossRate || 0).toFixed(2),
-        kolProfitLoss: (data.kolProfitLoss || 0).toFixed(2),
-        followerProfitLoss: (data?.followerProfitLoss || 0).toFixed(2),
+        kolProfitLoss: (data?.followerProfitLoss || 0).toFixed(2),
       }), {
         ...Markup.inlineKeyboard([
           [Markup.button.callback(t(`View Copy Trading`, lang), `cb_ps_${klAddress}_1`)],
