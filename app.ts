@@ -176,7 +176,6 @@ bot.command('account', async (ctx) => {
   if (chat.id < 0 || from.is_bot) {
     return
   }
-  const message_id = ctx.message.message_id;
   try {
     const jwt = await fetch(`${redis_url}/get/auth:${from.id}`, {
       headers: {
@@ -450,9 +449,6 @@ bot.action(/cb_kls_p_.*/, async (ctx) => {
       .then(response => response.json())
       .then((data: any) => data.result)
     if (jwt) {
-      const decode = jwt.split('.')[1]
-      const decodeJson = JSON.parse(Buffer.from(decode, 'base64').toString())
-      const address = decodeJson.walletAddress
       const data = await fetch(`${hostname}/nestfi/copy/follower/kolList?chainId=${chainId}`, {
         headers: {
           'Authorization': jwt
@@ -500,9 +496,6 @@ bot.action(/cb_kl_.*/, async (ctx) => {
       .then((data: any) => data.result)
 
     if (jwt) {
-      const decode = jwt.split('.')[1]
-      const decodeJson = JSON.parse(Buffer.from(decode, 'base64').toString())
-      const address = decodeJson.walletAddress
       const data = await fetch(`${hostname}/nestfi/copy/kol/info?chainId=${chainId}&walletAddress=${klAddress}`, {
         headers: {
           'Authorization': jwt
@@ -551,9 +544,6 @@ bot.action(/cb_ps_.*/, async (ctx) => {
       .then((data: any) => data.result)
 
     if (jwt) {
-      const decode = jwt.split('.')[1]
-      const decodeJson = JSON.parse(Buffer.from(decode, 'base64').toString())
-      const address = decodeJson.walletAddress
       let url;
       if (klAddress === "all") {
         url = `${hostname}/nestfi/copy/follower/future/list?chainId=${chainId}`
@@ -618,9 +608,6 @@ bot.action(/cb_klh_.*/, async (ctx) => {
       .then((data: any) => data.result)
 
     if (jwt) {
-      const decode = jwt.split('.')[1]
-      const decodeJson = JSON.parse(Buffer.from(decode, 'base64').toString())
-      const address = decodeJson.walletAddress
       let url;
       if (klAddress === "all") {
         url = `${hostname}/nestfi/copy/follower/future/history?chainId=${chainId}`
@@ -679,9 +666,6 @@ bot.action(/cb_r_stop_kl_.*/, async (ctx) => {
       .then((data: any) => data.result)
 
     if (jwt) {
-      const decode = jwt.split('.')[1]
-      const decodeJson = JSON.parse(Buffer.from(decode, 'base64').toString())
-      const address = decodeJson.walletAddress
       const request = await fetch(`${hostname}/nestfi/copy/follower/future/info?chainId=${chainId}&copyKolAddress=${klAddress}`, {
         headers: {
           'Authorization': jwt
@@ -728,9 +712,6 @@ bot.action(/cb_stop_kl_.*/, async (ctx) => {
       .then((data: any) => data.result)
 
     if (jwt) {
-      const decode = jwt.split('.')[1]
-      const decodeJson = JSON.parse(Buffer.from(decode, 'base64').toString())
-      const address = decodeJson.walletAddress
       const data = await fetch(`${hostname}/nestfi/copy/follower/cancle?chainId=${chainId}&copyKolAddress=${klAddress}`, {
         method: 'POST',
         headers: {
@@ -776,10 +757,6 @@ bot.action(/cb_oi_.*/, async (ctx) => {
       .then((data: any) => data.result)
 
     if (jwt) {
-      const decode = jwt.split('.')[1]
-      const decodeJson = JSON.parse(Buffer.from(decode, 'base64').toString())
-      const address = decodeJson.walletAddress
-
       const data = await fetch(`${hostname}/nestfi/op/future/getById/${oi}`, {
         headers: {
           'Authorization': jwt,
@@ -832,10 +809,6 @@ bot.action(/cb_close_oi_.*/, async (ctx) => {
       .then((data: any) => data.result)
 
     if (jwt) {
-      const decode = jwt.split('.')[1]
-      const decodeJson = JSON.parse(Buffer.from(decode, 'base64').toString())
-      const address = decodeJson.walletAddress
-      const page = 1
       const request = await fetch(`${hostname}/nestfi/op/future/close?id=${oi}`, {
         method: 'POST',
         headers: {
@@ -904,12 +877,8 @@ bot.action('confirm_copy_setting', async (ctx) => {
           .then(response => response.json())
           .then((data: any) => data.result)
         if (jwt) {
-          const decode = jwt.split('.')[1]
-          const decodeJson = JSON.parse(Buffer.from(decode, 'base64').toString())
-          const address = decodeJson.walletAddress
-
           // @ts-ignore
-          const {kl, total, single, nickName, availableBalance, position, groupId} = data.value
+          const {kl, total, single, nickName, groupId} = data.value
           const request = await fetch(`${hostname}/nestfi/copy/follower/setting`, {
             method: 'POST',
             headers: {
@@ -1003,7 +972,7 @@ bot.on("message", async (ctx) => {
         ctx.reply(t(`🙅‍ Alright, your copy trading request has been cancelled successfully!`, lang))
         return
       }
-      let {kl, total, single, availableBalance, position, nickName} = data.value
+      let {total, single, availableBalance, position, nickName} = data.value
       if (total === 0) {
         const add = Number(input)
         if (add < 200 || add > availableBalance) {
