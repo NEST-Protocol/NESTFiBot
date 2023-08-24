@@ -3,14 +3,20 @@ import {Markup, Telegraf} from "telegraf";
 import fetch from "node-fetch";
 import {isAddress} from "ethers";
 import i18n from "i18n";
+import { Redis } from "@upstash/redis/with-fetch";
 
 const token = process.env.BOT_TOKEN!;
 const bot = new Telegraf(token);
 const chainId = process.env.CHAIN_ID;
 const hostname = process.env.HOSTNAME;
-const redis_url = process.env.UPSTASH_REDIS_REST_URL;
-const redis_token = process.env.UPSTASH_REDIS_REST_TOKEN;
+const redis_url = process.env.UPSTASH_REDIS_REST_URL!;
+const redis_token = process.env.UPSTASH_REDIS_REST_TOKEN!;
 const connect_url = process.env.CONNECT_URL;
+
+const redis = new Redis({
+  url: redis_url,
+  token: redis_token,
+})
 
 i18n.configure({
   locales: ['en', 'es', 'ja', 'ko', 'pt', 'ru', 'tr', 'vi'],
