@@ -783,8 +783,7 @@ bot.action('confirm_copy_setting', async (ctx) => {
         const jwt = await redis.get(`auth:${from.id}`) as string | undefined | null
 
         if (jwt) {
-          // @ts-ignore
-          const {kl, total, single, nickName, groupId} = data.value
+          const {kl, total, single, nickName, groupId} = intent.value
           const request = await fetch(`${hostname}/nestfi/copy/follower/setting`, {
             method: 'POST',
             headers: {
