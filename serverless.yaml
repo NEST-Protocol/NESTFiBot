@@ -1,44 +1,27 @@
-{
-  service: "NESTFiBot",
-  frameworkVersion: "3",
-
-  useDotenv: true,
-
-  package: {
-    patterns: [
-      "app.js",
-      "locales/**",
-    ],
-    individually: true,
-    excludeDevDependencies: true,
-  },
-
-  provider: {
-    name: "aws",
-    deploymentMethod: "direct",
-    runtime: "nodejs16.x",
-    region: "ap-northeast-1",
-  },
-
-  plugins: [
-    "serverless-plugin-typescript",
-    "serverless-dotenv-plugin"
-  ],
-
-  functions: {
-    app: {
-      name: "NESTFiBot",
-      handler: "app.handler",
-      timeout: 14,
-      memorySize: 256,
-      events: [
-        {
-          httpApi: {
-            path: "/bot",
-            method: "post",
-          },
-        },
-      ],
-    },
-  },
-}
+service: "NESTFiBot"
+frameworkVersion: "3"
+useDotenv: true
+package:
+  patterns:
+    - "app.js"
+    - "locales/**"
+  individually: true
+  excludeDevDependencies: true
+provider:
+  name: "aws"
+  deploymentMethod: "direct"
+  runtime: "nodejs16.x"
+  region: "ap-northeast-1"
+plugins:
+  - "serverless-plugin-typescript"
+  - "serverless-dotenv-plugin"
+functions:
+  app:
+    name: NESTFiBot
+    handler: "app.handler"
+    timeout: 14
+    memorySize: 256
+    events:
+      - httpApi:
+          path: "/bot"
+          method: "post"
