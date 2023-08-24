@@ -776,11 +776,10 @@ bot.action('confirm_copy_setting', async (ctx) => {
   const {from} = ctx.update.callback_query;
   let lang = from.language_code;
   try {
-    const intent = await redis.get(`intent:${from.id}`) as string | undefined | null
+    const intent = await redis.get(`intent:${from.id}`) as any
 
     if (intent) {
-      const data = JSON.parse(intent)
-      if (data?.category === 'cb_copy_setting') {
+      if (intent?.category === 'cb_copy_setting') {
         const jwt = await redis.get(`auth:${from.id}`) as string | undefined | null
 
         if (jwt) {
@@ -856,16 +855,15 @@ bot.on("message", async (ctx) => {
   }
   // @ts-ignore
   const input = ctx.message.text;
-  const intent = await redis.get(`intent:${from.id}`) as string | undefined | null
+  const intent = await redis.get(`intent:${from.id}`) as any
   if (intent) {
-    const data = JSON.parse(intent)
-    if (data.category === 'cb_copy_setting') {
+    if (intent.category === 'cb_copy_setting') {
       if (input === '« Back') {
         await redis.del(`intent:${from.id}`)
         ctx.reply(t(`🙅‍ Alright, your copy trading request has been cancelled successfully!`, lang))
         return
       }
-      let {total, single, availableBalance, position, nickName} = data.value
+      let {total, single, availableBalance, position, nickName} = intent.value
       if (total === 0) {
         const add = Number(input)
         if (add < 200 || add > availableBalance) {
@@ -878,7 +876,7 @@ bot.on("message", async (ctx) => {
         await redis.set(`intent:${from.id}`, JSON.stringify({
           category: 'cb_copy_setting',
           value: {
-            ...data.value,
+            ...intent.value,
             total: add + position,
           }
         }), {
@@ -914,7 +912,7 @@ bot.on("message", async (ctx) => {
           await redis.set(`intent:${from.id}`, JSON.stringify({
             category: 'cb_copy_setting',
             value: {
-              ...data.value,
+              ...intent.value,
               single: Number(input),
             }
           }), {
