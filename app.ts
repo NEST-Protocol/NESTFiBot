@@ -3,7 +3,7 @@ import {Markup, Telegraf} from "telegraf";
 import fetch from "node-fetch";
 import {isAddress} from "ethers";
 import i18n from "i18n";
-import { Redis } from "@upstash/redis/with-fetch";
+import {Redis} from "@upstash/redis/with-fetch";
 
 const token = process.env.BOT_TOKEN!;
 const bot = new Telegraf(token);
@@ -39,14 +39,8 @@ bot.start(async (ctx) => {
   }
   try {
     const klAddress = ctx.startPayload;
+    const jwt = await redis.get(`auth:${from.id}`) as string | undefined
 
-    const jwt = await fetch(`${redis_url}/get/auth:${from.id}`, {
-      headers: {
-        "Authorization": `Bearer ${redis_token}`
-      }
-    })
-      .then(response => response.json())
-      .then((data: any) => data.result)
     if (jwt) {
       const decode = jwt.split('.')[1]
       const decodeJson = JSON.parse(Buffer.from(decode, 'base64').toString())
@@ -148,15 +142,11 @@ bot.start(async (ctx) => {
         ])
       })
       const message_id = message.message_id
-      await fetch(`${redis_url}/set/code:${nonce}?EX=600`, {
-        method: 'POST',
-        headers: {
-          "Authorization": `Bearer ${redis_token}`
-        },
-        body: JSON.stringify({
-          message_id: message_id,
-          user: from,
-        })
+      await redis.set(`code:${nonce}`, JSON.stringify({
+        message_id: message_id,
+        user: from,
+      }), {
+        ex: 600
       })
     }
   } catch (e) {
@@ -184,13 +174,8 @@ bot.command('account', async (ctx) => {
     return
   }
   try {
-    const jwt = await fetch(`${redis_url}/get/auth:${from.id}`, {
-      headers: {
-        "Authorization": `Bearer ${redis_token}`
-      }
-    })
-      .then(response => response.json())
-      .then((data: any) => data.result)
+    const jwt = await redis.get(`auth:${from.id}`) as string | undefined | null | null
+
     if (jwt) {
       const decode = jwt.split('.')[1]
       const decodeJson = JSON.parse(Buffer.from(decode, 'base64').toString())
@@ -233,12 +218,8 @@ bot.command('cancel', async (ctx) => {
   if (chat.id < 0 || from.is_bot) {
     return
   }
-  const jwt = await fetch(`${redis_url}/get/auth:${from.id}`, {
-    headers: {
-      "Authorization": `Bearer ${redis_token}`
-    }
-  }).then(response => response.json())
-    .then((data: any) => data.result)
+  const jwt = await redis.get(`auth:${from.id}`) as string | undefined | null
+
   if (jwt) {
     const decode = jwt.split('.')[1]
     const decodeJson = JSON.parse(Buffer.from(decode, 'base64').toString())
@@ -265,13 +246,8 @@ bot.action(/cb_copy_setting_.*/, async (ctx) => {
   const lang = from.language_code;
 
   try {
-    const jwt = await fetch(`${redis_url}/get/auth:${from.id}`, {
-      headers: {
-        "Authorization": `Bearer ${redis_token}`
-      }
-    })
-      .then(response => response.json())
-      .then((data: any) => data.result)
+    const jwt = await redis.get(`auth:${from.id}`) as string | undefined | null
+
     if (jwt) {
       const decode = jwt.split('.')[1]
       const decodeJson = JSON.parse(Buffer.from(decode, 'base64').toString())
@@ -312,24 +288,20 @@ bot.action(/cb_copy_setting_.*/, async (ctx) => {
         })
         return
       } else {
-        await fetch(`${redis_url}/set/intent:${from.id}?EX=600`, {
-          method: 'POST',
-          headers: {
-            "Authorization": `Bearer ${redis_token}`
-          },
-          body: JSON.stringify({
-            category: 'cb_copy_setting',
-            value: {
-              kl: klAddress,
-              total: 0,
-              single: 0,
-              availableBalance: availableBalance,
-              position: position,
-              nickName: nickName,
-              groupId: groupId,
-            }
-          })
-        })
+        await redis.set(`intent:${from.id}`, JSON.stringify({
+          category: 'cb_copy_setting',
+          value: {
+            kl: klAddress,
+            total: 0,
+            single: 0,
+            availableBalance: availableBalance,
+            position: position,
+            nickName: nickName,
+            groupId: groupId,
+          }
+        }), {
+          ex: 600
+        });
         let choice = [0, 0, 0];
         choice[0] = Math.floor(availableBalance * 0.5 / 50) * 50;
         choice[1] = Math.floor(availableBalance * 0.75 / 50) * 50;
@@ -357,13 +329,8 @@ bot.action('cb_menu', async (ctx) => {
   const {from} = ctx.update.callback_query;
   let lang = from.language_code;
   try {
-    const jwt = await fetch(`${redis_url}/get/auth:${from.id}`, {
-      headers: {
-        "Authorization": `Bearer ${redis_token}`
-      }
-    })
-      .then(response => response.json())
-      .then((data: any) => data.result)
+    const jwt = await redis.get(`auth:${from.id}`) as string | undefined | null
+
     if (jwt) {
       const decode = jwt.split('.')[1]
       const decodeJson = JSON.parse(Buffer.from(decode, 'base64').toString())
@@ -403,13 +370,7 @@ bot.action('cb_account', async (ctx) => {
   const {from} = ctx.update.callback_query;
   let lang = from.language_code;
   try {
-    const jwt = await fetch(`${redis_url}/get/auth:${from.id}`, {
-      headers: {
-        "Authorization": `Bearer ${redis_token}`
-      }
-    })
-      .then(response => response.json())
-      .then((data: any) => data.result)
+    const jwt = await redis.get(`auth:${from.id}`) as string | undefined | null
 
     if (jwt) {
       const decode = jwt.split('.')[1]
@@ -449,13 +410,8 @@ bot.action(/cb_kls_p_.*/, async (ctx) => {
   const page = Number(action.split('_')[3]);
   let lang = from.language_code;
   try {
-    const jwt = await fetch(`${redis_url}/get/auth:${from.id}`, {
-      headers: {
-        "Authorization": `Bearer ${redis_token}`
-      }
-    })
-      .then(response => response.json())
-      .then((data: any) => data.result)
+    const jwt = await redis.get(`auth:${from.id}`) as string | undefined | null
+
     if (jwt) {
       const data = await fetch(`${hostname}/nestfi/copy/follower/kolList?chainId=${chainId}`, {
         headers: {
@@ -495,13 +451,7 @@ bot.action(/cb_kl_.*/, async (ctx) => {
   const klAddress = action.split('_')[2];
   let lang = from.language_code;
   try {
-    const jwt = await fetch(`${redis_url}/get/auth:${from.id}`, {
-      headers: {
-        "Authorization": `Bearer ${redis_token}`
-      }
-    })
-      .then(response => response.json())
-      .then((data: any) => data.result)
+    const jwt = await redis.get(`auth:${from.id}`) as string | undefined | null
 
     if (jwt) {
       const data = await fetch(`${hostname}/nestfi/copy/kol/info?chainId=${chainId}&walletAddress=${klAddress}`, {
@@ -543,13 +493,7 @@ bot.action(/cb_ps_.*/, async (ctx) => {
   const page = Number(action.split('_')[3])
   let lang = from.language_code;
   try {
-    const jwt = await fetch(`${redis_url}/get/auth:${from.id}`, {
-      headers: {
-        "Authorization": `Bearer ${redis_token}`
-      }
-    })
-      .then(response => response.json())
-      .then((data: any) => data.result)
+    const jwt = await redis.get(`auth:${from.id}`) as string | undefined | null
 
     if (jwt) {
       let url;
@@ -607,13 +551,7 @@ bot.action(/cb_klh_.*/, async (ctx) => {
   const page = Number(action.split('_')[3]);
   let lang = from.language_code;
   try {
-    const jwt = await fetch(`${redis_url}/get/auth:${from.id}`, {
-      headers: {
-        "Authorization": `Bearer ${redis_token}`
-      }
-    })
-      .then(response => response.json())
-      .then((data: any) => data.result)
+    const jwt = await redis.get(`auth:${from.id}`) as string | undefined | null
 
     if (jwt) {
       let url;
@@ -665,13 +603,7 @@ bot.action(/cb_r_stop_kl_.*/, async (ctx) => {
   const klAddress = action.split('_')[4];
   let lang = from.language_code;
   try {
-    const jwt = await fetch(`${redis_url}/get/auth:${from.id}`, {
-      headers: {
-        "Authorization": `Bearer ${redis_token}`
-      }
-    })
-      .then(response => response.json())
-      .then((data: any) => data.result)
+    const jwt = await redis.get(`auth:${from.id}`) as string | undefined | null
 
     if (jwt) {
       const request = await fetch(`${hostname}/nestfi/copy/follower/future/info?chainId=${chainId}&copyKolAddress=${klAddress}`, {
@@ -711,13 +643,7 @@ bot.action(/cb_stop_kl_.*/, async (ctx) => {
   const klAddress = action.split('_')[3];
   let lang = from.language_code;
   try {
-    const jwt = await fetch(`${redis_url}/get/auth:${from.id}`, {
-      headers: {
-        "Authorization": `Bearer ${redis_token}`
-      }
-    })
-      .then(response => response.json())
-      .then((data: any) => data.result)
+    const jwt = await redis.get(`auth:${from.id}`) as string | undefined | null
 
     if (jwt) {
       const data = await fetch(`${hostname}/nestfi/copy/follower/cancle?chainId=${chainId}&copyKolAddress=${klAddress}`, {
@@ -756,13 +682,7 @@ bot.action(/cb_oi_.*/, async (ctx) => {
   const klAddress = action.split('_')[3];
   let lang = from.language_code;
   try {
-    const jwt = await fetch(`${redis_url}/get/auth:${from.id}`, {
-      headers: {
-        "Authorization": `Bearer ${redis_token}`
-      }
-    })
-      .then(response => response.json())
-      .then((data: any) => data.result)
+    const jwt = await redis.get(`auth:${from.id}`) as string | undefined | null
 
     if (jwt) {
       const data = await fetch(`${hostname}/nestfi/op/future/getById/${oi}`, {
@@ -808,13 +728,7 @@ bot.action(/cb_close_oi_.*/, async (ctx) => {
   const klAddress = action.split('_')[4];
   let lang = from.language_code;
   try {
-    const jwt = await fetch(`${redis_url}/get/auth:${from.id}`, {
-      headers: {
-        "Authorization": `Bearer ${redis_token}`
-      }
-    })
-      .then(response => response.json())
-      .then((data: any) => data.result)
+    const jwt = await redis.get(`auth:${from.id}`) as string | undefined | null
 
     if (jwt) {
       const request = await fetch(`${hostname}/nestfi/op/future/close?id=${oi}`, {
@@ -851,11 +765,7 @@ bot.action('cb_unauthorize', async (ctx) => {
   const {from} = ctx.update.callback_query;
   let lang = from.language_code;
   try {
-    await fetch(`${redis_url}/del/auth:${from.id}`, {
-      headers: {
-        "Authorization": `Bearer ${redis_token}`
-      }
-    })
+    await redis.del(`auth:${from.id}`)
     ctx.editMessageText(t(`👩‍💻 You have successfully deauthorized the NESTFi Copy Trading bot on NESTFi.`, lang), Markup.inlineKeyboard([]))
   } catch (e) {
     ctx.answerCbQuery(t(`Something went wrong.`, lang))
@@ -866,24 +776,13 @@ bot.action('confirm_copy_setting', async (ctx) => {
   const {from} = ctx.update.callback_query;
   let lang = from.language_code;
   try {
-    const intent = await fetch(`${redis_url}/get/intent:${from.id}`, {
-      headers: {
-        "Authorization": `Bearer ${redis_token}`
-      }
-    })
-      .then(response => response.json())
-      .then((data: any) => data.result)
+    const intent = await redis.get(`intent:${from.id}`) as string | undefined | null
 
     if (intent) {
       const data = JSON.parse(intent)
       if (data?.category === 'cb_copy_setting') {
-        const jwt = await fetch(`${redis_url}/get/auth:${from.id}`, {
-          headers: {
-            "Authorization": `Bearer ${redis_token}`
-          }
-        })
-          .then(response => response.json())
-          .then((data: any) => data.result)
+        const jwt = await redis.get(`auth:${from.id}`) as string | undefined | null
+
         if (jwt) {
           // @ts-ignore
           const {kl, total, single, nickName, groupId} = data.value
@@ -938,11 +837,7 @@ bot.action('cancel_copy_setting', async (ctx) => {
   const {from} = ctx.update.callback_query;
   let lang = from.language_code;
   try {
-    await fetch(`${redis_url}/del/intent:${from.id}`, {
-      headers: {
-        "Authorization": `Bearer ${redis_token}`
-      },
-    });
+    await redis.del(`intent:${from.id}`)
     ctx.editMessageText(t(`🙅‍️ Alright, your copy trading request has been cancelled successfully!`, lang), {
       ...Markup.inlineKeyboard([
         [Markup.button.callback(t(`« Back`, lang), 'cb_menu')],
@@ -961,22 +856,12 @@ bot.on("message", async (ctx) => {
   }
   // @ts-ignore
   const input = ctx.message.text;
-  const intent = await fetch(`${redis_url}/get/intent:${from.id}`, {
-    headers: {
-      "Authorization": `Bearer ${redis_token}`
-    }
-  })
-    .then(response => response.json())
-    .then((data: any) => data.result)
+  const intent = await redis.get(`intent:${from.id}`) as string | undefined | null
   if (intent) {
     const data = JSON.parse(intent)
     if (data.category === 'cb_copy_setting') {
       if (input === '« Back') {
-        await fetch(`${redis_url}/del/intent:${from.id}`, {
-          headers: {
-            "Authorization": `Bearer ${redis_token}`
-          }
-        })
+        await redis.del(`intent:${from.id}`)
         ctx.reply(t(`🙅‍ Alright, your copy trading request has been cancelled successfully!`, lang))
         return
       }
@@ -990,18 +875,14 @@ bot.on("message", async (ctx) => {
           return
         }
         // update intent
-        await fetch(`${redis_url}/set/intent:${from.id}?EX=600`, {
-          method: 'POST',
-          headers: {
-            "Authorization": `Bearer ${redis_token}`
-          },
-          body: JSON.stringify({
-            category: 'cb_copy_setting',
-            value: {
-              ...data.value,
-              total: add + position,
-            }
-          })
+        await redis.set(`intent:${from.id}`, JSON.stringify({
+          category: 'cb_copy_setting',
+          value: {
+            ...data.value,
+            total: add + position,
+          }
+        }), {
+          ex: 600
         })
         let choice = [0, 0, 0]
         choice[0] = Math.floor((add + position) * 0.1 / 50) * 50
@@ -1030,18 +911,14 @@ bot.on("message", async (ctx) => {
             ])
           })
         } else {
-          await fetch(`${redis_url}/set/intent:${from.id}?EX=600`, {
-            method: 'POST',
-            headers: {
-              "Authorization": `Bearer ${redis_token}`
-            },
-            body: JSON.stringify({
-              category: 'cb_copy_setting',
-              value: {
-                ...data.value,
-                single: Number(input),
-              }
-            })
+          await redis.set(`intent:${from.id}`, JSON.stringify({
+            category: 'cb_copy_setting',
+            value: {
+              ...data.value,
+              single: Number(input),
+            }
+          }), {
+            ex: 600
           })
           ctx.reply(t(`👩‍💻 Confirm\n————————————————————\nCopy Trading Total Amount: {{total}} NEST \nCopy Trading Each Order: {{input}} NEST \n\nYou are following: {{nickName}}\nAre you sure?`, lang, {
             total: total,
