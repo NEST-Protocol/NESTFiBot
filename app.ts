@@ -10,6 +10,7 @@ const chainId = process.env.CHAIN_ID;
 const hostname = process.env.HOSTNAME;
 const redis_url = process.env.UPSTASH_REDIS_REST_URL;
 const redis_token = process.env.UPSTASH_REDIS_REST_TOKEN;
+const connect_url = process.env.CONNECT_URL;
 
 i18n.configure({
   locales: ['en', 'es', 'ja', 'ko', 'pt', 'ru', 'tr', 'vi'],
@@ -136,8 +137,8 @@ bot.start(async (ctx) => {
       const nonce = Math.random().toString(36).substring(2, 18);
       const message = await ctx.reply(t(`👛 Link Wallet\n————————————————————\nHi there, before copying trading, please link your wallet on NESTFi.\n\n👇Note: The link is valid for 10 minutes.`, lang), {
         ...Markup.inlineKeyboard([
-          [Markup.button.url(t(`PC ➜ Link My Wallet`, lang), `https://connect.nestfi.org/${nonce}`)],
-          [Markup.button.url(t(`Mobile ➜ Link My Wallet`, lang), `https://metamask.app.link/dapp/connect.nestfi.org/${nonce}`)],
+          [Markup.button.url(t(`PC ➜ Link My Wallet`, lang), `https://${connect_url}/${nonce}`)],
+          [Markup.button.url(t(`Mobile ➜ Link My Wallet`, lang), `https://metamask.app.link/dapp/${connect_url}/${nonce}`)],
         ])
       })
       const message_id = message.message_id

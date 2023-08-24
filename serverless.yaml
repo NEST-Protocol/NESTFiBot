@@ -8,12 +8,14 @@ params:
     UPSTASH_REDIS_REST_TOKEN: ${env:PROD_UPSTASH_REDIS_REST_TOKEN}
     CHAIN_ID: ${env:PROD_CHAIN_ID}
     HOSTNAME: ${env:PROD_HOSTNAME}
+    CONNECT_URL: ${env:PROD_CONNECT_URL}
   dev:
     BOT_TOKEN: ${env:DEV_BOT_TOKEN}
     UPSTASH_REDIS_REST_URL: ${env:DEV_UPSTASH_REDIS_REST_URL}
     UPSTASH_REDIS_REST_TOKEN: ${env:DEV_UPSTASH_REDIS_REST_TOKEN}
     CHAIN_ID: ${env:DEV_CHAIN_ID}
     HOSTNAME: ${env:DEV_HOSTNAME}
+    CONNECT_URL: ${env:DEV_CONNECT_URL}
 package:
   patterns:
     - "app.js"
@@ -40,6 +42,7 @@ functions:
       UPSTASH_REDIS_REST_TOKEN: ${param:UPSTASH_REDIS_REST_TOKEN}
       CHAIN_ID: ${param:CHAIN_ID}
       HOSTNAME: ${param:HOSTNAME}
+      CONNECT_URL: ${param:CONNECT_URL}
     events:
       - httpApi:
           path: "/bot"
