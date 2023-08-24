@@ -1,6 +1,5 @@
 import http from "serverless-http";
 import {Markup, Telegraf} from "telegraf";
-import fetch from "node-fetch";
 import {isAddress} from "ethers";
 import i18n from "i18n";
 import {Redis} from "@upstash/redis/with-fetch";

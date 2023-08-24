@@ -1,3 +1,5 @@
+org: abandon
+app: nestfibot
 service: "nestfibot"
 frameworkVersion: "3"
 useDotenv: true

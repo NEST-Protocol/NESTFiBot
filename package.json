@@ -3,7 +3,7 @@
   "description": "NESTFi Bot",
   "version": "0.0.1",
   "main": "app.js",
-  "type": "module",
+  "type": "commonjs",
   "scripts": {
     "serverless": "serverless",
     "release": "serverless deploy",
@@ -17,7 +17,6 @@
     "dotenv": "^16.3.1",
     "ethers": "^6.7.0",
     "i18n": "^0.15.1",
-    "node-fetch": "^3.3.2",
     "redis": "^4.6.7",
     "serverless-http": "^3.1.1",
     "telegraf": "^4.11.2"
