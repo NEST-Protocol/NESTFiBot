@@ -239,6 +239,7 @@ bot.command('cancel', async (ctx) => {
     ctx.reply(t(`You are about to cancel your NESTFi authorization in this bot. Is that correct?\n\nAddress: \`{{address}}\``, lang, {
       address: address
     }), {
+      parse_mode: "Markdown",
       ...Markup.inlineKeyboard([
         [Markup.button.callback(t(`Yes, deauthorize now.`, lang), 'cb_unauthorize')],
         [Markup.button.callback(t(`Nope, I change my mind.`, lang), 'cb_menu')],
