@@ -693,7 +693,7 @@ bot.action(/cb_oi_.*/, async (ctx) => {
         // @ts-ignore
         .then(res => res?.value)
 
-      ctx.editMessageText(t(`🍯 Position {{oi}}\n————————————————————\n{{product}} {{direction}} {{leverage}}x\nActual Margin: {{margin}} NEST {{profitLossRate}}%\nOpen Price: {{orderPrice}} USDTMarket Price: {{marketPrice}} USDT\nLiq Price: {{lipPrice}} USDT\nOpen: UTC {{open}}`, lang, {
+      ctx.editMessageText(t(`🍯 Position {{oi}}\n————————————————————\n{{product}} {{direction}} {{leverage}}x\nActual Margin: {{margin}} NEST {{profitLossRate}}%\nOpen Price: {{orderPrice}} USDT\nMarket Price: {{marketPrice}} USDT\nLiq Price: {{lipPrice}} USDT\nOpen: UTC {{open}}`, lang, {
         oi: oi,
         product: data?.product || '-',
         direction: data?.direction ? 'Long' : 'Short',
