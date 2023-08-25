@@ -804,9 +804,11 @@ bot.action('confirm_copy_setting', async (ctx) => {
             .then(data => data?.value || false)
 
           if (request) {
+            const targetChat = await bot.telegram.getChat(groupId)
             ctx.editMessageText(t(`🥳 Successfully Copy Trading\n————————————————————\nMore latest orders from {{nickName}} will be posted in the group.\n\nTelegram Group: {{groupId}}`, lang, {
               nickName: nickName,
-              groupId: groupId
+              // @ts-ignore
+              groupId: targetChat?.username ? `@${targetChat?.username}` : targetChat.id
             }), {
               ...Markup.inlineKeyboard([
                 [Markup.button.callback(t('« Back', lang), 'cb_menu')],
