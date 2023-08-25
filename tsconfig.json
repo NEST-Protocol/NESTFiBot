@@ -6,6 +6,5 @@
 	},
 	"include": [
 		"app.ts",
-		"bob-signal-bot.ts"
 	]
 }
