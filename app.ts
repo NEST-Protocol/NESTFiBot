@@ -705,7 +705,7 @@ bot.action(/cb_oi_.*/, async (ctx) => {
         lipPrice: data?.lipPrice ? data?.lipPrice?.toFixed(2) : '-',
         open: new Date(data?.timestamp * 1000 || 0).toISOString().replace('T', ' ').substring(5, 19)
       }), {
-        parse_mode: 'Markdown',
+        parse_mode: 'HTML',
         ...Markup.inlineKeyboard([
           [Markup.button.callback(t(`Close the Position`, lang), `cb_close_oi_${oi}_${klAddress}`)],
           [Markup.button.callback(t(`« Back`, lang), `cb_ps_${klAddress}_1`)],
