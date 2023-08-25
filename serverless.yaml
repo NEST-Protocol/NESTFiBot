@@ -23,13 +23,6 @@ functions:
     handler: "app.handler"
     timeout: 14
     memorySize: 256
-    environment:
-      BOT_TOKEN: ${env:BOT_TOKEN}
-      UPSTASH_REDIS_REST_URL: ${env:UPSTASH_REDIS_REST_URL}
-      UPSTASH_REDIS_REST_TOKEN: ${env:UPSTASH_REDIS_REST_TOKEN}
-      CHAIN_ID: ${env:CHAIN_ID}
-      HOSTNAME: ${env:HOSTNAME}
-      CONNECT_URL: ${env:CONNECT_URL}
     events:
       - httpApi:
           path: "/bot"
