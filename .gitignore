@@ -1,6 +1,7 @@
-/.env
 /.serverless/
 /.idea/
 /node_modules/
 /localazy.json
+/.env*.local
+/.env.dev
 /.env.prod
