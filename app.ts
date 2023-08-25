@@ -808,7 +808,7 @@ bot.action('confirm_copy_setting', async (ctx) => {
             ctx.editMessageText(t(`🥳 Successfully Copy Trading\n————————————————————\nMore latest orders from {{nickName}} will be posted in the group.\n\nTelegram Group: {{groupId}}`, lang, {
               nickName: nickName,
               // @ts-ignore
-              groupId: targetChat?.username ? `@${targetChat?.username}` : targetChat.id
+              groupId: targetChat?.username ? `@${targetChat?.username}` : groupId
             }), {
               ...Markup.inlineKeyboard([
                 [Markup.button.callback(t('« Back', lang), 'cb_menu')],
