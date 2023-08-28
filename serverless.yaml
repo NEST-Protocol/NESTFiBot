@@ -22,7 +22,7 @@ functions:
     name: NESTFiBot-${sls:stage}
     handler: "app.handler"
     timeout: 14
-    memorySize: 256
+    memorySize: 512
     events:
       - httpApi:
           path: "/bot"
