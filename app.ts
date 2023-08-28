@@ -47,29 +47,30 @@ bot.start(async (ctx) => {
       const address = decodeJson.walletAddress
 
       if (klAddress && isAddress(klAddress)) {
-        const isKol = await fetch(`${hostname}/nestfi/copy/kol/isKol?walletAddress=${klAddress}`, {
-          headers: {
-            'Authorization': jwt
-          }
-        }).then(res => res.json())
-          // @ts-ignore
-          .then(data => data?.value || false)
-        if (isKol) {
-          const isFollowed = await fetch(`${hostname}/nestfi/copy/follower/kolList?chainId=${chainId}`, {
+        const [isKol, isFollowed, data] = await Promise.all([
+          fetch(`${hostname}/nestfi/copy/kol/isKol?walletAddress=${klAddress}`, {
             headers: {
               'Authorization': jwt
             }
           }).then(res => res.json())
             // @ts-ignore
-            .then(data => data?.value?.filter((item: any) => item.walletAddress.toLowerCase() === klAddress.toLowerCase()).length > 0 || false)
-
-          if (!isFollowed) {
-            const data = await fetch(`${hostname}/nestfi/copy/kol/info?chainId=${chainId}&walletAddress=${klAddress}`, {
-              headers: {
-                'Authorization': jwt
-              }
-            }).then(res => res.json())
+            .then(data => data?.value || false),
+          fetch(`${hostname}/nestfi/copy/follower/kolList?chainId=${chainId}`, {
+            headers: {
+              'Authorization': jwt
+            }
+          }).then(res => res.json())
             // @ts-ignore
+            .then(data => data?.value?.filter((item: any) => item.walletAddress.toLowerCase() === klAddress.toLowerCase()).length > 0 || false),
+          fetch(`${hostname}/nestfi/copy/kol/info?chainId=${chainId}&walletAddress=${klAddress}`, {
+            headers: {
+              'Authorization': jwt
+            }
+          }).then(res => res.json())
+        ])
+
+        if (isKol) {
+          if (!isFollowed) {
             const nickName = data?.value?.nickName || 'No name'
             await fetch(`${hostname}/nestfi/copy/follower/setting`, {
               method: 'POST',
@@ -253,28 +254,29 @@ bot.action(/cb_copy_setting_.*/, async (ctx) => {
       const decode = jwt.split('.')[1]
       const decodeJson = JSON.parse(Buffer.from(decode, 'base64').toString())
       const address = decodeJson.walletAddress
-      const availableBalance = await fetch(`${hostname}/nestfi/op/user/asset?chainId=${chainId}&walletAddress=${address}`, {
-        headers: {
-          'Authorization': jwt
-        }
-      }).then(res => res.json())
-        // @ts-ignore
-        .then(data => data?.value?.availableBalance || 0)
-      const positionInfo = await fetch(`${hostname}/nestfi/copy/follower/future/info?chainId=${chainId}&copyKolAddress=${klAddress}`, {
-        headers: {
-          'Authorization': jwt
-        }
-      }).then((res) => res.json())
-        // @ts-ignore
-        .then(data => data?.value)
-
-      const klInfo = await fetch(`${hostname}/nestfi/copy/kol/info?chainId=${chainId}&walletAddress=${klAddress}`, {
-        headers: {
-          'Authorization': jwt
-        }
-      }).then(res => res.json())
-        // @ts-ignore
-        .then(data => data.value)
+      const [availableBalance, positionInfo, klInfo] = await Promise.all([
+        fetch(`${hostname}/nestfi/op/user/asset?chainId=${chainId}&walletAddress=${address}`, {
+          headers: {
+            'Authorization': jwt
+          }
+        }).then(res => res.json())
+          // @ts-ignore
+          .then(data => data?.value?.availableBalance || 0),
+        fetch(`${hostname}/nestfi/copy/follower/future/info?chainId=${chainId}&copyKolAddress=${klAddress}`, {
+          headers: {
+            'Authorization': jwt
+          }
+        }).then((res) => res.json())
+          // @ts-ignore
+          .then(data => data?.value),
+        fetch(`${hostname}/nestfi/copy/kol/info?chainId=${chainId}&walletAddress=${klAddress}`, {
+          headers: {
+            'Authorization': jwt
+          }
+        }).then(res => res.json())
+          // @ts-ignore
+          .then(data => data.value)
+      ])
 
       const position = positionInfo?.totalCopyAmount || 0
       const nickName = klInfo?.nickName || '-'
