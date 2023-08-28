@@ -13,9 +13,9 @@
     "download": "localazy download"
   },
   "dependencies": {
+    "@ethersproject/address": "^5.7.0",
     "@upstash/redis": "^1.22.0",
     "dotenv": "^16.3.1",
-    "ethers": "^6.7.0",
     "i18n": "^0.15.1",
     "redis": "^4.6.7",
     "serverless-http": "^3.1.1",
