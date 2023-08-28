@@ -529,7 +529,7 @@ ${showData.length > 0 ? `${showData.map((item: any, index: number) => (`
 =============================
 ${index + 1 + (page - 1) * 5}. ${item?.product || '-'} ${item?.direction ? 'Long' : 'Short'} ${item?.leverage || '-'}x
    ${(t(`Actual Margin`, lang))}: ${(item?.margin || 0).toFixed(2)} NEST ${item?.profitLossRate > 0 ? `+${item?.profitLossRate?.toFixed(2)}` : item?.profitLossRate?.toFixed(2)}%
-   ${(t(`Open Price`, lang))}: ${(item?.orderPrice || 0).toFixed(2)} USDT
+   ${(t(`Open Price`, lang))}: ${(item?.orderPrice || 0).toFixed(5)} USDT
    ${(t(`Open: UTC`, lang))} ${new Date(item?.timestamp * 1000 || 0).toISOString().replace('T', ' ').substring(5, 19)}`)).join('')}
 
 👇 ${(t(`Click the number to manage the corresponding order.`, lang))}` : `\n${(t(`No copy trading position yet!`, lang))}`}`, {
@@ -581,9 +581,9 @@ ${showData?.length > 0 ? `${showData?.map((item: any, index: number) => (`
 =============================
 ${index + 1 + (page - 1) * 5}. ${item?.product || '-'} ${item?.direction ? 'Long' : 'Short'} ${item?.leverage || '-'}x
    ${t(`Actual Margin`, lang)}: ${(item?.margin || 0).toFixed(2)} NEST ${item?.profitLossRate > 0 ? `+${item?.profitLossRate?.toFixed(2)}` : item?.profitLossRate?.toFixed(2)}%
-   ${t(`Open Price`, lang)}: ${(item?.openPrice || 0).toFixed(2)} USDT
-   ${t(`Close price`, lang)}: ${(item?.closePrice || 0).toFixed(2)} USDT
-   ${t(`Liq Price`, lang)}: ${item?.lipPrice ? item?.lipPrice?.toFixed(2) : '-'} USDT
+   ${t(`Open Price`, lang)}: ${(item?.openPrice || 0).toFixed(5)} USDT
+   ${t(`Close price`, lang)}: ${(item?.closePrice || 0).toFixed(5)} USDT
+   ${t(`Liq Price`, lang)}: ${item?.lipPrice ? item?.lipPrice?.toFixed(5) : '-'} USDT
    ${t(`Open: UTC`, lang)} ${new Date(item?.openTime * 1000 || 0).toISOString().replace('T', ' ').substring(5, 19)}
    ${t(`Close: UTC`, lang)} ${new Date(item?.closeTime * 1000 || 0).toISOString().replace('T', ' ').substring(5, 19)}`)).join('')}` : `\n${t(`No copy trading position yet!`, lang)}`}`, {
         ...Markup.inlineKeyboard(inlineKeyboard)
@@ -702,9 +702,9 @@ bot.action(/cb_oi_.*/, async (ctx) => {
         leverage: data?.leverage || '-',
         margin: (data?.margin || 0).toFixed(2),
         profitLossRate: data?.profitLossRate > 0 ? `+${data?.profitLossRate.toFixed(2)}` : data?.profitLossRate.toFixed(2),
-        orderPrice: (data?.orderPrice || 0).toFixed(2),
-        marketPrice: (data?.marketPrice || 0).toFixed(2),
-        lipPrice: data?.lipPrice ? data?.lipPrice?.toFixed(2) : '-',
+        orderPrice: (data?.orderPrice || 0).toFixed(5),
+        marketPrice: (data?.marketPrice || 0).toFixed(5),
+        lipPrice: data?.lipPrice ? data?.lipPrice?.toFixed(5) : '-',
         open: new Date(data?.timestamp * 1000 || 0).toISOString().replace('T', ' ').substring(5, 19)
       }), {
         parse_mode: 'HTML',
