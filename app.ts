@@ -102,8 +102,8 @@ bot.start(async (ctx) => {
         } else {
           ctx.reply(t(`💢 Invalid Trader\n————————————————————\nPeter Mason is not on the NESTFi traders list.\nPlease select other traders on NESTFi.`, lang), {
             ...Markup.inlineKeyboard([
-              [Markup.button.url(t(`PC ➜ Link NESTFi Website`, lang), `https://${nestfi_url}`)],
-              [Markup.button.url(t(`Mobile ➜ Link NESTFi Website`, lang), `https://metamask.app.link/dapp/${nestfi_url}`)]
+              [Markup.button.url(t(`PC ➜ NESTFi Website`, lang), `https://${nestfi_url}`)],
+              [Markup.button.url(t(`Mobile ➜ NESTFi Website`, lang), `https://metamask.app.link/dapp/${nestfi_url}`)]
             ])
           })
         }
@@ -138,8 +138,8 @@ bot.start(async (ctx) => {
       const nonce = Math.random().toString(36).substring(2, 18);
       const message = await ctx.reply(t(`👛 Link Wallet\n————————————————————\nHi there, before copying trading, please link your wallet on NESTFi.\n\n👇Note: The link is valid for 10 minutes.`, lang), {
         ...Markup.inlineKeyboard([
-          [Markup.button.url(t(`PC ➜ Link My Wallet`, lang), `https://${connect_url}/${nonce}`)],
-          [Markup.button.url(t(`Mobile ➜ Link My Wallet`, lang), `https://metamask.app.link/dapp/${connect_url}/${nonce}`)],
+          [Markup.button.url(t(`PC ➜ My Wallet`, lang), `https://${connect_url}/${nonce}`)],
+          [Markup.button.url(t(`Mobile ➜ My Wallet`, lang), `https://metamask.app.link/dapp/${connect_url}/${nonce}`)],
         ])
       })
       const message_id = message.message_id
@@ -283,8 +283,8 @@ bot.action(/cb_copy_setting_.*/, async (ctx) => {
       if (availableBalance + position < 200) {
         ctx.reply(t(`💔 Insufficient Balance\n————————————————————\nYour account balance is insufficient. Please deposit first to initiate lightning trading on NESTFi.`, lang), {
           ...Markup.inlineKeyboard([
-            [Markup.button.url(t(`PC ➜ Link Deposit`, lang), `https://${nestfi_url}`)],
-            [Markup.button.url(t(`Mobile ➜ Link Deposit`, lang), `https://metamask.app.link/dapp/${nestfi_url}`)],
+            [Markup.button.url(t(`PC ➜ Deposit`, lang), `https://${nestfi_url}`)],
+            [Markup.button.url(t(`Mobile ➜ Deposit`, lang), `https://metamask.app.link/dapp/${nestfi_url}`)],
             [Markup.button.callback(t(`Completed, go on!`, lang), `cb_copy_setting_${klAddress}`)],
           ])
         })
@@ -390,8 +390,8 @@ bot.action('cb_account', async (ctx) => {
         copyBalance: (data?.copyBalance || 0).toFixed(2),
       }), {
         ...Markup.inlineKeyboard([
-          [Markup.button.url(t(`PC ➜ Link Deposit/Withdraw`, lang), `https://${nestfi_url}`)],
-          [Markup.button.url(t(`Mobile ➜ Link Deposit/Withdraw`, lang), `https://metamask.app.link/dapp/${nestfi_url}`)],
+          [Markup.button.url(t(`PC ➜ Deposit/Withdraw`, lang), `https://${nestfi_url}`)],
+          [Markup.button.url(t(`Mobile ➜ Deposit/Withdraw`, lang), `https://metamask.app.link/dapp/${nestfi_url}`)],
           [Markup.button.callback(t(`« Back`, lang), 'cb_menu')],
         ])
       })
