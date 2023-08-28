@@ -102,7 +102,8 @@ bot.start(async (ctx) => {
         } else {
           ctx.reply(t(`💢 Invalid Trader\n————————————————————\nPeter Mason is not on the NESTFi traders list.\nPlease select other traders on NESTFi.`, lang), {
             ...Markup.inlineKeyboard([
-              [Markup.button.url(t(`Access NESTFi Website`, lang), nestfi_url)]
+              [Markup.button.url(t(`PC ➜ Link NESTFi Website`, lang), `https://${nestfi_url}`)],
+              [Markup.button.url(t(`Mobile ➜ Link NESTFi Website`, lang), `https://metamask.app.link/dapp/${nestfi_url}`)]
             ])
           })
         }
@@ -282,7 +283,8 @@ bot.action(/cb_copy_setting_.*/, async (ctx) => {
       if (availableBalance + position < 200) {
         ctx.reply(t(`💔 Insufficient Balance\n————————————————————\nYour account balance is insufficient. Please deposit first to initiate lightning trading on NESTFi.`, lang), {
           ...Markup.inlineKeyboard([
-            [Markup.button.url(t(`Deposit`, lang), nestfi_url)],
+            [Markup.button.url(t(`PC ➜ Link Deposit`, lang), `https://${nestfi_url}`)],
+            [Markup.button.url(t(`Mobile ➜ Link Deposit`, lang), `https://metamask.app.link/dapp/${nestfi_url}`)],
             [Markup.button.callback(t(`Completed, go on!`, lang), `cb_copy_setting_${klAddress}`)],
           ])
         })
@@ -388,8 +390,8 @@ bot.action('cb_account', async (ctx) => {
         copyBalance: (data?.copyBalance || 0).toFixed(2),
       }), {
         ...Markup.inlineKeyboard([
-          [Markup.button.url(t(`Deposit`, lang), nestfi_url)],
-          [Markup.button.url(t(`Withdraw`, lang), nestfi_url)],
+          [Markup.button.url(t(`PC ➜ Link Deposit/Withdraw`, lang), `https://${nestfi_url}`)],
+          [Markup.button.url(t(`Mobile ➜ Link Deposit/Withdraw`, lang), `https://metamask.app.link/dapp/${nestfi_url}`)],
           [Markup.button.callback(t(`« Back`, lang), 'cb_menu')],
         ])
       })
