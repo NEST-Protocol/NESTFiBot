@@ -55,13 +55,6 @@ bot.start(async (ctx) => {
           // @ts-ignore
           .then(data => data?.value || false)
         if (isKol) {
-          const data = await fetch(`${hostname}/nestfi/copy/kol/info?chainId=${chainId}&walletAddress=${klAddress}`, {
-            headers: {
-              'Authorization': jwt
-            }
-          }).then(res => res.json())
-          // @ts-ignore
-          const nickName = data?.value?.nickName || 'No name'
           const isFollowed = await fetch(`${hostname}/nestfi/copy/follower/kolList?chainId=${chainId}`, {
             headers: {
               'Authorization': jwt
@@ -71,6 +64,13 @@ bot.start(async (ctx) => {
             .then(data => data?.value?.filter((item: any) => item.walletAddress.toLowerCase() === klAddress.toLowerCase()).length > 0 || false)
 
           if (!isFollowed) {
+            const data = await fetch(`${hostname}/nestfi/copy/kol/info?chainId=${chainId}&walletAddress=${klAddress}`, {
+              headers: {
+                'Authorization': jwt
+              }
+            }).then(res => res.json())
+            // @ts-ignore
+            const nickName = data?.value?.nickName || 'No name'
             await fetch(`${hostname}/nestfi/copy/follower/setting`, {
               method: 'POST',
               headers: {
