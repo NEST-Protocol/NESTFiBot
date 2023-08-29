@@ -809,7 +809,13 @@ bot.action('confirm_copy_setting', async (ctx) => {
             .then(data => data?.value || false)
 
           if (request) {
-            const targetChat = await bot.telegram.getChat(groupId)
+            let targetChat;
+            try {
+              targetChat = await bot.telegram.getChat(groupId)
+            } catch (e) {
+              targetChat = null;
+            }
+
             ctx.editMessageText(t(`🥳 Successfully Copy Trading\n————————————————————\nMore latest orders from {{nickName}} will be posted in the group.\n\nTelegram Group: {{groupId}}`, lang, {
               nickName: nickName,
               // @ts-ignore
