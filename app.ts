@@ -317,7 +317,7 @@ bot.action(/cb_copy_setting_.*/, async (ctx) => {
         }), {
           ...Markup.keyboard([
             choice.filter((i) => i >= 200).map((i: number) => String(i)),
-            [t(`« Back`, lang)],
+            ['Skip', '« Back'],
           ]).oneTime().resize()
         })
       }
