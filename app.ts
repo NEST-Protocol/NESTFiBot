@@ -871,8 +871,8 @@ bot.on("message", async (ctx) => {
       }
       let {total, single, availableBalance, position, nickName} = intent.value
       if (total === 0) {
-        const add = Number(input)
-        if (add < 200 || add > availableBalance) {
+        const add = Number(input) || 0
+        if ((add + position) < 200 || add > availableBalance) {
           ctx.reply(t(`💢 Invalid Amount\nPlease enter a valid amount between 200 and {{availableBalance}}`, lang, {
             availableBalance: availableBalance
           }))
@@ -901,7 +901,8 @@ bot.on("message", async (ctx) => {
           ]).oneTime().resize()
         })
       } else if (single === 0) {
-        if (Number(input) < 50 || Number(input) > total) {
+        const new_single = Number(input) || 0
+        if (new_single < 50 || new_single > total) {
           let choice = [0, 0, 0]
           choice[0] = Math.floor(total * 0.1 / 50) * 50
           choice[1] = Math.floor(total * 0.2 / 50) * 50
@@ -919,7 +920,7 @@ bot.on("message", async (ctx) => {
             category: 'cb_copy_setting',
             value: {
               ...intent.value,
-              single: Number(input),
+              single: new_single,
             }
           }), {
             ex: 600
