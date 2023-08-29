@@ -389,7 +389,7 @@ bot.action('cb_account', async (ctx) => {
         .then(res => res?.value)
       ctx.editMessageText(t(`💳 My Account\n————————————————————\nAccount Balance: {{availableBalance}} NEST\nCopy Trading Total Amount: {{copyBalance}} NEST`, lang, {
         availableBalance: (data?.availableBalance || 0).toFixed(2),
-        copyBalance: (data?.copyBalance || 0).toFixed(2),
+        copyBalance: Number(data?.copyBalance || 0).toFixed(2),
       }), {
         ...Markup.inlineKeyboard([
           [Markup.button.url(t(`PC ➜ Deposit/Withdraw`, lang), `https://${nestfi_url}`)],
@@ -468,8 +468,8 @@ bot.action(/cb_kl_.*/, async (ctx) => {
       ctx.editMessageText(t(`👤 {{nickName}}\n————————————————————\nFollowers: {{currentFollowers}}\nAUM: {{followersAssets}} NEST\n7D ROI: {{kolProfitLossRate}}%\n7D Earnings: {{kolProfitLoss}} NEST`, lang, {
         nickName: data?.nickName || '-',
         currentFollowers: data?.currentFollowers || 0,
-        followersAssets: (data?.followersAssets || 0).toFixed(2),
-        kolProfitLossRate: (data.kolProfitLossRate || 0).toFixed(2),
+        followersAssets: Number(data?.followersAssets || 0).toFixed(2),
+        kolProfitLossRate: Number(data.kolProfitLossRate || 0).toFixed(2),
         kolProfitLoss: (data?.followerProfitLoss || 0).toFixed(2),
       }), {
         parse_mode: 'Markdown',
@@ -620,8 +620,8 @@ bot.action(/cb_r_stop_kl_.*/, async (ctx) => {
 
       ctx.editMessageText(t(`🙅 Stop Copying\n————————————————————\nTotal Copy Amount: {{total}} NEST\nOpen Interest: {{openInterest}} NEST\nTotal Profit: {{totalProfit}} NEST\n\n_End copy will liquidate your position with market orders, and automatically return the assets to your Account after deducting the profits sharing._\n❓Are you sure to stop copying?`, lang, {
           total: (request?.totalCopyAmount || 0).toFixed(2),
-          openInterest: (request?.openInterest || 0).toFixed(2),
-          totalProfit: (request?.totalProfit || 0).toFixed(2),
+          openInterest: Number(request?.openInterest || 0).toFixed(2),
+          totalProfit: Number(request?.totalProfit || 0).toFixed(2),
         }
       ), {
         parse_mode: 'Markdown',
@@ -704,8 +704,8 @@ bot.action(/cb_oi_.*/, async (ctx) => {
         leverage: data?.leverage || '-',
         margin: (data?.margin || 0).toFixed(2),
         profitLossRate: data?.profitLossRate > 0 ? `+${data?.profitLossRate.toFixed(2)}` : data?.profitLossRate.toFixed(2),
-        orderPrice: (data?.orderPrice || 0).toFixed(5),
-        marketPrice: (data?.marketPrice || 0).toFixed(5),
+        orderPrice: Number(data?.orderPrice || 0).toFixed(5),
+        marketPrice: Number(data?.marketPrice || 0).toFixed(5),
         lipPrice: data?.lipPrice ? data?.lipPrice?.toFixed(5) : '-',
         open: new Date(data?.timestamp * 1000 || 0).toISOString().replace('T', ' ').substring(5, 19)
       }), {
@@ -874,7 +874,7 @@ bot.on("message", async (ctx) => {
         const add = Number(input) || 0
         if ((add + position) < 200 || add > availableBalance) {
           ctx.reply(t(`💢 Invalid Amount\nPlease enter a valid amount between 200 and {{availableBalance}}`, lang, {
-            availableBalance: availableBalance
+            availableBalance: availableBalance.toFixed(2)
           }))
           return
         }
@@ -908,7 +908,7 @@ bot.on("message", async (ctx) => {
           choice[1] = Math.floor(total * 0.2 / 50) * 50
           choice[2] = Math.floor(total * 0.4 / 50) * 50
           ctx.reply(t(`💢 Invalid Amount\nPlease enter a valid amount between 50 and your CopyTrading Total Amount, {{total}}`, lang, {
-            total: total
+            total: total.toFixed(2)
           }), {
             ...Markup.keyboard([
               choice.filter((i) => i >= 50).map(i => String(i)),
@@ -926,8 +926,8 @@ bot.on("message", async (ctx) => {
             ex: 600
           })
           ctx.reply(t(`👩‍💻 Confirm\n————————————————————\nCopy Trading Total Amount: {{total}} NEST \nCopy Trading Each Order: {{input}} NEST \n\nYou are following: {{nickName}}\nAre you sure?`, lang, {
-            total: total,
-            input: input,
+            total: total.toFixed(2),
+            input: Number(input).toFixed(2),
             nickName: nickName,
           }), {
             ...Markup.inlineKeyboard([
