@@ -61,7 +61,7 @@ bot.start(async (ctx) => {
             }
           }).then(res => res.json())
             // @ts-ignore
-            .then(data => data?.value?.filter((item: any) => item.walletAddress.toLowerCase() === klAddress.toLowerCase()).length > 0 || false),
+            .then(data => data?.value?.filter((item: any) => item.walletAddress.toLowerCase() === klAddress.toLowerCase()).length > 0 && item?.follow === "true"),
           fetch(`${hostname}/nestfi/copy/kol/info?chainId=${chainId}&walletAddress=${klAddress}`, {
             headers: {
               'Authorization': jwt
@@ -447,8 +447,8 @@ bot.action(/cb_kls_p_.*/, async (ctx) => {
       let inlineKeyboard: any[] = []
       // @ts-ignore
       const showArray = data?.value
-        .filter((item: any) => JSON.parse(item.follow))
-        .slice((page - 1) * 5, page * 5)
+        ?.filter((item: any) => JSON.parse(item.follow))
+        ?.slice((page - 1) * 5, page * 5)
       for (let i = 0; i < showArray.length; i++) {
         // @ts-ignore
         inlineKeyboard.push([Markup.button.callback(`${showArray[i]?.nickName || '-'}`, `cb_kl_${showArray[i]?.walletAddress}`)])
