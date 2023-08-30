@@ -240,6 +240,26 @@ bot.command('cancel', async (ctx) => {
   }
 })
 
+bot.command('token', async (ctx) => {
+  const from = ctx.from;
+  const chat = ctx.chat;
+  let lang = from.language_code;
+
+  if (chat.id < 0 || from.is_bot) {
+    return
+  }
+  const jwt = await redis.get(`auth:${from.id}`) as string | undefined | null
+
+  if (jwt) {
+    ctx.reply(`This is your NESTFi Token, be careful! 
+   \`${jwt}\``, {
+      parse_mode: 'Markdown'
+    })
+  } else {
+    ctx.reply(t(`👩‍💻 You have not authorized any wallet yet.`, lang))
+  }
+})
+
 // cb_copy_setting_[KL]
 bot.action(/cb_copy_setting_.*/, async (ctx) => {
   // @ts-ignore
@@ -426,7 +446,9 @@ bot.action(/cb_kls_p_.*/, async (ctx) => {
       const length = data?.value?.length || 0
       let inlineKeyboard: any[] = []
       // @ts-ignore
-      const showArray = data?.value.slice((page - 1) * 5, page * 5)
+      const showArray = data?.value
+        .filter((item: any) => JSON.parse(item.follow))
+        .slice((page - 1) * 5, page * 5)
       for (let i = 0; i < showArray.length; i++) {
         // @ts-ignore
         inlineKeyboard.push([Markup.button.callback(`${showArray[i]?.nickName || '-'}`, `cb_kl_${showArray[i]?.walletAddress}`)])
