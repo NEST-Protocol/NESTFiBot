@@ -3,6 +3,7 @@ import {Markup, Telegraf} from "telegraf";
 import {isAddress} from "@ethersproject/address";
 import i18n from "i18n";
 import {Redis} from "@upstash/redis/with-fetch";
+import {message} from "telegraf/filters";
 
 const token = process.env.BOT_TOKEN!;
 const bot = new Telegraf(token);
@@ -873,7 +874,7 @@ bot.action('cancel_copy_setting', async (ctx) => {
   }
 })
 
-bot.on("message", async (ctx) => {
+bot.on(message("text"), async (ctx) => {
   const {from, chat} = ctx.update.message;
   let lang = from.language_code;
   if (chat.id < 0 || from.is_bot) {
