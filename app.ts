@@ -443,19 +443,19 @@ bot.action(/cb_kls_p_.*/, async (ctx) => {
           'Authorization': jwt
         }
       }).then(res => res.json())
+        .then(data => data.value
+          ?.filter((item: any) => JSON.parse(item?.follow || false))
+          ?.sort((a: any, b: any) => b.copyAccountBalance - a.copyAccountBalance))
       // @ts-ignore
-      const length = data?.value?.length || 0
+      const length = data?.length || 0
       let inlineKeyboard: any[] = []
       // @ts-ignore
-      const showArray = data?.value
-        ?.filter((item: any) => JSON.parse(item?.follow || false))
-        ?.sort((a: any, b: any) => b.copyAccountBalance - a.copyAccountBalance)
-        ?.slice((page - 1) * 5, page * 5)
+      const showArray = data?.slice((page - 1) * 5, page * 5)
       for (let i = 0; i < showArray.length; i++) {
         // @ts-ignore
         inlineKeyboard.push([Markup.button.callback(`${showArray[i]?.nickName || '-'}`, `cb_kl_${showArray[i]?.walletAddress}`)])
       }
-      if (page * 5 < showArray.length) {
+      if (page * 5 < length) {
         inlineKeyboard.push([Markup.button.callback(t(`» Next Page`, lang), `cb_kls_p_${page + 1}`)])
       }
       inlineKeyboard.push([Markup.button.callback(t(`« Back`, lang), 'cb_menu')])
