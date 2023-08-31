@@ -642,10 +642,11 @@ bot.action(/cb_r_stop_kl_.*/, async (ctx) => {
         // @ts-ignore
         .then(data => data?.value)
 
-      ctx.editMessageText(t(`🙅 Stop Copying\n————————————————————\nTotal Copy Amount: {{total}} NEST\nOpen Interest: {{openInterest}} NEST\nTotal Profit: {{totalProfit}} NEST\n\n_End copy will liquidate your position with market orders, and automatically return the assets to your Account after deducting the profits sharing._\n❓Are you sure to stop copying?`, lang, {
+      ctx.editMessageText(t(`🙅 Stop Copying\n————————————————————\nTotal Copy Amount: {{total}} NEST\nOpen Interest: {{openInterest}} NEST\nTotal Profit: {{totalProfit}} NEST\nEstimated Realized Amount: {{aum}} NEST\n\n_End copy will liquidate your position with market orders, and automatically return the assets to your Account after deducting the profits sharing._\n❓Are you sure to stop copying?`, lang, {
           total: (request?.totalCopyAmount || 0).toFixed(2),
           openInterest: Number(request?.openInterest || 0).toFixed(2),
           totalProfit: Number(request?.totalProfit || 0).toFixed(2),
+          aum: Number(request?.aum || 0).toFixed(2),
         }
       ), {
         parse_mode: 'Markdown',
